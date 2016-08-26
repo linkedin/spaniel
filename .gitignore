@@ -1,0 +1,7 @@
+tmp
+npm-debug.log
+node_modules/
+*/tmp
+testem.log
+/exports/*
+build_tmp

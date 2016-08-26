@@ -1,0 +1,59 @@
+{
+  "name": "spaniel",
+  "version": "1.0.0",
+  "description": "LinkedIn's viewport tracking library",
+  "license" : "Apache 2.0",
+  "main": "exports/spaniel.js",
+  "scripts": {
+    "test": "npm run build && testem ci && node test/headless/run",
+    "serve": "node test/headless/server/app",
+    "watch": "node watch",
+    "build": "./build.sh",
+    "postinstall": "echo \"npm postinstall noop\"",
+    "stats": "node size-calc",
+    "build-docs": "/build_docs.sh",
+    "prepublish": "npm run build",
+    "tsc": "rm -rf exports/cjs && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/linkedin/spaniel"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "author": {
+    "name": "Asa Kusuma"
+  },
+  "dependencies": {
+    "ventana": "^0.6.1"
+  },
+  "homepage": "https://github.com/linkedin/spaniel",
+  "jsnext:main": "exports/es6/spaniel.js",
+  "devDependencies": {
+    "assert": "^1.3.0",
+    "babel-core": "^6.11.4",
+    "babel-preset-es2015": "^6.9.0",
+    "broccoli": "^0.16.9",
+    "broccoli-cli": "1.0.0",
+    "broccoli-funnel": "^1.0.1",
+    "broccoli-uglify-js": "^0.1.3",
+    "browserify": "^13.0.1",
+    "browserify-derequire": "^0.9.4",
+    "chai": "^3.5.0",
+    "chokidar": "^1.6.0",
+    "express": "^4.13.4",
+    "gzip-size": "^1.0.0",
+    "mocha": "^2.4.5",
+    "nightmare": "^2.5.1",
+    "rollup": "^0.34.10",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "rsvp": "^3.1.0",
+    "serve-static": "^1.10.2",
+    "sinon": "^1.14.1",
+    "testem": "^1.12.0",
+    "tslint": "^3.6.0",
+    "typedoc": "^0.4.2",
+    "typescript": "^2.0.3"
+  }
+}
