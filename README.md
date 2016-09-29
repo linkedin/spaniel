@@ -1,5 +1,4 @@
-Spaniel
-=======
+# Spaniel [![Build Status](https://travis-ci.org/linkedin/spaniel.svg?branch=master)](https://travis-ci.org/linkedin/spaniel)
 
 LinkedIn's JavaScript viewport tracking library and [IntersectionObserver](https://github.com/WICG/IntersectionObserver) polyfill. Track what the user actually sees.
 
