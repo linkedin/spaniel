@@ -1,7 +1,7 @@
 /*
 Copyright 2016 LinkedIn Corp. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- 
-Unless required by applicable law or agreed to in writing, software  distributed under the License is distributed on an "AS IS" BASIS,  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
 import { assert } from 'chai';
@@ -81,9 +81,9 @@ testModule('IntersectionObserver', class extends TestClass {
       });
       observer.observe(target);
     })
-    .wait(50)
-    .scrollTo(76)
-    .wait(50)
+    .wait(100)
+    .scrollTo(80)
+    .wait(100)
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
@@ -103,11 +103,11 @@ testModule('IntersectionObserver', class extends TestClass {
       });
       observer.observe(target);
     })
-    .wait(50)
-    .scrollTo(76)
-    .wait(50)
-    .scrollTo(74)
-    .wait(50)
+    .wait(100)
+    .scrollTo(80)
+    .wait(100)
+    .scrollTo(70)
+    .wait(100)
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
@@ -128,11 +128,11 @@ testModule('IntersectionObserver', class extends TestClass {
       });
       observer.observe(target);
     })
-    .wait(50)
-    .scrollTo(101)
-    .wait(50)
-    .scrollTo(99)
-    .wait(50)
+    .wait(100)
+    .scrollTo(105)
+    .wait(100)
+    .scrollTo(95)
+    .wait(100)
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
