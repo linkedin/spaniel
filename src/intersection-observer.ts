@@ -10,7 +10,6 @@ import {
   Frame,
   QueueDOMElementInterface,
   Stream,
-  Queue,
   DOMQueue,
   Terminal
 } from 'ventana';
@@ -91,7 +90,7 @@ function rootMarginToDOMMargin(rootMargin: DOMString): DOMMargin {
 
 export class IntersectionObserver {
   private id: string;
-  private entryQueue: Queue;
+  private entryQueue: DOMQueue;
   private entryEventStream: StreamInterface;
   private callback: Function;
 

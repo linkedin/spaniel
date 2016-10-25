@@ -22,10 +22,6 @@ export {
   SpanielTrackedElement
 };
 
-export {
-  on
-} from 'ventana';
-
 function onEntry(entries: SpanielObserverEntry[]) {
   entries.forEach((entry: SpanielObserverEntry) => {
     if (entry.entering) {
