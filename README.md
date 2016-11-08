@@ -16,6 +16,8 @@ Practical uses included:
 * Impression discounting feedback for relevance systems
 * Occlusion culling - Don't render an object until user is close to scrolling the object into the viewport
 
+## API
+
 Spaniel provides APIs at multiple levels of abstraction for determining when DOM elements are visible, with the lowest level of abstraction being a polyfill for the [IntersectionObserver API](https://github.com/WICG/IntersectionObserver). Spaniel does not actually send viewport/impression tracking events, but rather should be setup to call your app code that does the actual sending of viewport/impression tracking events.
 
 There are three different classes provided:
@@ -113,7 +115,7 @@ There are four different event types passed to the watcher callback:
 
 ## Utility API
 
-Under the hood, Spaniel uses `requestAnmiationFrame` to preform microtask scheduling. Spaniel does not use mutation observers, scroll listeners, or resize listeners. Instead, `requestAnmiationFrame` polling is used for [performance reasons]((https://developers.google.com/web/fundamentals/performance/rendering/optimize-javascript-execution#use_requestanimationframe_for_visual_changes).
+Under the hood, Spaniel uses `requestAnmiationFrame` to preform microtask scheduling. Spaniel does not use mutation observers, scroll listeners, or resize listeners. Instead, `requestAnmiationFrame` polling is used for [performance reasons](https://developers.google.com/web/fundamentals/performance/rendering/optimize-javascript-execution#use_requestanimationframe_for_visual_changes).
 
 Spaniel exposes an API for hooking into the built-in `requestAnmiationFrame` task scheduling engine, or even setting your own `requestAnmiationFrame` task scheduling engine.
 
