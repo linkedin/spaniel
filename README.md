@@ -113,7 +113,7 @@ There are four different event types passed to the watcher callback:
 
 ## Utility API
 
-Under the hood, Spaniel uses `requestAnmiationFrame` to preform microtask scheduling. Spaniel does not use mutation observers, scroll listeners, or resize listeners. Instead, `requestAnmiationFrame` polling is used for performance reasons.
+Under the hood, Spaniel uses `requestAnmiationFrame` to preform microtask scheduling. Spaniel does not use mutation observers, scroll listeners, or resize listeners. Instead, `requestAnmiationFrame` polling is used for [performance reasons]((https://developers.google.com/web/fundamentals/performance/rendering/optimize-javascript-execution#use_requestanimationframe_for_visual_changes).
 
 Spaniel exposes an API for hooking into the built-in `requestAnmiationFrame` task scheduling engine, or even setting your own `requestAnmiationFrame` task scheduling engine.
 
@@ -151,15 +151,28 @@ scheduleWrite(() => {
 });
 ```
 
-#### How is it tested?
+With any task engine involving the DOM, DOM reads and DOM writes [should be batched seperately](https://developers.google.com/web/fundamentals/performance/rendering/optimize-javascript-execution#reduce_complexity_or_use_web_workers). For this reason, it's important that any [work that forces a browser layout](https://gist.github.com/paulirish/5d52fb081b3570c81e3a) be scheduled via `scheduleRead()`, while any work that modifies the layout should be scheduled via `scheduleWrite()`.
 
-Spaniel has both unit tests and a headless test suite. The headless tests are run using [Nightmare](https://github.com/segmentio/nightmare).
+### Using an external requestAnmiationFrame engine
+
+If you'd like to use an exisiting requestAnmiationFrame polling/task engine, use `setGlobalEngine(engine)`, where `engine` is an object that implements the [`EngineInterface`](https://github.com/linkedin/spaniel/blob/master/src/metal/interfaces.ts#L25-L28). As an example, you can checkout Spaniel's internal [Engine implementation](https://github.com/linkedin/spaniel/blob/master/src/metal/engine.ts#L10-L39).
 
 ## Why use Spaniel?
 
 * Provides the future-proofing of a WCIG API, but with an expanded feature-set built upon said API.
 * Tested and iterated upon in production by LinkedIn since late 2014
 * Highly performant, only relies on `requestAnmiationFrame`
+* Extensive `requestAnmiationFrame` task/utility API
+
+#### How is it tested?
+
+Spaniel has both unit tests and a headless test suite. The headless tests are run using [Nightmare](https://github.com/segmentio/nightmare).
+
+#### How big is Spaniel?
+
+The minified UMD file is 3.63 kB gzipped.
+
+You can also run `npm run stats` to measure locally.
 
 ## Installation
 
@@ -185,11 +198,8 @@ npm run watch
 // Serve test app
 npm run serve
 
-// Run unit tests
+// Run the tests
 npm run test
-
-// Run headless tests
-npm run test:headless
 ```
 
 ## IntersectionObserver Resources
