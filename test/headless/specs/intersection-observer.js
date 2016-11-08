@@ -196,4 +196,38 @@ testModule('IntersectionObserver', class extends TestClass {
       assert.equal(result, 3, 'Callback fired 3 times');
     });
   }
+
+  ['@test can restart observing after disconnect']() {
+    return this.context.evaluate(function() {
+      window.STATE.impressions = 0;
+      target1 = document.querySelector('.tracked-item[data-id="1"]');
+      target2 = document.querySelector('.tracked-item[data-id="2"]');
+      target3 = document.querySelector('.tracked-item[data-id="3"]');
+      window.observer = new spaniel.IntersectionObserver(function() {
+        window.STATE.impressions++;
+      });
+      window.observer.observe(target1);
+      window.observer.observe(target2);
+      window.observer.observe(target3);
+    })
+    .wait(50)
+    .evaluate(function() {
+      window.observer.disconnect();
+    })
+    .wait(50)
+    .evaluate(function() {
+      window.observer.observe(document.querySelector('.tracked-item[data-id="1"]'));
+    })
+    .wait(50)
+    .scrollTo(500)
+    .wait(50)
+    .scrollTo(0)
+    .wait(50)
+    .getExecution()
+    .evaluate(function() {
+      return window.STATE.impressions;
+    }).then(function(result) {
+      assert.equal(result, 6, 'Callback fired 6 times');
+    });
+  }
 });

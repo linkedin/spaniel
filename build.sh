@@ -4,14 +4,5 @@
 
 rm -rf exports
 ./node_modules/tslint/bin/tslint src/**/*.ts &&
-tsc &&
-tsc -m es2015 -t es6 --outDir build_tmp/es6 &&
-browserify -p browserify-derequire build_tmp/cjs/index.js -s spaniel -o build_tmp/spaniel.js &&
 broccoli build exports &&
-mkdir exports/min &&
-mv exports/spaniel.js exports/min &&
-mv build_tmp/cjs exports &&
-mv build_tmp/es6 exports &&
-mv build_tmp/spaniel.js exports &&
-rollup -c &&
 npm run stats

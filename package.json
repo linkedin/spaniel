@@ -2,18 +2,15 @@
   "name": "spaniel",
   "version": "1.0.0",
   "description": "LinkedIn's viewport tracking library",
-  "license" : "Apache 2.0",
+  "license": "Apache 2.0",
   "main": "exports/spaniel.js",
   "scripts": {
     "test": "npm run build && testem ci && node test/headless/run",
     "serve": "node test/headless/server/app",
-    "watch": "node watch",
+    "watch": "broccoli-timepiece exports",
     "build": "./build.sh",
-    "postinstall": "echo \"npm postinstall noop\"",
     "stats": "node size-calc",
-    "build-docs": "/build_docs.sh",
-    "prepublish": "npm run build",
-    "tsc": "rm -rf exports/cjs && tsc"
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -25,11 +22,8 @@
   "author": {
     "name": "Asa Kusuma"
   },
-  "dependencies": {
-    "ventana": "^0.6.1"
-  },
   "homepage": "https://github.com/linkedin/spaniel",
-  "jsnext:main": "exports/es6/spaniel.js",
+  "jsnext:main": "exports/es6/index.js",
   "devDependencies": {
     "assert": "^1.3.0",
     "babel-core": "^6.11.4",
@@ -37,9 +31,11 @@
     "broccoli": "^0.16.9",
     "broccoli-cli": "1.0.0",
     "broccoli-funnel": "^1.0.1",
+    "broccoli-merge-trees": "^1.1.4",
+    "broccoli-rollup": "^1.0.3",
+    "broccoli-string-replace": "^0.1.1",
+    "broccoli-typescript-compiler": "^1.0.1",
     "broccoli-uglify-js": "^0.1.3",
-    "browserify": "^13.0.1",
-    "browserify-derequire": "^0.9.4",
     "chai": "^3.5.0",
     "chokidar": "^1.6.0",
     "express": "^4.13.4",
@@ -54,6 +50,6 @@
     "testem": "^1.12.0",
     "tslint": "^3.6.0",
     "typedoc": "^0.4.2",
-    "typescript": "^2.0.3"
+    "typescript": "^2.0.6"
   }
 }

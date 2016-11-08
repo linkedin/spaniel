@@ -13,6 +13,7 @@ server.stdout.on('data', (data) => {
   // Wait for signal that test app has booted
   if (data.indexOf('Serving Spaniel Test App') > -1 && !test) {
     test = spawn('./node_modules/mocha/bin/mocha', ['--compilers', 'js:babel-core/register', 'test/headless/specs/**/*.js']);
+    //mocha --compilers js:babel-core/register test/headless/specs/**/*.js
 
     test.stderr.on('data', (data) => {
       console.log(`Test Error: ${data}`);
