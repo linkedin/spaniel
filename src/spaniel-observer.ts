@@ -11,13 +11,12 @@ import {
   IntersectionObserverEntryInit,
   DOMString,
   DOMMargin,
-  SpanielTrackedElement,
-  uuid
+  SpanielTrackedElement
 } from './intersection-observer';
 
-import {
-  on
-} from 'ventana';
+import w from './metal/window-proxy';
+
+import { generateToken, on } from './metal/index';
 
 let emptyRect = { x: 0, y: 0, width: 0, height: 0 };
 
@@ -83,9 +82,11 @@ export class SpanielObserver {
     };
     this.observer = new IntersectionObserver((records: IntersectionObserverEntry[]) => this.internalCallback(records), o);
 
-    on('destroy', this.onWindowClosed.bind(this));
-    on('hide', this.onTabHidden.bind(this));
-    on('show', this.onTabShown.bind(this));
+    if (w.hasDOM) {
+      on('unload', this.onWindowClosed.bind(this));
+      on('hide', this.onTabHidden.bind(this));
+      on('show', this.onTabShown.bind(this));
+    }
   }
   private onWindowClosed() {
     this.onTabHidden();
@@ -129,8 +130,10 @@ export class SpanielObserver {
     }
   }
   private flushQueuedEntries() {
-    this.callback(this.queuedEntries.slice());
-    this.queuedEntries = [];
+    if (this.queuedEntries.length > 0) {
+      this.callback(this.queuedEntries);
+      this.queuedEntries = [];
+    }
   }
   private generateSpanielEntry(entry: IntersectionObserverEntry, state: SpanielThresholdState): SpanielObserverEntry {
     let {
@@ -204,13 +207,14 @@ export class SpanielObserver {
   disconnect() {
     this.setAllHidden();
     this.observer.disconnect();
+    this.recordStore = {};
   }
   unobserve(element: SpanielTrackedElement) {
     this.observer.unobserve(element);
     delete this.recordStore[element.__spanielId];
   }
   observe(target: SpanielTrackedElement, payload: any = null) {
-    let id = target.__spanielId = target.__spanielId || uuid();
+    let id = target.__spanielId = target.__spanielId || generateToken();
     this.recordStore[id] = {
       target,
       payload,

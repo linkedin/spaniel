@@ -1,28 +1,6 @@
 {
-	"compilerOptions": {
-		"noImplicitAny": true,
-		"declaration": true,
-		"isolatedModules": false,
-		"module": "commonjs",
-		"target": "es5",
-		"outDir": "build_tmp/cjs",
-		"sourceMap": true,
-		"moduleResolution": "node"
-	},
-	"exclude": [
-		"node_modules",
-		"exports",
-		"build_tmp"
-	],
-	"filesGlob": [
-		"src/**/*.ts"
-	],
-	"files": [
-		"src/index.ts",
-		"src/intersection-observer.ts",
-		"src/spaniel-observer.ts"
-	],
-	"atom": {
-		"rewriteTsconfig": true
-	}
+    "compilerOptions": {
+        "watch": true,
+        "outDir": "exports/tsc"
+    }
 }

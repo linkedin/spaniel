@@ -111,9 +111,45 @@ There are four different event types passed to the watcher callback:
 * `impressed` - When the DOM element has been visible for the configured amount of time.
 * `impression-complete` - When an impressed element is no longer impressed. This event includes the total duration of time the element was visible.
 
-## How it works
+## Utility API
 
-Under the hood, Spaniel uses [Ventana](https://www.github.com/asakusuma/ventana/), a `requestAnmiationFrame`-based stream and window utility. Spaniel does not use mutation observers, scroll listeners, or resize listeners. Instead, `requestAnmiationFrame` polling is used for performance reasons.
+Under the hood, Spaniel uses `requestAnmiationFrame` to preform microtask scheduling. Spaniel does not use mutation observers, scroll listeners, or resize listeners. Instead, `requestAnmiationFrame` polling is used for performance reasons.
+
+Spaniel exposes an API for hooking into the built-in `requestAnmiationFrame` task scheduling engine, or even setting your own `requestAnmiationFrame` task scheduling engine.
+
+```JavaScript
+import { on, off, scheduleRead, scheduleWrite } from 'spaniel';
+
+// Do something on scroll
+on('scroll', (frame) => {
+  console.log('I scrolled to ' + frame.scrollTop);
+});
+
+function onResize(frame) {
+  console.log('Viewport is ' + frame.width + 'px wide');
+}
+
+// Do something on window resize
+on('resize', onResize);
+
+// Stop watching resize
+off('resize', onResize);
+
+// Triggered after all spaniel observer callbacks have fired during `unload`
+on('destroy', flushBeacons);
+
+// Proxy to visibilitychange API
+on('show', onTabFocus);
+on('hide', onTabUnfocus);
+
+scheduleRead(() => {
+  console.log('This will get executed during the DOM read phase of the rAF loop');
+});
+
+scheduleWrite(() => {
+  console.log('This will get executed during the write/mutation phase of the rAF loop');
+});
+```
 
 #### How is it tested?
 

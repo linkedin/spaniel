@@ -16,10 +16,26 @@ import {
   SpanielObserverEntry
 } from './spaniel-observer';
 
+import {
+  setGlobalEngine,
+  getGlobalEngine
+} from './metal/engine';
+
+import {
+  Scheduler,
+  getGlobalScheduler,
+  on,
+  off
+} from './metal/index';
+
 export {
+  on,
+  off,
   IntersectionObserver,
   SpanielObserver,
-  SpanielTrackedElement
+  SpanielTrackedElement,
+  setGlobalEngine,
+  getGlobalEngine
 };
 
 function onEntry(entries: SpanielObserverEntry[]) {
@@ -35,6 +51,10 @@ function onEntry(entries: SpanielObserverEntry[]) {
       });
     }
   });
+}
+
+export function scheduler() {
+  return new Scheduler(getGlobalEngine());
 }
 
 export interface WatcherConfig {
@@ -85,3 +105,4 @@ export class Watcher {
     this.observer.disconnect();
   }
 }
+

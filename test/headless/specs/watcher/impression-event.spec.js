@@ -30,8 +30,6 @@ testModule('Impression event', class extends WatcherTestClass {
       .wait(5)
       .scrollTo(250)
       .wait(5)
-      .scrollTo(200)
-      .wait(5)
       .scrollTo(0)
       .wait(5)
       .assertNever(5, 'impressed').done();

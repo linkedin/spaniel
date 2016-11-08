@@ -5,21 +5,13 @@ Unless required by applicable law or agreed to in writing, software  distribut
 */
 
 import {
-  RAFStream,
-  StreamInterface,
   Frame,
   QueueDOMElementInterface,
-  Stream,
   DOMQueue,
-  Terminal
-} from 'ventana';
-
-export function uuid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
+  ElementScheduler,
+  Engine,
+  generateToken
+} from './metal/index';
 
 export interface DOMMargin {
   top: number;
@@ -52,7 +44,6 @@ export interface IntersectionObserverInit {
 
 interface EntryEvent {
   entry: IntersectionObserverEntry;
-  item: QueueDOMElementInterface;
   numSatisfiedThresholds: number;
 }
 
@@ -90,8 +81,7 @@ function rootMarginToDOMMargin(rootMargin: DOMString): DOMMargin {
 
 export class IntersectionObserver {
   private id: string;
-  private entryQueue: DOMQueue;
-  private entryEventStream: StreamInterface;
+  private scheduler: ElementScheduler;
   private callback: Function;
 
   protected root: SpanielTrackedElement;
@@ -107,28 +97,38 @@ export class IntersectionObserver {
     }
   }
   observe(target: SpanielTrackedElement) {
-    let id = target.__spanielId = target.__spanielId || uuid();
-    this.entryQueue.push({
-      id: id,
-      el: target,
-      callback: (entry: IntersectionObserverEntry) => {
-        this.callback.call(null, [entry]);
-      }
+    let id = target.__spanielId = target.__spanielId || generateToken();
+    this.scheduler.watch(target, (frame: Frame, id: string, bcr: ClientRect) => {
+      this.onTick(frame, id, bcr, target);
+    }, target.__spanielId);
+    return id;
+  }
+  private onTick(frame: Frame, id: string,  bcr: ClientRect, el: Element) {
+    let { numSatisfiedThresholds, entry } = this.generateEntryEvent(frame, bcr, el);
+    let record: EntryEvent = this.records[id] || (this.records[id] = {
+      entry,
+      numSatisfiedThresholds: 0
     });
+
+    if (numSatisfiedThresholds !== record.numSatisfiedThresholds) {
+      record.numSatisfiedThresholds = numSatisfiedThresholds;
+      this.callback([entry]);
+    }
   }
   unobserve(target: SpanielTrackedElement) {
-    this.entryQueue.remove(target);
+    this.scheduler.unwatch(target.__spanielId);
     delete this.records[target.__spanielId];
   }
   disconnect() {
-    this.entryQueue.clear();
+    this.scheduler.unwatchAll();
+    this.records = {};
   }
   takeRecords(): IntersectionObserverEntry[] {
     return [];
   }
-  private generateEntryEvent(frame: Frame, item: QueueDOMElementInterface): EntryEvent {
+  private generateEntryEvent(frame: Frame, bcr: ClientRect, el: Element): EntryEvent {
     let count: number = 0;
-    let entry = this.entryFromQueueElement(frame, item);
+    let entry = this.entryFromQueueElement(frame, bcr, el);
     let ratio = entry.intersectionRatio;
 
     for (let i = 0; i < this.thresholds.length; i++) {
@@ -138,13 +138,12 @@ export class IntersectionObserver {
       }
     }
     return {
-      item,
       numSatisfiedThresholds: count,
       entry
     };
   }
 
-  private entryFromQueueElement(frame: Frame, item: QueueDOMElementInterface) {
+  private entryFromQueueElement(frame: Frame, bcr: ClientRect, el: Element) {
     let rootBounds: DOMRectInit = {
       x: this.rootMargin.left,
       y: this.rootMargin.top,
@@ -152,8 +151,8 @@ export class IntersectionObserver {
       height: frame.height - (this.rootMargin.bottom + this.rootMargin.top)
     };
 
-    let width = Math.min(rootBounds.x + rootBounds.width, item.bcr.right) - Math.max(rootBounds.x, item.bcr.left);
-    let height = Math.min(rootBounds.y + rootBounds.height, item.bcr.bottom) - Math.max(rootBounds.y, item.bcr.top);
+    let width = Math.min(rootBounds.x + rootBounds.width, bcr.right) - Math.max(rootBounds.x, bcr.left);
+    let height = Math.min(rootBounds.y + rootBounds.height, bcr.bottom) - Math.max(rootBounds.y, bcr.top);
 
     let intersectionRect: DOMRectInit = {
       x: -1,
@@ -165,8 +164,8 @@ export class IntersectionObserver {
     return new IntersectionObserverEntry({
       time: frame.timestamp,
       rootBounds,
-      target: <SpanielTrackedElement>item.el,
-      boundingClientRect: marginToRect(item.bcr),
+      target: <SpanielTrackedElement>el,
+      boundingClientRect: marginToRect(bcr),
       intersectionRect
     });
   }
@@ -174,7 +173,7 @@ export class IntersectionObserver {
   constructor(callback: Function, options: IntersectionObserverInit = {}) {
     this.records = {};
     this.callback = callback;
-    this.id = uuid();
+    this.id = generateToken();
     options.threshold = options.threshold || 0;
     this.rootMargin = rootMarginToDOMMargin(options.rootMargin || '0px');
 
@@ -183,29 +182,8 @@ export class IntersectionObserver {
     } else {
       this.thresholds = [<number>options.threshold];
     }
-    this.entryQueue = new DOMQueue(`spaniel-observer-queue-${this.id}`);
-    RAFStream.pipe(new Stream({
-      queue: this.entryQueue,
-      process: (frame: Frame, item: QueueDOMElementInterface) => {
-        if (frame.isMeasure()) {
-          item.bcr = item.el.getBoundingClientRect();
-          return this.generateEntryEvent(frame, item);
-        }
-      }
-    })).pipe(new Terminal((e: EntryEvent) => {
-      let { item, numSatisfiedThresholds, entry } = e;
-      let id = item.id;
-      let record: EntryEvent = this.records[id] || (this.records[id] = {
-        entry,
-        item,
-        numSatisfiedThresholds: 0
-      });
 
-      if (numSatisfiedThresholds !== record.numSatisfiedThresholds) {
-        record.numSatisfiedThresholds = numSatisfiedThresholds;
-        item.callback(entry);
-      }
-    }));
+    this.scheduler = new ElementScheduler();
   }
 };
 
