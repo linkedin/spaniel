@@ -113,6 +113,8 @@ There are four different event types passed to the watcher callback:
 * `impressed` - When the DOM element has been visible for the configured amount of time.
 * `impression-complete` - When an impressed element is no longer impressed. This event includes the total duration of time the element was visible.
 
+If no config is passed to the `Watcher` constructor, only the `exposed` event is fired.
+
 ## Utility API
 
 Under the hood, Spaniel uses `requestAnmiationFrame` to preform microtask scheduling. Spaniel does not use mutation observers, scroll listeners, or resize listeners. Instead, `requestAnmiationFrame` polling is used for [performance reasons](https://developers.google.com/web/fundamentals/performance/rendering/optimize-javascript-execution#use_requestanimationframe_for_visual_changes).
