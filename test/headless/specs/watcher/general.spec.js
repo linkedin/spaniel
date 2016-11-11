@@ -15,10 +15,7 @@ testModule('Watcher', class extends TestClass {
   ['@test unwatch works']() {
     return this.context.evaluate(() => {
       window.STATE.exposed = 0;
-      window.watcher = new spaniel.Watcher({
-        time: 0,
-        ratio: 1
-      });
+      window.watcher = new spaniel.Watcher();
       window.target = document.querySelector('.tracked-item[data-id="6"]');
       window.watcher.watch(window.target, function() {
         window.STATE.exposed++;

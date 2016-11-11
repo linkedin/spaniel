@@ -68,29 +68,33 @@ export class Watcher {
   constructor(config: WatcherConfig = {}) {
     let { time, ratio, rootMargin } = config;
 
-    // Set defaults
-    time = time || 300;
-    ratio = ratio || 0.5;
+    let threshold = [
+      {
+        label: 'exposed',
+        time: 0,
+        ratio: 0
+      }
+    ];
+
+    if (time) {
+      threshold.push({
+        label: 'impressed',
+        time,
+        ratio: ratio || 0
+      });
+    }
+    
+    if (ratio) {
+      threshold.push({
+        label: 'visible',
+        time: 0,
+        ratio
+      });
+    }
 
     this.observer = new SpanielObserver(onEntry, {
       rootMargin,
-      threshold: [
-        {
-          label: 'impressed',
-          time,
-          ratio
-        },
-        {
-          label: 'visible',
-          time: 0,
-          ratio
-        },
-        {
-          label: 'exposed',
-          time: 0,
-          ratio: 0
-        }
-      ]
+      threshold
    });
   }
   watch(el: Element, callback: Function) {
