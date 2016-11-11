@@ -79,4 +79,29 @@ testModule('Watcher', class extends TestClass {
       assert.equal(result, 3, 'Callback fired 3 times');
     });
   }
+  ['@test watched item callbacks fire in order']() {
+    return this.context.evaluate(() => {
+      window.STATE.order = [];
+      window.watcher = new spaniel.Watcher({
+        time: 0,
+        ratio: 1
+      });
+      var t1 = document.querySelector('.tracked-item[data-id="1"]');
+      var t2 = document.querySelector('.tracked-item[data-id="2"]');
+      window.watcher.watch(t1, function() {
+        window.STATE.order.push(1);
+      });
+      window.watcher.watch(t2, function() {
+        window.STATE.order.push(2);
+      });
+    })
+    .wait(50)
+    .getExecution()
+    .evaluate(function() {
+      return window.STATE.order;
+    }).then(function(result) {
+      assert.equal(result[0], 1, 'First watched item callback fires first');
+      assert.equal(result[1], 2, 'Second watched item callback fires second');
+    });
+  }
 });
