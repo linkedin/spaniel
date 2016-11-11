@@ -49,6 +49,7 @@ export abstract class BaseScheduler {
   protected engine: EngineInterface;
   protected queue: QueueInterface;
   protected isTicking: Boolean = false;
+  protected toRemove: Array<string| Element | Function> = [];
   constructor(customEngine?: EngineInterface) {
     if (customEngine) {
       this.engine = customEngine;
@@ -63,6 +64,12 @@ export abstract class BaseScheduler {
       this.isTicking = false;
     } else {
       let frame = Frame.generate();
+      if (this.toRemove.length > 0) {
+        for (let i = 0; i < this.toRemove.length; i++) {
+          this.queue.remove(this.toRemove[i]);
+        }
+        this.toRemove = [];
+      }
       this.applyQueue(frame);
       this.engine.scheduleRead(this.tick.bind(this));
     }
@@ -74,7 +81,7 @@ export abstract class BaseScheduler {
     this.engine.scheduleRead(callback);
   }
   unwatch(id: string| Element | Function) {
-    this.queue.remove(id);
+    this.toRemove.push(id);
   }
   unwatchAll() {
     this.queue.clear();
