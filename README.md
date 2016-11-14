@@ -115,6 +115,12 @@ There are four different event types passed to the watcher callback:
 
 If no config is passed to the `Watcher` constructor, only the `exposed` event is fired.
 
+The `Watcher` constructor can be passed 3 different options:
+
+* `time` - The time threshold
+* `ratio` - The ratio threshold
+* `rootMargin` - The [rootMargin](https://wicg.github.io/IntersectionObserver/#dom-intersectionobserverinit-rootmargin) in object form.
+
 ## Utility API
 
 Under the hood, Spaniel uses `requestAnmiationFrame` to preform microtask scheduling. Spaniel does not use mutation observers, scroll listeners, or resize listeners. Instead, `requestAnmiationFrame` polling is used for [performance reasons](https://developers.google.com/web/fundamentals/performance/rendering/optimize-javascript-execution#use_requestanimationframe_for_visual_changes).
