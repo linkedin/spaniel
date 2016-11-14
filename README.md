@@ -128,7 +128,7 @@ Under the hood, Spaniel uses `requestAnmiationFrame` to preform microtask schedu
 Spaniel exposes an API for hooking into the built-in `requestAnmiationFrame` task scheduling engine, or even setting your own `requestAnmiationFrame` task scheduling engine.
 
 ```JavaScript
-import { on, off, scheduleRead, scheduleWrite } from 'spaniel';
+import { on, off, scheduleRead, scheduleWork } from 'spaniel';
 
 // Do something on scroll
 on('scroll', (frame) => {
@@ -156,12 +156,12 @@ scheduleRead(() => {
   console.log('This will get executed during the DOM read phase of the rAF loop');
 });
 
-scheduleWrite(() => {
+scheduleWork(() => {
   console.log('This will get executed during the write/mutation phase of the rAF loop');
 });
 ```
 
-With any task engine involving the DOM, DOM reads and DOM writes [should be batched seperately](https://developers.google.com/web/fundamentals/performance/rendering/optimize-javascript-execution#reduce_complexity_or_use_web_workers). For this reason, it's important that any [work that forces a browser layout](https://gist.github.com/paulirish/5d52fb081b3570c81e3a) be scheduled via `scheduleRead()`, while any work that modifies the layout should be scheduled via `scheduleWrite()`.
+With any task engine involving the DOM, DOM reads and DOM writes [should be batched seperately](https://developers.google.com/web/fundamentals/performance/rendering/optimize-javascript-execution#reduce_complexity_or_use_web_workers). For this reason, it's important that any [work that forces a browser layout](https://gist.github.com/paulirish/5d52fb081b3570c81e3a) be scheduled via `scheduleRead()`, while any work that modifies the layout should be scheduled via `scheduleWork()`.
 
 ### Using an external requestAnmiationFrame engine
 
@@ -180,7 +180,7 @@ Spaniel has both unit tests and a headless test suite. The headless tests are ru
 
 #### How big is Spaniel?
 
-The minified UMD file is 3.63 kB gzipped.
+The minified UMD file is 3.71 kB gzipped.
 
 You can also run `npm run stats` to measure locally.
 

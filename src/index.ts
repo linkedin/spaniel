@@ -25,12 +25,16 @@ import {
   Scheduler,
   getGlobalScheduler,
   on,
-  off
+  off,
+  scheduleWork,
+  scheduleRead
 } from './metal/index';
 
 export {
   on,
   off,
+  scheduleRead,
+  scheduleWork,
   IntersectionObserver,
   SpanielObserver,
   SpanielTrackedElement,

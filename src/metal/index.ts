@@ -10,7 +10,7 @@ import { default as Queue, DOMQueue, FunctionQueue } from './queue';
 import { QueueElementInterface, QueueDOMElementInterface, FrameInterface, QueueInterface } from './interfaces';
 import { generateToken, ElementScheduler, Scheduler, PredicatedScheduler, Frame, getGlobalScheduler } from './scheduler';
 import { Engine } from  './engine';
-import { on, off } from  './events';
+import { on, off, scheduleRead, scheduleWork } from  './events';
 
 interface AbsoluteRect {
   top: number;
@@ -45,5 +45,7 @@ export {
   Frame,
   getGlobalScheduler,
   on,
-  off
+  off,
+  scheduleRead,
+  scheduleWork
 };
