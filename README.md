@@ -195,6 +195,14 @@ Alternatively, running *npm run build* will generate a UMD file at `/exports/spa
 ## Development setup
 The Spaniel source code is written in [TypeScript](https://www.typescriptlang.org/).
 
+You will need `testem` installed globally to run the tests.
+
+```
+npm install -g testem
+```
+
+You will also need to install [phantom.js](http://phantomjs.org/download.html) globally.
+
 ```
 // Install dependencies
 npm install
