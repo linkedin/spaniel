@@ -11,7 +11,8 @@ import {
   IntersectionObserverEntryInit,
   DOMString,
   DOMMargin,
-  SpanielTrackedElement
+  SpanielTrackedElement,
+  entrySatisfiesRatio
 } from './intersection-observer';
 
 import w from './metal/window-proxy';
@@ -39,7 +40,8 @@ export interface SpanielRecord {
 }
 
 export interface SpanielThresholdState {
-  lastRatio: number;
+  lastSatisfied: Boolean;
+  lastEntry: IntersectionObserverEntry;
   threshold: SpanielThreshold;
   lastVisible: number;
   visible: boolean;
@@ -111,7 +113,7 @@ export class SpanielObserver {
         }, state);
 
         state.visible = false;
-        state.lastRatio = -1;
+        state.lastEntry = null;
       });
     }
     this.flushQueuedEntries();
@@ -162,7 +164,7 @@ export class SpanielObserver {
   private handleThresholdExiting(spanielEntry: SpanielObserverEntry, state: SpanielThresholdState) {
     let { time, intersectionRatio } = spanielEntry;
     let hasTimeThreshold = !!state.threshold.time;
-    if (state.threshold.ratio <= state.lastRatio && (!hasTimeThreshold || (hasTimeThreshold && state.visible))) {
+    if (state.lastSatisfied && (!hasTimeThreshold || (hasTimeThreshold && state.visible))) {
       // Make into function
       spanielEntry.duration = time - state.lastVisible;
       spanielEntry.entering = false;
@@ -176,14 +178,15 @@ export class SpanielObserver {
     let { time } = entry;
     let target = <SpanielTrackedElement>entry.target;
     let record = this.recordStore[target.__spanielId];
-    let { intersectionRatio } = entry;
     record.thresholdStates.forEach((state: SpanielThresholdState) => {
       // Find the thresholds that were crossed. Since you can have multiple thresholds
       // for the same ratio, could be multiple thresholds
       let hasTimeThreshold = !!state.threshold.time;
       let spanielEntry: SpanielObserverEntry = this.generateSpanielEntry(entry, state);
 
-      if (intersectionRatio > state.threshold.ratio && state.threshold.ratio > state.lastRatio) {
+      const ratioSatisfied = entrySatisfiesRatio(entry, state.threshold.ratio);
+
+      if (ratioSatisfied && !state.lastSatisfied) {
         spanielEntry.entering = true;
         if (hasTimeThreshold) {
           state.lastVisible = time;
@@ -196,11 +199,12 @@ export class SpanielObserver {
           state.visible = true;
           this.queuedEntries.push(spanielEntry);
         }
-      } else if (intersectionRatio <= state.threshold.ratio) {
+      } else if (!ratioSatisfied) {
         this.handleThresholdExiting(spanielEntry, state);
       }
 
-      state.lastRatio = intersectionRatio;
+      state.lastEntry = entry;
+      state.lastSatisfied = ratioSatisfied;
     });
     this.flushQueuedEntries();
   }
@@ -219,7 +223,8 @@ export class SpanielObserver {
       target,
       payload,
       thresholdStates: this.thresholds.map((threshold: SpanielThreshold) => ({
-        lastRatio: -1,
+        lastSatisfied: false,
+        lastEntry: null,
         threshold,
         visible: false,
         lastVisible: null

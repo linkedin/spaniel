@@ -53,4 +53,27 @@ describe('SpanielObserver', function() {
       })
     }).then(cleanUp);
   });
+
+  it('should support observing elements with zero height and width', function() {
+    var target = document.createElement('div');
+    target.style.height = '0px';
+    target.style.width = '0px';
+    target.style.height = '0px';
+    target.style.marginTop = '10px';
+    target.style.marginLeft = '10px';
+
+    return runTest({
+      label: 'exposed',
+      ratio: 0
+    }, {
+      target: target
+    }).then(function(result) {
+      var entries = result.entries;
+      expect(entries.length).to.equal(1);
+      var entry = entries[0];
+      expect(entry.entering, true);
+      expect(entry.intersectionRatio, 0);
+      return result;
+    }).then(cleanUp);
+  });
 });

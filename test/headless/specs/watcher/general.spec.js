@@ -42,14 +42,8 @@ testModule('Watcher', class extends TestClass {
   ['@test unwatching from one watcher does not unwatch others']() {
     return this.context.evaluate(() => {
       window.STATE.exposed = 0;
-      window.watcher1 = new spaniel.Watcher({
-        time: 0,
-        ratio: 1
-      });
-      window.watcher2 = new spaniel.Watcher({
-        time: 0,
-        ratio: 1
-      });
+      window.watcher1 = new spaniel.Watcher();
+      window.watcher2 = new spaniel.Watcher();
       window.target = document.querySelector('.tracked-item[data-id="6"]');
       window.watcher1.watch(window.target, function() {
         window.STATE.exposed++;
@@ -79,10 +73,7 @@ testModule('Watcher', class extends TestClass {
   ['@test watched item callbacks fire in order']() {
     return this.context.evaluate(() => {
       window.STATE.order = [];
-      window.watcher = new spaniel.Watcher({
-        time: 0,
-        ratio: 1
-      });
+      window.watcher = new spaniel.Watcher();
       var t1 = document.querySelector('.tracked-item[data-id="1"]');
       var t2 = document.querySelector('.tracked-item[data-id="2"]');
       window.watcher.watch(t1, function() {
