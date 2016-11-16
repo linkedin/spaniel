@@ -133,7 +133,7 @@ export class IntersectionObserver {
 
     for (let i = 0; i < this.thresholds.length; i++) {
       let threshold = this.thresholds[i];
-      if (ratio > threshold || (threshold === 1 && ratio === 1)) {
+      if (entrySatisfiesRatio(entry, threshold)) {
         count++;
       }
     }
@@ -151,12 +151,15 @@ export class IntersectionObserver {
       height: frame.height - (this.rootMargin.bottom + this.rootMargin.top)
     };
 
-    let width = Math.min(rootBounds.x + rootBounds.width, bcr.right) - Math.max(rootBounds.x, bcr.left);
-    let height = Math.min(rootBounds.y + rootBounds.height, bcr.bottom) - Math.max(rootBounds.y, bcr.top);
+    let intersectX = Math.max(rootBounds.x, bcr.left);
+    let intersectY = Math.max(rootBounds.y, bcr.top);
+
+    let width = Math.min(rootBounds.x + rootBounds.width, bcr.right) - intersectX;
+    let height = Math.min(rootBounds.y + rootBounds.height, bcr.bottom) - intersectY;
 
     let intersectionRect: DOMRectInit = {
-      x: -1,
-      y: -1,
+      x: width >= 0 ? intersectX : 0,
+      y: intersectY >= 0 ? intersectY : 0,
       width,
       height
     };
@@ -206,6 +209,19 @@ export class IntersectionObserverEntry implements IntersectionObserverEntryInit 
       intersectionRect,
       boundingClientRect
     } = entryInit;
-    this.intersectionRatio = (intersectionRect.width * intersectionRect.height) / (boundingClientRect.height * boundingClientRect.width);
+    let boundingArea = boundingClientRect.height * boundingClientRect.width;
+    this.intersectionRatio = boundingArea > 0 ? (intersectionRect.width * intersectionRect.height) / boundingArea : 0;
   }
 };
+
+export function entrySatisfiesRatio(entry: IntersectionObserverEntry, threshold: number) {
+  let { boundingClientRect, intersectionRatio } = entry;
+
+  // Edge case where item has no actual area
+  if (boundingClientRect.width === 0 || boundingClientRect.height === 0) {
+    let { boundingClientRect, intersectionRect } = entry;
+    return boundingClientRect.x === intersectionRect.x && boundingClientRect.y === intersectionRect.y;
+  } else {
+    return intersectionRatio > threshold || (intersectionRatio === 1 && threshold === 1);
+  }
+}

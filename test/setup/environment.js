@@ -12,7 +12,7 @@ var runTest = function(threshold, options) {
   var thresholds = [threshold];
   var timeout = 50 + (options.timeout || 0);
   var entries = [];
-  var target = document.createElement('div');
+  var target = options.target || document.createElement('div');
   target.style.height = '10px';
   document.body.appendChild(target);
   var observer = new spaniel.SpanielObserver(function(changes) {
