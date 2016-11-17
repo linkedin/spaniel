@@ -128,7 +128,7 @@ export class IntersectionObserver {
   }
   private generateEntryEvent(frame: Frame, bcr: ClientRect, el: Element): EntryEvent {
     let count: number = 0;
-    let entry = this.entryFromQueueElement(frame, bcr, el);
+    let entry = generateEntry(frame, bcr, el, this.rootMargin);
     let ratio = entry.intersectionRatio;
 
     for (let i = 0; i < this.thresholds.length; i++) {
@@ -141,36 +141,6 @@ export class IntersectionObserver {
       numSatisfiedThresholds: count,
       entry
     };
-  }
-
-  private entryFromQueueElement(frame: Frame, bcr: ClientRect, el: Element) {
-    let rootBounds: DOMRectInit = {
-      x: this.rootMargin.left,
-      y: this.rootMargin.top,
-      width: frame.width - (this.rootMargin.right + this.rootMargin.left),
-      height: frame.height - (this.rootMargin.bottom + this.rootMargin.top)
-    };
-
-    let intersectX = Math.max(rootBounds.x, bcr.left);
-    let intersectY = Math.max(rootBounds.y, bcr.top);
-
-    let width = Math.min(rootBounds.x + rootBounds.width, bcr.right) - intersectX;
-    let height = Math.min(rootBounds.y + rootBounds.height, bcr.bottom) - intersectY;
-
-    let intersectionRect: DOMRectInit = {
-      x: width >= 0 ? intersectX : 0,
-      y: intersectY >= 0 ? intersectY : 0,
-      width,
-      height
-    };
-
-    return new IntersectionObserverEntry({
-      time: frame.timestamp,
-      rootBounds,
-      target: <SpanielTrackedElement>el,
-      boundingClientRect: marginToRect(bcr),
-      intersectionRect
-    });
   }
 
   constructor(callback: Function, options: IntersectionObserverInit = {}) {
@@ -224,4 +194,34 @@ export function entrySatisfiesRatio(entry: IntersectionObserverEntry, threshold:
   } else {
     return intersectionRatio > threshold || (intersectionRatio === 1 && threshold === 1);
   }
+}
+
+export function generateEntry(frame: Frame, bcr: ClientRect, el: Element, rootMargin: DOMMargin) {
+  let rootBounds: DOMRectInit = {
+    x: rootMargin.left,
+    y: rootMargin.top,
+    width: frame.width - (rootMargin.right + rootMargin.left),
+    height: frame.height - (rootMargin.bottom + rootMargin.top)
+  };
+
+  let intersectX = Math.max(rootBounds.x, bcr.left);
+  let intersectY = Math.max(rootBounds.y, bcr.top);
+
+  let width = Math.min(rootBounds.x + rootBounds.width, bcr.right) - intersectX;
+  let height = Math.min(rootBounds.y + rootBounds.height, bcr.bottom) - intersectY;
+
+  let intersectionRect: DOMRectInit = {
+    x: width >= 0 ? intersectX : 0,
+    y: intersectY >= 0 ? intersectY : 0,
+    width,
+    height
+  };
+
+  return new IntersectionObserverEntry({
+    time: frame.timestamp,
+    rootBounds,
+    target: <SpanielTrackedElement>el,
+    boundingClientRect: marginToRect(bcr),
+    intersectionRect
+  });
 }

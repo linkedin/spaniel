@@ -63,14 +63,13 @@ export abstract class BaseScheduler {
     if (this.queue.isEmpty()) {
       this.isTicking = false;
     } else {
-      let frame = Frame.generate();
       if (this.toRemove.length > 0) {
         for (let i = 0; i < this.toRemove.length; i++) {
           this.queue.remove(this.toRemove[i]);
         }
         this.toRemove = [];
       }
-      this.applyQueue(frame);
+      this.applyQueue(Frame.generate());
       this.engine.scheduleRead(this.tick.bind(this));
     }
   }
@@ -79,6 +78,17 @@ export abstract class BaseScheduler {
   }
   scheduleRead(callback: Function) {
     this.engine.scheduleRead(callback);
+  }
+  queryElement(el: Element, callback: (bcr: ClientRect, frame: Frame) => void) {
+    let bcr: ClientRect = null;
+    let frame: Frame = null;
+    this.engine.scheduleRead(() => {
+      bcr = el.getBoundingClientRect();
+      frame = Frame.generate();
+    });
+    this.engine.scheduleWork(() => {
+      callback(bcr, frame);
+    });
   }
   unwatch(id: string| Element | Function) {
     this.toRemove.push(id);
