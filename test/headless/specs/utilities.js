@@ -10,7 +10,43 @@ import {
   TestClass
 } from './../test-module';
 
-testModule('on()', class extends TestClass {
+testModule('elementSatisfiesRatio', class extends TestClass {
+  ['@test passes true into callback when ratio satisfied']() {
+    return this.context.evaluate(function() {
+      window.STATE.satisfied = false;
+      var el = document.querySelector('.tracked-item[data-id="1"]');
+      spaniel.elementSatisfiesRatio(el, 1, function(a) {
+        window.STATE.satisfied = true;
+      })
+    })
+    .wait(10)
+    .getExecution()
+    .evaluate(function() {
+      return window.STATE.satisfied;
+    }).then(function(result) {
+      assert.equal(result, true, 'Callback passed true');
+    });
+  }
+
+  ['@test passes false into callback when ratio not satisfied']() {
+    return this.context.evaluate(function() {
+      window.STATE.satisfied = true;
+      var el = document.querySelector('.tracked-item[data-id="10"]');
+      spaniel.elementSatisfiesRatio(el, 1, function(a) {
+        window.STATE.satisfied = false;
+      })
+    })
+    .wait(10)
+    .getExecution()
+    .evaluate(function() {
+      return window.STATE.satisfied;
+    }).then(function(result) {
+      assert.equal(result, false, 'Callback passed false');
+    });
+  }
+});
+
+testModule('Eventing', class extends TestClass {
   ['@test scroll event callback fires']() {
     return this.context.evaluate(function() {
       window.STATE.scrollEvents = 0;

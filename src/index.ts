@@ -8,7 +8,9 @@ import {
   IntersectionObserver,
   DOMString,
   DOMMargin,
-  SpanielTrackedElement
+  SpanielTrackedElement,
+  entrySatisfiesRatio,
+  generateEntry
 } from './intersection-observer';
 
 import {
@@ -27,7 +29,8 @@ import {
   on,
   off,
   scheduleWork,
-  scheduleRead
+  scheduleRead,
+  Frame
 } from './metal/index';
 
 export {
@@ -42,6 +45,17 @@ export {
   getGlobalEngine
 };
 
+export function queryElement(el: Element, callback: (bcr: ClientRect, frame: Frame) => void) {
+  getGlobalScheduler().queryElement(el, callback);
+}
+
+export function elementSatisfiesRatio(el: Element, ratio: number = 0, callback: (result: Boolean) => void, rootMargin: DOMMargin = { top: 0, bottom: 0, left: 0, right: 0}) {
+  queryElement(el, (bcr: ClientRect, frame: Frame) => {
+    let entry = generateEntry(frame, bcr, el, rootMargin);
+    callback(entrySatisfiesRatio(entry, ratio));
+  });
+}
+
 function onEntry(entries: SpanielObserverEntry[]) {
   entries.forEach((entry: SpanielObserverEntry) => {
     if (entry.entering) {
@@ -55,10 +69,6 @@ function onEntry(entries: SpanielObserverEntry[]) {
       });
     }
   });
-}
-
-export function scheduler() {
-  return new Scheduler(getGlobalEngine());
 }
 
 export interface WatcherConfig {
