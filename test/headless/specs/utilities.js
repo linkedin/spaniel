@@ -13,7 +13,7 @@ import {
 testModule('elementSatisfiesRatio', class extends TestClass {
   ['@test passes true into callback when ratio satisfied']() {
     return this.context.evaluate(function() {
-      window.STATE.satisfied = false;
+      window.STATE.satisfied = null;
       var el = document.querySelector('.tracked-item[data-id="1"]');
       spaniel.elementSatisfiesRatio(el, 1, function(a) {
         window.STATE.satisfied = true;
@@ -30,7 +30,7 @@ testModule('elementSatisfiesRatio', class extends TestClass {
 
   ['@test passes false into callback when ratio not satisfied']() {
     return this.context.evaluate(function() {
-      window.STATE.satisfied = true;
+      window.STATE.satisfied = null;
       var el = document.querySelector('.tracked-item[data-id="10"]');
       spaniel.elementSatisfiesRatio(el, 1, function(a) {
         window.STATE.satisfied = false;
