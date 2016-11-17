@@ -17,7 +17,7 @@ testModule('Watcher Exposed Event', class extends WatcherTestClass {
   }
 
   ['@test should fire if item is exposed']() {
-    return this.context.wait(10).scrollTo(300).wait(10).assertOnce(5, 'exposed')
+    return this.context.wait(20).scrollTo(300).wait(20).assertOnce(5, 'exposed')
       .done();
   }
 
