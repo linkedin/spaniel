@@ -1,5 +1,12 @@
 # spaniel Changelog
 
+### 2.1.0 (November 17, 2016)
+
+Add api for one-time determining an element's viewport state
+
+* `elementSatisfiesRatio()`
+* `queryElement()`
+
 ### 2.0.0 (November 11, 2016)
 
 #### Breaking changes
