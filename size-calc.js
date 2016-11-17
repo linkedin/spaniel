@@ -12,6 +12,6 @@ var contents = fs.readFileSync('./exports/min/spaniel.js');
 var kb = prettyBytes(gzipSize.sync(contents));
 var msg = 'spaniel.js is ' + kb + ' gzipped.';
 
-fs.writeFileSync('./exports/min/stats.txt', msg);
+fs.writeFileSync('./size.txt', msg);
 
 console.log(msg);

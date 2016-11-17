@@ -180,7 +180,7 @@ Spaniel has both unit tests and a headless test suite. The headless tests are ru
 
 #### How big is Spaniel?
 
-The minified UMD file is 3.71 kB gzipped.
+Checkout [size.txt](https://github.com/linkedin/spaniel/blob/master/size.txt) to see the current minified UMD gzipped size.
 
 You can also run `npm run stats` to measure locally.
 
