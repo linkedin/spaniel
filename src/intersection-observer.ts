@@ -112,7 +112,9 @@ export class IntersectionObserver {
 
     if (numSatisfiedThresholds !== record.numSatisfiedThresholds) {
       record.numSatisfiedThresholds = numSatisfiedThresholds;
-      this.callback([entry]);
+      this.scheduler.scheduleWork(() => {
+        this.callback([entry]);
+      });
     }
   }
   unobserve(target: SpanielTrackedElement) {
