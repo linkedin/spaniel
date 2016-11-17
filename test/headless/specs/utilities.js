@@ -19,7 +19,7 @@ testModule('elementSatisfiesRatio', class extends TestClass {
         window.STATE.satisfied = true;
       })
     })
-    .wait(10)
+    .wait(20)
     .getExecution()
     .evaluate(function() {
       return window.STATE.satisfied;
@@ -36,7 +36,7 @@ testModule('elementSatisfiesRatio', class extends TestClass {
         window.STATE.satisfied = false;
       })
     })
-    .wait(10)
+    .wait(20)
     .getExecution()
     .evaluate(function() {
       return window.STATE.satisfied;
@@ -55,7 +55,7 @@ testModule('Eventing', class extends TestClass {
       });
     })
     .scrollTo(10)
-    .wait(10)
+    .wait(20)
     .getExecution()
     .evaluate(function() {
       return window.STATE.scrollEvents;
@@ -72,9 +72,9 @@ testModule('Eventing', class extends TestClass {
       });
     })
     .scrollTo(10)
-    .wait(10)
+    .wait(20)
     .scrollTo(20)
-    .wait(10)
+    .wait(20)
     .getExecution()
     .evaluate(function() {
       return window.STATE.scrollEvents;
@@ -92,14 +92,14 @@ testModule('Eventing', class extends TestClass {
       spaniel.on('scroll',  window.STATE.scrollHandler);
     })
     .scrollTo(10)
-    .wait(10)
+    .wait(20)
     .evaluate(function() {
       spaniel.off('scroll', window.STATE.scrollHandler);;
     })
     .scrollTo(20)
-    .wait(10)
+    .wait(20)
     .scrollTo(30)
-    .wait(10)
+    .wait(20)
     .getExecution()
     .evaluate(function() {
       return window.STATE.scrollEvents;

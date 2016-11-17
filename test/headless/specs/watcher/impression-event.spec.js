@@ -21,7 +21,7 @@ testModule('Impression event', class extends WatcherTestClass {
 
   ['@test should not fire if item is visible, but not enough time lapsed']() {
     return this.context.scrollTo(200)
-      .wait(10)
+      .wait(20)
       .assertNever(5, 'impressed').done();
   }
 
