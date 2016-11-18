@@ -161,8 +161,8 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
   }
 }
 
-let globalScheduler: Scheduler = new Scheduler();
+let globalScheduler: Scheduler = null;
 
 export function getGlobalScheduler() {
-  return globalScheduler;
+  return globalScheduler || (globalScheduler = new Scheduler());
 }
