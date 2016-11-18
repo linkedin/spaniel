@@ -67,58 +67,66 @@ interface EventStore {
   [eventName: string]: EventRecordInterface;
 }
 
-let eventStore: EventStore = {
-  scroll: new RAFEventRecord(function(frame: Frame) {
-    let { scrollTop, scrollLeft } = this.state;
-    this.state = frame;
-    return scrollTop !== frame.scrollTop || scrollLeft !== frame.scrollLeft;
-  }),
-  resize: new RAFEventRecord(function(frame: Frame) {
-    let { width, height } = this.state;
-    this.state = frame;
-    return height !== frame.height || width !== frame.width;
-  }),
-  destroy: new GenericEventRecord(),
-  unload: new GenericEventRecord(),
-  hide: new GenericEventRecord(),
-  show: new GenericEventRecord()
-};
+let eventStore: EventStore = null;
+
+function getEventStore(): EventStore {
+  return eventStore || (eventStore = {
+    scroll: new RAFEventRecord(function(frame: Frame) {
+      let { scrollTop, scrollLeft } = this.state;
+      this.state = frame;
+      return scrollTop !== frame.scrollTop || scrollLeft !== frame.scrollLeft;
+    }),
+    resize: new RAFEventRecord(function(frame: Frame) {
+      let { width, height } = this.state;
+      this.state = frame;
+      return height !== frame.height || width !== frame.width;
+    }),
+    destroy: new GenericEventRecord(),
+    unload: new GenericEventRecord(),
+    hide: new GenericEventRecord(),
+    show: new GenericEventRecord()
+  });
+}
 
 if (w.hasDOM) {
   window.addEventListener('unload', function(e: any) {
     // First fire internal event to fire any observer callbacks
-    eventStore.unload.trigger();
+    trigger('unload');
 
     // Then fire external event to allow flushing of any beacons
-    eventStore.destroy.trigger();
+    trigger('destroy');
   });
   document.addEventListener('visibilitychange', function onVisibilityChange() {
     if (document.visibilityState === 'visible') {
-      eventStore.show.trigger();
+      trigger('show');
     } else {
-      eventStore.hide.trigger();
+      trigger('hide');
     }
   });
 }
 
 export function on(eventName: string, callback: (frame: FrameInterface, id: string) => void) {
-  let evt = eventStore[eventName];
+  let evt = getEventStore()[eventName];
   if (evt) {
     evt.listen(callback);
   }
 }
 
 export function off(eventName: string, callback: Function) {
-  let evt = eventStore[eventName];
-  if (evt) {
-    evt.unlisten(callback);
+  if (eventStore) {
+    let evt = eventStore[eventName];
+    if (evt) {
+      evt.unlisten(callback);
+    }
   }
 }
 
-export function trigger(eventName: string, value: any) {
-  let evt = eventStore[eventName];
-  if (evt) {
-    evt.trigger(value);
+export function trigger(eventName: string, value?: any) {
+  if (eventStore) {
+    let evt = eventStore[eventName];
+    if (evt) {
+      evt.trigger(value);
+    }
   }
 }
 
