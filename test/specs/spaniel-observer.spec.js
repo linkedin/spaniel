@@ -54,6 +54,20 @@ describe('SpanielObserver', function() {
     }).then(cleanUp);
   });
 
+  it('should not break when unobserving the same element twice', function() {
+    return runTest({
+      label: 'impression',
+      ratio: 0.5,
+      time: 1000
+    }).then(function(result) {
+      return RSVP.resolve().then(function() {
+        result.observer.unobserve(result.target);
+        result.observer.unobserve(result.target);
+        return result;
+      });
+    }).then(cleanUp);
+  });
+
   it('should support observing elements with zero height and width', function() {
     var target = document.createElement('div');
     target.style.height = '0px';

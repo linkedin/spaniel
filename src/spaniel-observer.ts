@@ -216,10 +216,13 @@ export class SpanielObserver {
     this.recordStore = {};
   }
   unobserve(element: SpanielTrackedElement) {
-    this.handleRecordExiting(this.recordStore[element.__spanielId]);
-    this.observer.unobserve(element);
-    delete this.recordStore[element.__spanielId];
-    this.flushQueuedEntries();
+    let record = this.recordStore[element.__spanielId];
+    if (record) {
+      this.handleRecordExiting(record);
+      this.observer.unobserve(element);
+      delete this.recordStore[element.__spanielId];
+      this.flushQueuedEntries();
+    }
   }
   observe(target: SpanielTrackedElement, payload: any = null) {
     let id = target.__spanielId = target.__spanielId || generateToken();
