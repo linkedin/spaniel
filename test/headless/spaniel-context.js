@@ -42,6 +42,14 @@ export default class SpanielContext {
     return this._execution;
   }
 
+  unwatch(id) {
+    this._execution = this._execution.wait(10).evaluate(function(id) {
+      var target = document.querySelector('.tracked-item[data-id="' + id + '"]');
+      window.watcher.unwatch(target);
+    }, id)
+    return this;
+  }
+
   assertEvent(id, type, message, expectedCount) {
     if (typeof message === 'number') {
       expectedCount = message;

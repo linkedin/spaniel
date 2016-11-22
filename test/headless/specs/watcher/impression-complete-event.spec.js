@@ -47,6 +47,15 @@ testModule('Impression Complete event', class extends WatcherTestClass {
       .done();
   }
 
+  ['@test should fire when item is moved into viewport, remains for threshold time, then unwatched']() {
+    return this.context.scrollTo(200)
+      .wait(120)
+      .unwatch(5)
+      .wait(20)
+      .assertOnce(5, 'impression-complete')
+      .done();
+  }
+
   ['@test should pass impression duration, within 50ms accuracy, to callback']() {
     return this.context.scrollTo(150)
       .wait(500)

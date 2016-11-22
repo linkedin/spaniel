@@ -15,11 +15,14 @@ class SpanielObserverTestClass extends TestClass {
   setupTest() {
     return this.context.evaluate(() => {
       window.STATE.impressions = 0;
-      let target = document.querySelector('.tracked-item[data-id="1"]');
-      let observer = new spaniel.SpanielObserver(function(changes) {
+      window.STATE.completes = 0;
+      window.target = document.querySelector('.tracked-item[data-id="1"]');
+      window.observer = new spaniel.SpanielObserver(function(changes) {
         for (var i = 0; i < changes.length; i++) {
           if (changes[i].entering) {
             window.STATE.impressions++;
+          } else {
+            window.STATE.completes++;
           }
         }
       }, {
@@ -29,7 +32,7 @@ class SpanielObserverTestClass extends TestClass {
           time: 200
         }]
       });
-      observer.observe(target);
+      window.observer.observe(window.target);
     });
   }
 }
@@ -45,7 +48,6 @@ testModule('SpanielObserver', class extends SpanielObserverTestClass {
         assert.equal(result, 0, 'Callback not fired');
       });
   }
-
   ['@test observing a visible element should fire after threshold time has passed']() {
     return this.setupTest()
       .wait(250)
@@ -54,6 +56,34 @@ testModule('SpanielObserver', class extends SpanielObserverTestClass {
         return window.STATE.impressions;
       }).then(function(result) {
         assert.equal(result, 1, 'Callback fired once');
+      });
+  }
+  ['@test unobserving before threshold results in no events']() {
+    return this.setupTest()
+      .wait(20)
+      .evaluate(function() {
+        window.observer.unobserve(window.target);
+      })
+      .wait(300)
+      .getExecution()
+      .evaluate(function() {
+        return window.STATE.impressions + window.STATE.completes;
+      }).then(function(result) {
+        assert.equal(result, 0, 'Callback not fired');
+      });
+  }
+  ['@test unobserving before threshold results in no events']() {
+    return this.setupTest()
+      .wait(20)
+      .evaluate(function() {
+        window.observer.unobserve(window.target);
+      })
+      .wait(300)
+      .getExecution()
+      .evaluate(function() {
+        return window.STATE.impressions + window.STATE.completes;
+      }).then(function(result) {
+        assert.equal(result, 0, 'Callback not fired');
       });
   }
 });
