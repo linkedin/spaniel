@@ -28,7 +28,8 @@ var runTest = function(threshold, options) {
     setTimeout(function() {
       resolve({
         observer: observer,
-        entries: entries
+        entries: entries,
+        target: target
       });
     }, timeout);
   });
