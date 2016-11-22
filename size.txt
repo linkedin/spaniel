@@ -1,1 +1,1 @@
-spaniel.js is 3.93 kB gzipped.
+spaniel.js is 3.94 kB gzipped.

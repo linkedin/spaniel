@@ -20,7 +20,7 @@ var GLOBAL_TEST_EVENTS = {
   }
 };
 
-var watcher = new spaniel.Watcher({
+window.watcher = new spaniel.Watcher({
   time: 100,
   ratio: 0.8
 });
@@ -31,7 +31,7 @@ for (var i = 0; i < elements.length; i++) {
   (function(el) {
     if (i < 6) {
       var id = el.getAttribute('data-id');
-      watcher.watch(el, function(e, meta) {
+      window.watcher.watch(el, function(e, meta) {
         var end = meta && meta.duration ? ' for ' + meta.duration + ' milliseconds' : '';
         console.log(id + ' ' + e + end);
         GLOBAL_TEST_EVENTS.push({

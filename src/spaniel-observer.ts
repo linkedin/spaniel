@@ -97,24 +97,7 @@ export class SpanielObserver {
     let ids = Object.keys(this.recordStore);
     let time = Date.now();
     for (let i = 0; i < ids.length; i++) {
-      let record = this.recordStore[ids[i]];
-      record.thresholdStates.forEach((state: SpanielThresholdState) => {
-        this.handleThresholdExiting({
-          intersectionRatio: -1,
-          time,
-          payload: record.payload,
-          label: state.threshold.label,
-          entering: false,
-          rootBounds: emptyRect,
-          boundingClientRect: emptyRect,
-          intersectionRect: emptyRect,
-          duration: time - state.lastVisible,
-          target: record.target
-        }, state);
-
-        state.visible = false;
-        state.lastEntry = null;
-      });
+      this.handleRecordExiting(this.recordStore[ids[i]], time);
     }
     this.flushQueuedEntries();
     this.observer.reset();
@@ -160,6 +143,25 @@ export class SpanielObserver {
       payload: record.payload,
       label: state.threshold.label
     };
+  }
+  private handleRecordExiting(record: SpanielRecord, time: number = Date.now()) {
+    record.thresholdStates.forEach((state: SpanielThresholdState) => {
+      this.handleThresholdExiting({
+        intersectionRatio: -1,
+        time,
+        payload: record.payload,
+        label: state.threshold.label,
+        entering: false,
+        rootBounds: emptyRect,
+        boundingClientRect: emptyRect,
+        intersectionRect: emptyRect,
+        duration: time - state.lastVisible,
+        target: record.target
+      }, state);
+
+      state.visible = false;
+      state.lastEntry = null;
+    });
   }
   private handleThresholdExiting(spanielEntry: SpanielObserverEntry, state: SpanielThresholdState) {
     let { time, intersectionRatio } = spanielEntry;
@@ -214,8 +216,10 @@ export class SpanielObserver {
     this.recordStore = {};
   }
   unobserve(element: SpanielTrackedElement) {
+    this.handleRecordExiting(this.recordStore[element.__spanielId]);
     this.observer.unobserve(element);
     delete this.recordStore[element.__spanielId];
+    this.flushQueuedEntries();
   }
   observe(target: SpanielTrackedElement, payload: any = null) {
     let id = target.__spanielId = target.__spanielId || generateToken();
