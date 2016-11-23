@@ -12,8 +12,8 @@ import {
 } from './../test-module';
 
 class SpanielObserverTestClass extends TestClass {
-  setupTest() {
-    return this.context.evaluate(() => {
+  setupTest(customSetup) {
+    return this.context.evaluate(customSetup || (() => {
       window.STATE.impressions = 0;
       window.STATE.completes = 0;
       window.target = document.querySelector('.tracked-item[data-id="1"]');
@@ -33,7 +33,7 @@ class SpanielObserverTestClass extends TestClass {
         }]
       });
       window.observer.observe(window.target);
-    });
+    }));
   }
 }
 
@@ -58,18 +58,18 @@ testModule('SpanielObserver', class extends SpanielObserverTestClass {
         assert.equal(result, 1, 'Callback fired once');
       });
   }
-  ['@test unobserving before threshold results in no events']() {
+  ['@test unobserving after threshold results in exiting event']() {
     return this.setupTest()
-      .wait(20)
+      .wait(300)
       .evaluate(function() {
         window.observer.unobserve(window.target);
       })
-      .wait(300)
+      .wait(20)
       .getExecution()
       .evaluate(function() {
-        return window.STATE.impressions + window.STATE.completes;
+        return window.STATE.impressions === 1 && window.STATE.completes === 1;
       }).then(function(result) {
-        assert.equal(result, 0, 'Callback not fired');
+        assert.equal(result, true, 'Entering and exiting event each fired once');
       });
   }
   ['@test unobserving before threshold results in no events']() {
@@ -84,6 +84,40 @@ testModule('SpanielObserver', class extends SpanielObserverTestClass {
         return window.STATE.impressions + window.STATE.completes;
       }).then(function(result) {
         assert.equal(result, 0, 'Callback not fired');
+      });
+  }
+  ['@test unobserving inside observer callback results in one entering entry and one exiting entry']() {
+    return this.setupTest(() => {
+      window.STATE.impressions = 0;
+      window.STATE.completes = 0;
+      window.target = document.querySelector('.tracked-item[data-id="1"]');
+      window.observer = new spaniel.SpanielObserver(function(changes) {
+        for (var i = 0; i < changes.length; i++) {
+          if (changes[i].entering) {
+            window.STATE.impressions++;
+          } else {
+            window.STATE.completes++;
+          }
+        }
+        window.observer.unobserve(window.target);
+      }, {
+        threshold: [{
+          label: 'impressed',
+          ratio: 0.5,
+          time: 0
+        }]
+      });
+      window.observer.observe(window.target);
+    }).wait(300)
+      .evaluate(function() {
+        window.observer.unobserve(window.target);
+      })
+      .wait(20)
+      .getExecution()
+      .evaluate(function() {
+        return window.STATE.impressions === 1 && window.STATE.completes === 1;
+      }).then(function(result) {
+        assert.equal(result, true, 'Entering and exiting event each fired once');
       });
   }
 });
