@@ -17,7 +17,7 @@ import {
 
 import w from './metal/window-proxy';
 
-import { generateToken, on } from './metal/index';
+import { generateToken, on, scheduleWork } from './metal/index';
 
 let emptyRect = { x: 0, y: 0, width: 0, height: 0 };
 
@@ -218,10 +218,12 @@ export class SpanielObserver {
   unobserve(element: SpanielTrackedElement) {
     let record = this.recordStore[element.__spanielId];
     if (record) {
-      this.handleRecordExiting(record);
-      this.observer.unobserve(element);
       delete this.recordStore[element.__spanielId];
-      this.flushQueuedEntries();
+      this.observer.unobserve(element);
+      scheduleWork(() => {
+        this.handleRecordExiting(record);
+        this.flushQueuedEntries();
+      })
     }
   }
   observe(target: SpanielTrackedElement, payload: any = null) {
