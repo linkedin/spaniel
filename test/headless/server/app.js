@@ -11,5 +11,6 @@ var app = express()
 
 app.use('/', serveStatic(__dirname + '/../../app'))
 app.use('/exports', serveStatic(__dirname + '/../../../exports'))
-app.listen(3000)
-console.log('Serving Spaniel Test App on localhost:3000');
+app.listen(3000, function() {
+  console.log('Serving Spaniel Test App on localhost:3000');
+});
