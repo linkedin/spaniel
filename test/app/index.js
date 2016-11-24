@@ -101,3 +101,19 @@ for (var i = 0; i < elements.length; i++) {
     }
   })(elements[i]);
 }
+
+
+function endTrace() {
+  // just before paint
+  requestAnimationFrame(function () {
+    // after paint
+    requestAnimationFrame(function () {
+      document.location.href = "about:blank";
+    });
+  });
+}
+
+setTimeout(function() {
+  performance.mark("renderEnd");
+  endTrace();
+}, 2000);
