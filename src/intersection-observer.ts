@@ -192,7 +192,10 @@ export function entrySatisfiesRatio(entry: IntersectionObserverEntry, threshold:
   // Edge case where item has no actual area
   if (boundingClientRect.width === 0 || boundingClientRect.height === 0) {
     let { boundingClientRect, intersectionRect } = entry;
-    return boundingClientRect.x === intersectionRect.x && boundingClientRect.y === intersectionRect.y;
+    return boundingClientRect.x === intersectionRect.x &&
+      boundingClientRect.y === intersectionRect.y &&
+      intersectionRect.width >= 0 &&
+      intersectionRect.height >= 0;
   } else {
     return intersectionRatio > threshold || (intersectionRatio === 1 && threshold === 1);
   }

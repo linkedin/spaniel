@@ -90,4 +90,24 @@ describe('SpanielObserver', function() {
       return result;
     }).then(cleanUp);
   });
+
+  it('should not execute callback on element of zero height and width when not in viewport', function() {
+    var target = document.createElement('div');
+    target.style.height = '0px';
+    target.style.width = '0px';
+    target.style.height = '0px';
+    target.style.marginTop = '1000px';
+    target.style.marginLeft = '10px';
+
+    return runTest({
+      label: 'exposed',
+      ratio: 0
+    }, {
+      target: target
+    }).then(function(result) {
+      var entries = result.entries;
+      expect(entries.length).to.equal(0);
+      return result;
+    }).then(cleanUp);
+  });
 });
