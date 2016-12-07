@@ -1,14 +1,14 @@
 /*
 Copyright 2016 LinkedIn Corp. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- 
-Unless required by applicable law or agreed to in writing, software  distributed under the License is distributed on an "AS IS" BASIS,  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
 var Funnel = require('broccoli-funnel');
-var uglify = require('broccoli-uglify-js');
+var uglify = require('broccoli-uglify-sourcemap');
 var typescript = require('broccoli-typescript-compiler').typescript;
 var Rollup = require('broccoli-rollup');
-var merge = require('broccoli-merge-trees');
+var Merge = require('broccoli-merge-trees');
 var replace = require('broccoli-string-replace');
 
 var es6Tree = typescript('src', {
@@ -56,4 +56,4 @@ var minTree = uglify(new Funnel(umdTree, {
   compress: true
 });
 
-module.exports = merge([es6Tree, umdTree, minTree]);
+module.exports = new Merge([es6Tree, umdTree, minTree]);
