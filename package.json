@@ -11,7 +11,8 @@
     "watch": "broccoli-timepiece exports",
     "build": "./build.sh",
     "stats": "node size-calc",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "docs": "typedoc --out docs src/index.ts --module es2015 --mode file --theme minimal"
   },
   "repository": {
     "type": "git",
@@ -49,7 +50,6 @@
     "sinon": "^1.14.1",
     "testem": "^1.12.0",
     "tslint": "^3.6.0",
-    "typedoc": "^0.5.1",
-    "typescript": "^2.0.9"
+    "typescript": "^2.0.10"
   }
 }
