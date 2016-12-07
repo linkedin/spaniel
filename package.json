@@ -14,6 +14,17 @@
     "prepublish": "npm run build",
     "docs": "typedoc --out docs src/index.ts --module es2015 --mode file --theme minimal"
   },
+  "files": [
+    "exports",
+    ".babelrc",
+    "Brocfile.js",
+    "build.sh",
+    "README.md",
+    "rollup.config.js",
+    "declarations.d.ts",
+    "CHANGELOG.md",
+    ".travis.yml"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/linkedin/spaniel"
