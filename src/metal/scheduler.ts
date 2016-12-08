@@ -25,18 +25,38 @@ let tokenCounter = 0;
 export class Frame implements FrameInterface {
   constructor(
     public timestamp: number,
-    public scrollTop: number,
     public scrollLeft: number,
+    public scrollTop: number,
+    public x: number,
+    public y: number,
     public width: number,
     public height: number
   ) {}
-  static generate(): Frame {
+  static generate(root?: Element): Frame {
+    let scrollLeft = W.getScrollLeft();
+    let scrollTop = W.getScrollTop();
+    let x = 0;
+    let y = 0;
+    let width = W.getWidth();
+    let height = W.getHeight();
+
+    if (root && document.documentElement.contains(root)) {
+      let rootBcr = root.getBoundingClientRect();
+      scrollLeft = root.scrollLeft;
+      scrollTop = root.scrollTop;
+      x = rootBcr.left;
+      y = rootBcr.top;
+      width = rootBcr.width;
+      height = rootBcr.height;
+    }
     return new Frame(
       Date.now(),
-      W.getScrollTop(),
-      W.getScrollLeft(),
-      W.getWidth(),
-      W.getHeight()
+      scrollLeft,
+      scrollTop,
+      x,
+      y,
+      width,
+      height
     );
   }
 }
@@ -46,15 +66,19 @@ export function generateToken() {
 }
 
 export abstract class BaseScheduler {
+  protected root: Element;
   protected engine: EngineInterface;
   protected queue: QueueInterface;
   protected isTicking: Boolean = false;
   protected toRemove: Array<string| Element | Function> = [];
-  constructor(customEngine?: EngineInterface) {
+  constructor(customEngine?: EngineInterface, root?: Element) {
     if (customEngine) {
       this.engine = customEngine;
     } else {
       this.engine = getGlobalEngine();
+    }
+    if (root) {
+      this.root = root;
     }
   }
   protected abstract applyQueue(frame: Frame): void;
@@ -69,7 +93,7 @@ export abstract class BaseScheduler {
         }
         this.toRemove = [];
       }
-      this.applyQueue(Frame.generate());
+      this.applyQueue(Frame.generate(this.root));
       this.engine.scheduleRead(this.tick.bind(this));
     }
   }
@@ -138,8 +162,8 @@ export class PredicatedScheduler extends Scheduler implements SchedulerInterface
 
 export class ElementScheduler extends BaseScheduler implements ElementSchedulerInterface {
   protected queue: DOMQueue;
-  constructor(customEngine?: EngineInterface) {
-    super(customEngine);
+  constructor(customEngine?: EngineInterface, root?: Element) {
+    super(customEngine, root);
     this.queue = new DOMQueue();
   }
   applyQueue(frame: Frame) {

@@ -230,4 +230,34 @@ testModule('IntersectionObserver', class extends TestClass {
       assert.equal(result, 6, 'Callback fired 6 times');
     });
   }
+
+  ['@test observing a non visible element within a root and then scrolling should fire callbacks']() {
+  return this.context.evaluate(function() {
+      window.STATE.impressions = 0;
+      let root = document.getElementById('root');
+      let target = document.querySelector('.tracked-item[data-root-target-id="3"]');
+      let observer = new spaniel.IntersectionObserver(function() {
+        window.STATE.impressions++;
+      }, {
+        root: root,
+        threshold: 1.0
+      });
+      observer.observe(target);
+    })
+    .wait(100)
+    .evaluate(function() {
+      root.scrollTop = 100;
+    })
+    .wait(100)
+    .evaluate(function() {
+      root.scrollTop = 10;
+    })
+    .wait(100)
+    .getExecution()
+    .evaluate(function() {
+      return window.STATE.impressions;
+    }).then(function(result) {
+      assert.equal(result, 2, 'Callback fired twice');
+    });
+  }
 });
