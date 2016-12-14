@@ -3,9 +3,9 @@
 LinkedIn's JavaScript viewport tracking library and [IntersectionObserver](https://github.com/WICG/IntersectionObserver) polyfill. Track what the user actually sees.
 
 ```JavaScript
-import { InteractionObserver } from 'spaniel';
+import { IntersectionObserver } from 'spaniel';
 
-new InteractionObserver((entries) => { console.log('I see you') }, {
+new IntersectionObserver((entries) => { console.log('I see you') }, {
   threshold: 0.5
 }).observe(document.getElementById('my-element'));
 ```
@@ -34,7 +34,7 @@ The main part of the [IntersectionObserver](https://github.com/WICG/Intersection
 
 ### spaniel.SpanielObserver
 
-A superset API of InteractionObserver. There are three additions:
+A superset API of IntersectionObserver. There are three additions:
 
 #### Thresholds
 
