@@ -151,6 +151,7 @@ export class IntersectionObserver {
     this.id = generateToken();
     options.threshold = options.threshold || 0;
     this.rootMargin = rootMarginToDOMMargin(options.rootMargin || '0px');
+    this.root = options.root;
 
     if (Array.isArray(options.threshold)) {
       this.thresholds = <Array<number>>options.threshold;
@@ -158,7 +159,7 @@ export class IntersectionObserver {
       this.thresholds = [<number>options.threshold];
     }
 
-    this.scheduler = new ElementScheduler();
+    this.scheduler = new ElementScheduler(null, this.root);
   }
 };
 
@@ -203,8 +204,8 @@ export function entrySatisfiesRatio(entry: IntersectionObserverEntry, threshold:
 
 export function generateEntry(frame: Frame, bcr: ClientRect, el: Element, rootMargin: DOMMargin) {
   let rootBounds: DOMRectInit = {
-    x: rootMargin.left,
-    y: rootMargin.top,
+    x: frame.x + rootMargin.left,
+    y: frame.y + rootMargin.top,
     width: frame.width - (rootMargin.right + rootMargin.left),
     height: frame.height - (rootMargin.bottom + rootMargin.top)
   };

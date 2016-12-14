@@ -59,3 +59,19 @@ let observer = new spaniel.SpanielObserver(function(changes) {
   }]
 });
 observer.observe(target);
+
+// Example usage of SpanielObserver with a custom root element
+var root = document.getElementById('root');
+var rootTarget = document.querySelector('.tracked-item[data-root-target-id="3"]');
+var rootObserver = new spaniel.SpanielObserver(function(changes) {
+  console.log(changes[0]);
+}, {
+  root: root,
+  rootMargin: '0px 0px',
+  threshold: [{
+    label: 'impressed',
+    ratio: 0.4,
+    time: 1000
+  }]
+});
+rootObserver.observe(rootTarget);

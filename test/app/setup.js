@@ -15,3 +15,13 @@ for (var i = 0;  i < 100; i++) {
   app.appendChild(el);
 }
 
+var root = document.getElementById('root');
+for (var i = 0;  i < 5; i++) {
+  var id = i + 1;
+  var content = Math.random(0, 100);
+  var el = document.createElement('div');
+  el.setAttribute('class', 'tracked-item');
+  el.setAttribute('data-root-target-id', id);
+  el.innerHTML = 'ID: ' + id + ' = ' + content;
+  root.appendChild(el);
+}
