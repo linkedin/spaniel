@@ -37,6 +37,7 @@ export interface SpanielRecord {
   target: SpanielTrackedElement;
   payload: any;
   thresholdStates: SpanielThresholdState[];
+  lastSeenEntry: IntersectionObserverEntry;
 }
 
 export interface SpanielThresholdState {
@@ -108,11 +109,17 @@ export class SpanielObserver {
   }
   private onTabShown() {
     this.paused = false;
+
+    let ids = Object.keys(this.recordStore);
+    let time = Date.now();
+    for (let i = 0; i < ids.length; i++) {
+      let entry = this.recordStore[ids[i]].lastSeenEntry;
+      entry.time = time;
+      this.handleObserverEntry(entry);
+    }
   }
   private internalCallback(records: IntersectionObserverEntry[]) {
-    if (!this.paused) {
-      records.forEach(this.handleObserverEntry.bind(this));
-    }
+    records.forEach(this.handleObserverEntry.bind(this));
   }
   private flushQueuedEntries() {
     if (this.queuedEntries.length > 0) {
@@ -158,7 +165,7 @@ export class SpanielObserver {
         duration: time - state.lastVisible,
         target: record.target
       }, state);
-
+      state.lastSatisfied = false;
       state.visible = false;
       state.lastEntry = null;
     });
@@ -180,35 +187,39 @@ export class SpanielObserver {
     let { time } = entry;
     let target = <SpanielTrackedElement>entry.target;
     let record = this.recordStore[target.__spanielId];
-    record.thresholdStates.forEach((state: SpanielThresholdState) => {
-      // Find the thresholds that were crossed. Since you can have multiple thresholds
-      // for the same ratio, could be multiple thresholds
-      let hasTimeThreshold = !!state.threshold.time;
-      let spanielEntry: SpanielObserverEntry = this.generateSpanielEntry(entry, state);
+    record.lastSeenEntry = entry;
 
-      const ratioSatisfied = entrySatisfiesRatio(entry, state.threshold.ratio);
+    if (!this.paused) {
+      record.thresholdStates.forEach((state: SpanielThresholdState) => {
+        // Find the thresholds that were crossed. Since you can have multiple thresholds
+        // for the same ratio, could be multiple thresholds
+        let hasTimeThreshold = !!state.threshold.time;
+        let spanielEntry: SpanielObserverEntry = this.generateSpanielEntry(entry, state);
 
-      if (ratioSatisfied && !state.lastSatisfied) {
-        spanielEntry.entering = true;
-        if (hasTimeThreshold) {
-          state.lastVisible = time;
-          state.timeoutId = setTimeout(() => {
+        const ratioSatisfied = entrySatisfiesRatio(entry, state.threshold.ratio);
+
+        if (ratioSatisfied && !state.lastSatisfied) {
+          spanielEntry.entering = true;
+          if (hasTimeThreshold) {
+            state.lastVisible = time;
+            state.timeoutId = setTimeout(() => {
+              state.visible = true;
+              spanielEntry.duration = Date.now() - state.lastVisible;
+              this.callback([spanielEntry]);
+            }, state.threshold.time);
+          } else {
             state.visible = true;
-            spanielEntry.duration = Date.now() - state.lastVisible;
-            this.callback([spanielEntry]);
-          }, state.threshold.time);
-        } else {
-          state.visible = true;
-          this.queuedEntries.push(spanielEntry);
+            this.queuedEntries.push(spanielEntry);
+          }
+        } else if (!ratioSatisfied) {
+          this.handleThresholdExiting(spanielEntry, state);
         }
-      } else if (!ratioSatisfied) {
-        this.handleThresholdExiting(spanielEntry, state);
-      }
 
-      state.lastEntry = entry;
-      state.lastSatisfied = ratioSatisfied;
-    });
-    this.flushQueuedEntries();
+        state.lastEntry = entry;
+        state.lastSatisfied = ratioSatisfied;
+      });
+      this.flushQueuedEntries();
+    }
   }
   disconnect() {
     this.setAllHidden();
@@ -231,6 +242,7 @@ export class SpanielObserver {
     this.recordStore[id] = {
       target,
       payload,
+      lastSeenEntry: null,
       thresholdStates: this.thresholds.map((threshold: SpanielThreshold) => ({
         lastSatisfied: false,
         lastEntry: null,
