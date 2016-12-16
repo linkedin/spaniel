@@ -5,7 +5,7 @@
 SOURCE_BRANCH="master"
 TARGET_BRANCH="gh-pages"
 
-./build-docs.sh
+./scripts/build-docs.sh
 git checkout $TARGET_BRANCH
 cp -a ./docs/. ./
 rm -rf docs
