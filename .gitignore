@@ -6,3 +6,4 @@ testem.log
 /exports/*
 build_tmp
 docs
+size.txt
