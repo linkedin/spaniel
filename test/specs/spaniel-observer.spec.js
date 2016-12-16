@@ -1,7 +1,7 @@
 /*
 Copyright 2016 LinkedIn Corp. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- 
-Unless required by applicable law or agreed to in writing, software  distributed under the License is distributed on an "AS IS" BASIS,  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
 var expect = chai.expect;
@@ -22,7 +22,7 @@ describe('SpanielObserver', function() {
     }).then(cleanUp);
   });
 
-  it('should fire impression exiting event when tab is closed', function() {
+  it('should fire impression exiting event when tab is hidden', function() {
     return runTest({
       label: 'impression',
       ratio: 0.5
@@ -38,7 +38,30 @@ describe('SpanielObserver', function() {
     }).then(cleanUp);
   });
 
-  it('should not fire impression exiting event when tab is closed before threshold time', function() {
+  it('should fire impression exiting event twice when tab is hidden, reshown, and then hidden again', function() {
+    return runTest({
+      label: 'impression',
+      ratio: 0.5
+    }).then(function(result) {
+      result.observer.onTabHidden();
+      return wait50ms(result);
+    }).then(function(result) {
+      expect(result.entries.length).to.equal(2, 'Two events have been fired');
+      expect(result.entries[1].entering).to.equal(false, 'Second event is exiting');
+      result.observer.onTabShown();
+      return wait50ms(result);
+    }).then(function(result) {
+      result.observer.onTabHidden();
+      return wait50ms(result);
+    }).then(function(result) {
+      expect(result.entries.length).to.equal(4, 'Three events have been fired');
+      expect(result.entries[2].entering).to.equal(true, 'second to last event is entering');
+      expect(result.entries[3].entering).to.equal(false, 'last event is exiting');
+      return result;
+    }).then(cleanUp);
+  });
+
+  it('should not fire impression exiting event when tab is hidden before threshold time', function() {
     return runTest({
       label: 'impression',
       ratio: 0.5,

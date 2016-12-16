@@ -65,6 +65,10 @@ The observer callback is passed an array of change entries. In addition to the s
 
 `observe()` can take an optional second parameter, an object that is included in the change entry passed to the Observer callback.
 
+#### Reacts to hiding and showing tabs
+
+DOM elements observed by `SpanielObserver` are considered not in the viewport when the tab is hidden. Thus, when a tab is hidden, the observer callback will recieve an exiting entry for every observed element in the viewport. Conversely, when the same tab is shown, the observer callback will recieve entering entries for the same elements. 
+
 #### Putting it all together
 
 ```JavaScript
