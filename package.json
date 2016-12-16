@@ -9,11 +9,11 @@
     "test:headless": "mocha --compilers js:babel-core/register test/headless/specs/**/*.js",
     "serve": "node test/headless/server/app",
     "watch": "broccoli-timepiece exports",
-    "build": "./build.sh",
-    "stats": "node size-calc",
+    "build": "./scripts/build.sh",
+    "stats": "node scripts/size-calc",
     "prepublish": "npm run build",
-    "docs:build": "./build-docs.sh",
-    "docs:publish": "./publish-docs.sh"
+    "docs:build": "./scripts/build-docs.sh",
+    "docs:publish": "./scripts/publish-docs.sh"
   },
   "files": [
     "exports",
