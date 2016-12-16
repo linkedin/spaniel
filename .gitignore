@@ -5,3 +5,4 @@ node_modules/
 testem.log
 /exports/*
 build_tmp
+docs

@@ -12,7 +12,7 @@
     "build": "./build.sh",
     "stats": "node size-calc",
     "prepublish": "npm run build",
-    "docs": "typedoc --out docs src/index.ts --module es2015 --mode file --theme minimal"
+    "docs": "typedoc --out docs src/index.ts --module es2015 --mode file --theme minimal --readme USAGE.md "
   },
   "files": [
     "exports",
