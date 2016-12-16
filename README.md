@@ -16,7 +16,7 @@ Practical uses included:
 * Impression discounting feedback for relevance systems
 * Occlusion culling - Don't render an object until user is close to scrolling the object into the viewport
 
-### [Usage and API Docs](https://linkedin.github.io/spaniel/)
+## [Usage and API Docs](https://linkedin.github.io/spaniel/)
 
 Spaniel provides additional abstractions on top of [IntersectionObserver](https://github.com/WICG/IntersectionObserver), provides APIs for hooking into the low-level internals, and has some limitations as a non-complete polyfill. Learn more by reading the [Usage and API Docs](https://linkedin.github.io/spaniel/).
 
