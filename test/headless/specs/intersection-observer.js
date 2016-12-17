@@ -128,7 +128,7 @@ testModule('IntersectionObserver', class extends TestClass {
         window.STATE.impressions++;
       }, {
         threshold: 0.75,
-        rootMargin: '25px 0px'
+        rootMargin: '-25px 0px'
       });
       observer.observe(target);
     })
