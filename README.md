@@ -33,7 +33,7 @@ Spaniel has both unit tests and a headless test suite. The headless tests are ru
 
 #### How big is Spaniel?
 
-Checkout [size.txt](https://github.com/linkedin/spaniel/blob/master/size.txt) to see the current minified UMD gzipped size.
+Checkout [size.txt](https://github.com/linkedin/spaniel/blob/gh-pages/size.txt) to see the current minified UMD gzipped size.
 
 You can also run `npm run stats` to measure locally.
 
