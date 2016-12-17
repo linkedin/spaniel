@@ -183,12 +183,12 @@ export class IntersectionObserverEntry implements IntersectionObserverEntryInit 
 export function generateEntry(frame: Frame, bcr: DOMRectReadOnly, el: Element, rootMargin: DOMMargin): IntersectionObserverEntry {
   let { top, bottom, left, right } = bcr;
   let rootBounds: ClientRect = {
-    left: frame.x + rootMargin.left,
-    top: frame.y + rootMargin.top,
-    bottom: rootMargin.bottom,
-    right: rootMargin.right,
-    width: frame.width - (rootMargin.right + rootMargin.left),
-    height: frame.height - (rootMargin.bottom + rootMargin.top)
+    left: frame.x - rootMargin.left,
+    top: frame.y - rootMargin.top,
+    bottom: -rootMargin.bottom,
+    right: -rootMargin.right,
+    width: frame.width + (rootMargin.right + rootMargin.left),
+    height: frame.height + (rootMargin.bottom + rootMargin.top)
   };
 
   let intersectX = Math.max(rootBounds.left, bcr.left);
