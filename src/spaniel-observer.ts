@@ -114,8 +114,10 @@ export class SpanielObserver {
     let time = Date.now();
     for (let i = 0; i < ids.length; i++) {
       let entry = this.recordStore[ids[i]].lastSeenEntry;
-      entry.time = time;
-      this.handleObserverEntry(entry);
+      if (entry) {
+        entry.time = time;
+        this.handleObserverEntry(entry);
+      }
     }
   }
   private internalCallback(records: IntersectionObserverEntry[]) {
