@@ -28,7 +28,7 @@ let W: WindowProxy = {
 };
 
 function hasDomSetup() {
-  let se = typeof (<any>document).scrollingElement !== 'undefined';
+  let se = (<any>document).scrollingElement != null;
   W.getScrollTop = se ? () => (<any>document).scrollingElement.scrollTop : () => (<any>window).scrollY;
   W.getScrollLeft = se ? () => (<any>document).scrollingElement.scrollLeft : () => (<any>window).scrollX;
 }
