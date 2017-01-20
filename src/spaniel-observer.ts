@@ -224,9 +224,16 @@ export class SpanielObserver {
     }
   }
   disconnect() {
+    // We need to pause the system from ticking when we are disconnecting, because a tick during
+    // disconnecting can cause an entry to be incorrectly queued after flushing the queue.
+    this.paused = true;
+
     this.setAllHidden();
     this.observer.disconnect();
     this.recordStore = {};
+
+    // Now that disconnecting is complete, we can resume ticks.
+    this.paused = false;
   }
   unobserve(element: SpanielTrackedElement) {
     let record = this.recordStore[element.__spanielId];
