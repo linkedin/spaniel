@@ -239,10 +239,12 @@ export class SpanielObserver {
       })
     }
   }
-  observe(target: SpanielTrackedElement, payload: any = null) {
-    let id = target.__spanielId = target.__spanielId || generateToken();
+  observe(target: Element, payload: any = null) {
+    let trackedTarget = target as SpanielTrackedElement;
+    let id = trackedTarget.__spanielId = trackedTarget.__spanielId || generateToken();
+
     this.recordStore[id] = {
-      target,
+      target: trackedTarget,
       payload,
       lastSeenEntry: null,
       thresholdStates: this.thresholds.map((threshold: SpanielThreshold) => ({
@@ -253,7 +255,7 @@ export class SpanielObserver {
         lastVisible: null
       }))
     };
-    this.observer.observe(target);
+    this.observer.observe(trackedTarget);
     return id;
   }
 }
