@@ -96,11 +96,14 @@ export class IntersectionObserver {
       this.records[keys[i]].numSatisfiedThresholds = 0;
     }
   }
-  observe(target: SpanielTrackedElement) {
-    let id = target.__spanielId = target.__spanielId || generateToken();
+  observe(target: Element) {
+    let trackedTarget = target as SpanielTrackedElement;
+
+    let id = trackedTarget.__spanielId = trackedTarget.__spanielId || generateToken();
+
     this.scheduler.watch(target, (frame: Frame, id: string, bcr: ClientRect) => {
-      this.onTick(frame, id, bcr, target);
-    }, target.__spanielId);
+      this.onTick(frame, id, bcr, trackedTarget);
+    }, trackedTarget.__spanielId);
     return id;
   }
   private onTick(frame: Frame, id: string,  bcr: ClientRect, el: Element) {

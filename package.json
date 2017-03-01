@@ -38,6 +38,7 @@
   },
   "homepage": "https://github.com/linkedin/spaniel",
   "jsnext:main": "exports/es6/index.js",
+  "typings": "exports/es6/index.d.ts",
   "devDependencies": {
     "assert": "^1.3.0",
     "babel-core": "^6.11.4",

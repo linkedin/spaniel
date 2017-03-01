@@ -6,6 +6,7 @@ Unless required by applicable law or agreed to in writing, software  distribut
 
 import {
   IntersectionObserver,
+  IntersectionObserverEntry,
   DOMString,
   DOMMargin,
   SpanielTrackedElement,
@@ -39,6 +40,7 @@ export {
   scheduleRead,
   scheduleWork,
   IntersectionObserver,
+  IntersectionObserverEntry,
   SpanielObserver,
   SpanielTrackedElement,
   setGlobalEngine,
@@ -112,7 +114,7 @@ export class Watcher {
    });
   }
   watch(el: Element, callback: Function) {
-    this.observer.observe(<SpanielTrackedElement>el, {
+    this.observer.observe(el, {
       callback
     });
   }
