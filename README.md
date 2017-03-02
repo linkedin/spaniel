@@ -80,4 +80,4 @@ npm run test
 
 ## Copyright
 
-Copyright 2016 LinkedIn Corp.  All rights reserved.
+Copyright 2017 LinkedIn Corp.  All rights reserved.
