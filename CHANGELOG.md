@@ -1,5 +1,13 @@
 # spaniel Changelog
 
+### 2.2.0 (March 1, 2017)
+
+* Better TypeScript support
+  * `typings` is now defined in package.json
+  * Use `Element` instead of `SpanielTrackedElement` for public APIs
+* Publish [TypeDoc](http://typedoc.org/) API docs
+* Various bug fixes
+
 ### 2.1.0 (November 17, 2016)
 
 Add api for one-time determining an element's viewport state
