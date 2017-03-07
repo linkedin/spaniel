@@ -204,7 +204,7 @@ export class SpanielObserver {
           spanielEntry.entering = true;
           if (hasTimeThreshold) {
             state.lastVisible = time;
-            state.timeoutId = setTimeout(() => {
+            state.timeoutId = w.setTimeout(() => {
               state.visible = true;
               spanielEntry.duration = Date.now() - state.lastVisible;
               this.callback([spanielEntry]);

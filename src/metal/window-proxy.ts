@@ -14,6 +14,7 @@ interface WindowProxy {
   getHeight: Function;
   getWidth: Function;
   rAF: Function;
+  setTimeout: Function;
 }
 
 let hasDOM = !!((typeof window !== 'undefined') && window && (typeof document !== 'undefined') && document);
@@ -24,6 +25,7 @@ let W: WindowProxy = {
   getScrollLeft: nop,
   getHeight: nop,
   getWidth: nop,
+  setTimeout: hasDOM && window.setTimeout,
   rAF: hasDOM && !!window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : () => {}
 };
 
