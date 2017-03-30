@@ -37,6 +37,12 @@ export interface DOMRectInit {
 }
 
 export interface IntersectionObserverInit {
+
+  // Non-spec flag that tells the observer to not actually observe anything
+  // Creates a single entry point for turning off any work done. Useful for
+  // server-side rendering when we don't actually need to obsere anything.
+  dormant?: boolean;
+
   root?: SpanielTrackedElement;
   rootMargin?: DOMString; // default: 0px
   threshold?: number | number[]; // default: 0
@@ -149,6 +155,10 @@ export class IntersectionObserver {
   }
 
   constructor(callback: Function, options: IntersectionObserverInit = {}) {
+    if (options.dormant) {
+      // If we are in dormant mode, observe should do nothing
+      this.observe = (target: Element) => '';
+    }
     this.records = {};
     this.callback = callback;
     this.id = generateToken();
