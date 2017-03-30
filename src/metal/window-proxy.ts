@@ -9,6 +9,7 @@ const nop = () => 0;
 
 interface WindowProxy {
   hasDOM: boolean;
+  hasRAF: boolean;
   getScrollTop: Function;
   getScrollLeft: Function;
   getHeight: Function;
@@ -16,15 +17,17 @@ interface WindowProxy {
   rAF: Function;
 }
 
-let hasDOM = !!((typeof window !== 'undefined') && window && (typeof document !== 'undefined') && document);
+const hasDOM = !!((typeof window !== 'undefined') && window && (typeof document !== 'undefined') && document);
+const hasRAF = hasDOM && !!window.requestAnimationFrame;
 
 let W: WindowProxy = {
+  hasRAF,
   hasDOM,
   getScrollTop: nop,
   getScrollLeft: nop,
   getHeight: nop,
   getWidth: nop,
-  rAF: hasDOM && !!window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : (callback) => { callback(); }
+  rAF: hasRAF ? window.requestAnimationFrame.bind(window) : (callback: Function) => { callback(); }
 };
 
 function hasDomSetup() {
