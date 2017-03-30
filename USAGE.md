@@ -151,7 +151,7 @@ With any task engine involving the DOM, DOM reads and DOM writes [should be batc
 
 ### Using an external requestAnmiationFrame engine
 
-If you'd like to use an exisiting requestAnmiationFrame polling/task engine, use `setGlobalEngine(engine)`, where `engine` is an object that implements the [`EngineInterface`](https://github.com/linkedin/spaniel/blob/master/src/metal/interfaces.ts#L25-L28). As an example, you can checkout Spaniel's internal [Engine implementation](https://github.com/linkedin/spaniel/blob/master/src/metal/engine.ts#L10-L39).
+If you'd like to use a custom requestAnmiationFrame polling/task engine, use `setGlobalEngine(engine)`, where `engine` is an object that implements the [`EngineInterface`](https://github.com/linkedin/spaniel/blob/master/src/metal/interfaces.ts#L25-L28). For example, you can checkout Spaniel's internal [Engine implementation](https://github.com/linkedin/spaniel/blob/master/src/metal/engine.ts#L10-L39) or [ember-spaniel's](github.com/asakusuma/ember-spaniel) implementation that hooks into Ember's runloop.
 
 ## Copyright
 
