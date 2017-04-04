@@ -130,10 +130,18 @@ export function trigger(eventName: string, value?: any) {
   }
 }
 
+/*
+ * Schedule a callback to be batched along with other DOM read/query work.
+ * Use to schedule any DOM reads. Doing so will avoid DOM thrashing.
+ */
 export function scheduleWork(callback: Function) {
   getGlobalScheduler().scheduleWork(callback);
 }
 
+/*
+ * Schedule a callback to be batched along with other DOM write/mutation
+ * work. Use to schedule any DOM changes. Doing so will avoid DOM thrashing.
+ */
 export function scheduleRead(callback: Function) {
   getGlobalScheduler().scheduleRead(callback);
 }
