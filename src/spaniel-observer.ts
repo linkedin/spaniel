@@ -1,19 +1,31 @@
 /*
-Copyright 2017 LinkedIn Corp. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Copyright 2017 LinkedIn Corp. Licensed under the Apache License,
+Version 2.0 (the "License"); you may not use this file except in
+compliance with the License. You may obtain a copy of the License
+at http://www.apache.org/licenses/LICENSE-2.0
  
-Unless required by applicable law or agreed to in writing, software  distributed under the License is distributed on an "AS IS" BASIS,  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
 import {
-  IntersectionObserver,
-  IntersectionObserverEntry,
-  IntersectionObserverInit,
-  IntersectionObserverEntryInit,
-  DOMString,
-  DOMMargin,
-  SpanielTrackedElement,
+  SpanielIntersectionObserver,
   entrySatisfiesRatio
 } from './intersection-observer';
+
+import {
+  IntersectionObserverInit,
+  DOMString,
+  DOMMargin,
+  SpanielObserverInterface,
+  SpanielThreshold,
+  SpanielObserverInit,
+  SpanielRecord,
+  SpanielThresholdState,
+  SpanielObserverEntry,
+  SpanielTrackedElement
+} from './interfaces';
 
 import w from './metal/window-proxy';
 
@@ -21,47 +33,11 @@ import { generateToken, on, scheduleWork } from './metal/index';
 
 let emptyRect = { x: 0, y: 0, width: 0, height: 0 };
 
-export interface SpanielThreshold {
-  label: string;
-  ratio: number;
-  time?: number;
-}
-
-export interface SpanielObserverInit {
-  root?: SpanielTrackedElement;
-  rootMargin?: DOMString | DOMMargin; // default: 0px
-  threshold?: SpanielThreshold[]; // default: 0
-}
-
-export interface SpanielRecord {
-  target: SpanielTrackedElement;
-  payload: any;
-  thresholdStates: SpanielThresholdState[];
-  lastSeenEntry: IntersectionObserverEntry;
-}
-
-export interface SpanielThresholdState {
-  lastSatisfied: Boolean;
-  lastEntry: IntersectionObserverEntry;
-  threshold: SpanielThreshold;
-  lastVisible: number;
-  visible: boolean;
-  timeoutId?: number;
-}
-
-export interface SpanielObserverEntry extends IntersectionObserverEntry {
-  duration: number;
-  intersectionRatio: number;
-  entering: boolean;
-  label?: string;
-  payload?: any;
-}
-
 export function DOMMarginToRootMargin(d: DOMMargin): DOMString {
   return `${d.top}px ${d.right}px ${d.bottom}px ${d.left}px`;
 }
 
-export class SpanielObserver {
+export class SpanielObserver implements SpanielObserverInterface {
   callback: (entries: SpanielObserverEntry[]) => void;
   observer: IntersectionObserver;
   thresholds: SpanielThreshold[];
@@ -83,7 +59,7 @@ export class SpanielObserver {
       rootMargin: convertedRootMargin,
       threshold: this.thresholds.map((t: SpanielThreshold) => t.ratio)
     };
-    this.observer = new IntersectionObserver((records: IntersectionObserverEntry[]) => this.internalCallback(records), o);
+    this.observer = new SpanielIntersectionObserver((records: IntersectionObserverEntry[]) => this.internalCallback(records), o);
 
     if (w.hasDOM) {
       on('unload', this.onWindowClosed.bind(this));
@@ -101,7 +77,7 @@ export class SpanielObserver {
       this.handleRecordExiting(this.recordStore[ids[i]], time);
     }
     this.flushQueuedEntries();
-    this.observer.reset();
+    //this.observer.reset();
   }
   private onTabHidden() {
     this.paused = true;
@@ -115,8 +91,21 @@ export class SpanielObserver {
     for (let i = 0; i < ids.length; i++) {
       let entry = this.recordStore[ids[i]].lastSeenEntry;
       if (entry) {
-        entry.time = time;
-        this.handleObserverEntry(entry);
+        let {
+          intersectionRatio,
+          boundingClientRect,
+          rootBounds,
+          intersectionRect,
+          target
+        } = entry;
+        this.handleObserverEntry({
+          intersectionRatio,
+          boundingClientRect,
+          time,
+          rootBounds,
+          intersectionRect,
+          target
+        });
       }
     }
   }
@@ -146,7 +135,7 @@ export class SpanielObserver {
       rootBounds,
       boundingClientRect,
       intersectionRect,
-      target,
+      target: <SpanielTrackedElement>target,
       duration: 0,
       entering: null,
       payload: record.payload,
