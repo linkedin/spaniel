@@ -70,12 +70,6 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
   public thresholds: number[];
   private records: { [index: string]: EntryEvent};
 
-  private reset() {
-    let keys = Object.keys(this.records);
-    for (let i = 0; i < keys.length; i++) {
-      this.records[keys[i]].numSatisfiedThresholds = 0;
-    }
-  }
   observe(target: Element) {
     let trackedTarget = target as SpanielTrackedElement;
 
