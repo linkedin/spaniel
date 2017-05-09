@@ -77,7 +77,6 @@ export class SpanielObserver implements SpanielObserverInterface {
       this.handleRecordExiting(this.recordStore[ids[i]], time);
     }
     this.flushQueuedEntries();
-    //this.observer.reset();
   }
   private onTabHidden() {
     this.paused = true;
