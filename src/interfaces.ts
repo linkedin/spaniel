@@ -57,6 +57,10 @@ export interface SpanielObserverEntry extends IntersectionObserverEntryInit {
   payload?: any;
 }
 
+export interface IntersectionObserverClass {
+  new (callback: IntersectionObserverCallback, options?: IntersectionObserverInit): IntersectionObserver;
+}
+
 export interface SpanielObserverInterface {
   disconnect: () => void;
   unobserve: (element: SpanielTrackedElement) => void;

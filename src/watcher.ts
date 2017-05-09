@@ -17,7 +17,8 @@ import {
   SpanielObserverEntry,
   DOMString,
   DOMMargin,
-  SpanielTrackedElement
+  SpanielTrackedElement,
+  IntersectionObserverClass
 } from './interfaces';
 
 export interface WatcherConfig {
@@ -43,7 +44,7 @@ function onEntry(entries: SpanielObserverEntry[]) {
 
 export class Watcher {
   observer: SpanielObserver;
-  constructor(config: WatcherConfig = {}) {
+  constructor(ObserverClass: IntersectionObserverClass, config: WatcherConfig = {}) {
     let { time, ratio, rootMargin } = config;
 
     let threshold = [
@@ -70,7 +71,7 @@ export class Watcher {
       });
     }
 
-    this.observer = new SpanielObserver(onEntry, {
+    this.observer = new SpanielObserver(ObserverClass, onEntry, {
       rootMargin,
       threshold
    });
