@@ -11,9 +11,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 import {
   SpanielIntersectionObserver,
-  entrySatisfiesRatio,
   generateEntry
 } from './intersection-observer';
+
+import {
+  entrySatisfiesRatio
+} from './utils';
 
 import {
   SpanielTrackedElement,
