@@ -16,6 +16,7 @@
     "docs:publish": "./scripts/publish-docs.sh"
   },
   "files": [
+    "src",
     "exports",
     ".babelrc",
     "Brocfile.js",
