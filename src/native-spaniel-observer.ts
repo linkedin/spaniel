@@ -14,10 +14,6 @@ import {
 } from './utils';
 
 import {
-  SpanielIntersectionObserver
-} from './intersection-observer';
-
-import {
   IntersectionObserverInit,
   DOMString,
   DOMMargin,
@@ -27,7 +23,8 @@ import {
   SpanielRecord,
   SpanielThresholdState,
   SpanielObserverEntry,
-  SpanielTrackedElement
+  SpanielTrackedElement,
+  IntersectionObserverClass
 } from './interfaces';
 
 import w from './metal/window-proxy';
@@ -47,7 +44,7 @@ export class SpanielObserver implements SpanielObserverInterface {
   recordStore: { [key: string]: SpanielRecord; };
   queuedEntries: SpanielObserverEntry[];
   private paused: boolean;
-  constructor(callback: (entries: SpanielObserverEntry[]) => void, options: SpanielObserverInit = {}) {
+  constructor(ObserverClass: IntersectionObserverClass, callback: (entries: SpanielObserverEntry[]) => void, options: SpanielObserverInit = {}) {
     this.paused = false;
     this.queuedEntries = [];
     this.recordStore = {};
@@ -62,7 +59,7 @@ export class SpanielObserver implements SpanielObserverInterface {
       rootMargin: convertedRootMargin,
       threshold: this.thresholds.map((t: SpanielThreshold) => t.ratio)
     };
-    this.observer = new SpanielIntersectionObserver((records: IntersectionObserverEntry[]) => this.internalCallback(records), o);
+    this.observer = new ObserverClass((records: IntersectionObserverEntry[]) => this.internalCallback(records), o);
 
     if (w.hasDOM) {
       on('unload', this.onWindowClosed.bind(this));
