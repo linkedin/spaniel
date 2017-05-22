@@ -26,17 +26,32 @@ export interface WatcherConfig {
   rootMargin?: DOMString | DOMMargin;
 }
 
+export type EventName = 'impressed' | 'exposed' | 'visible' | 'impression-complete';
+
+export type WatcherCallback = (eventName: EventName, WatcherCallbackOptions) => void;
+
+export interface Threshold {
+  label: EventName;
+  time: number;
+  ratio: number;
+}
+
+export interface WatcherCallbackOptions {
+  duration: number;
+  visibleTime?: number;
+}
+
 function onEntry(entries: SpanielObserverEntry[]) {
   entries.forEach((entry: SpanielObserverEntry) => {
+    const { label, duration } = entry;
+    const opts: WatcherCallbackOptions = {
+      duration
+    };
     if (entry.entering) {
-      entry.payload.callback(entry.label, {
-        duration: entry.duration
-      });
+      entry.payload.callback(label, opts);
     } else if (entry.label === 'impressed') {
-      entry.payload.callback('impression-complete', {
-        duration: entry.duration,
-        visibleTime: entry.time - entry.duration
-      });
+      opts.visibleTime = entry.time - entry.duration;
+      entry.payload.callback('impression-complete', opts);
     }
   });
 }
@@ -46,7 +61,7 @@ export class Watcher {
   constructor(config: WatcherConfig = {}) {
     let { time, ratio, rootMargin } = config;
 
-    let threshold = [
+    let threshold: Threshold[] = [
       {
         label: 'exposed',
         time: 0,
@@ -75,7 +90,7 @@ export class Watcher {
       threshold
    });
   }
-  watch(el: Element, callback: Function) {
+  watch(el: Element, callback: WatcherCallback) {
     this.observer.observe(el, {
       callback
     });
