@@ -28,7 +28,7 @@ export interface WatcherConfig {
 
 export type EventName = 'impressed' | 'exposed' | 'visible' | 'impression-complete';
 
-export type WatcherCallback = (eventName: EventName, WatcherCallbackOptions) => void;
+export type WatcherCallback = (eventName: EventName, callback: WatcherCallbackOptions) => void;
 
 export interface Threshold {
   label: EventName;
