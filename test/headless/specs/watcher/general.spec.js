@@ -11,6 +11,10 @@ import {
   TestClass
 } from './../../test-module';
 
+import constants from './../../../constants.js';
+
+const { time: { RAF_THRESHOLD } } = constants;
+
 testModule('Watcher', class extends TestClass {
   ['@test unwatch works']() {
     return this.context.evaluate(() => {
@@ -21,17 +25,17 @@ testModule('Watcher', class extends TestClass {
         window.STATE.exposed++;
       });
     })
-    .wait(50)
+    .wait(RAF_THRESHOLD * 5)
     .scrollTo(200)
-    .wait(50)
+    .wait(RAF_THRESHOLD * 5)
     .scrollTo(0)
-    .wait(50)
+    .wait(RAF_THRESHOLD * 5)
     .evaluate(() => {
       window.watcher.unwatch(window.target);
     })
-    .wait(50)
+    .wait(RAF_THRESHOLD * 5)
     .scrollTo(200)
-    .wait(50)
+    .wait(RAF_THRESHOLD * 5)
     .getExecution()
     .evaluate(function() {
       return window.STATE.exposed;
@@ -52,17 +56,17 @@ testModule('Watcher', class extends TestClass {
         window.STATE.exposed++;
       });
     })
-    .wait(50)
+    .wait(RAF_THRESHOLD * 5)
     .scrollTo(200)
-    .wait(50)
+    .wait(RAF_THRESHOLD * 5)
     .scrollTo(0)
-    .wait(50)
+    .wait(RAF_THRESHOLD * 5)
     .evaluate(() => {
       window.watcher1.unwatch(window.target);
     })
-    .wait(50)
+    .wait(RAF_THRESHOLD * 5)
     .scrollTo(200)
-    .wait(50)
+    .wait(RAF_THRESHOLD * 5)
     .getExecution()
     .evaluate(function() {
       return window.STATE.exposed;
@@ -83,7 +87,7 @@ testModule('Watcher', class extends TestClass {
         window.STATE.order.push(2);
       });
     })
-    .wait(50)
+    .wait(RAF_THRESHOLD * 5)
     .getExecution()
     .evaluate(function() {
       return window.STATE.order;

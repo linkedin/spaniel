@@ -17,6 +17,7 @@ export default class SpanielContext {
     this._events = [];
     this._results = [];
     this._assertions = [];
+
     this._execution = this._nightmare.goto('http://localhost:3000/').wait(TIMEOUT);
   }
 

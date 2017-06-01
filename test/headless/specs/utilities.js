@@ -10,6 +10,10 @@ import {
   TestClass
 } from './../test-module';
 
+import constants from './../../constants.js';
+
+const { time: { RAF_THRESHOLD }, ITEM_TO_OBSERVE } = constants;
+
 testModule('elementSatisfiesRatio', class extends TestClass {
   ['@test passes true into callback when ratio satisfied']() {
     return this.context.evaluate(function() {
@@ -19,8 +23,9 @@ testModule('elementSatisfiesRatio', class extends TestClass {
         window.STATE.satisfied = true;
       })
     })
-    .wait(30)
+    .wait(RAF_THRESHOLD * 5)
     .getExecution()
+    .wait(RAF_THRESHOLD)
     .evaluate(function() {
       return window.STATE.satisfied;
     }).then(function(result) {
@@ -36,8 +41,9 @@ testModule('elementSatisfiesRatio', class extends TestClass {
         window.STATE.satisfied = false;
       })
     })
-    .wait(30)
+    .wait(RAF_THRESHOLD * 8)
     .getExecution()
+    .wait(RAF_THRESHOLD)
     .evaluate(function() {
       return window.STATE.satisfied;
     }).then(function(result) {
@@ -55,8 +61,9 @@ testModule('Eventing', class extends TestClass {
       });
     })
     .scrollTo(10)
-    .wait(20)
+    .wait(RAF_THRESHOLD * 4)
     .getExecution()
+    .wait(RAF_THRESHOLD)
     .evaluate(function() {
       return window.STATE.scrollEvents;
     }).then(function(result) {
@@ -72,10 +79,11 @@ testModule('Eventing', class extends TestClass {
       });
     })
     .scrollTo(10)
-    .wait(30)
+    .wait(RAF_THRESHOLD * 3)
     .scrollTo(20)
-    .wait(30)
+    .wait(RAF_THRESHOLD * 3)
     .getExecution()
+    .wait(RAF_THRESHOLD)
     .evaluate(function() {
       return window.STATE.scrollEvents;
     }).then(function(result) {
@@ -92,15 +100,16 @@ testModule('Eventing', class extends TestClass {
       spaniel.on('scroll',  window.STATE.scrollHandler);
     })
     .scrollTo(10)
-    .wait(30)
+    .wait(RAF_THRESHOLD * 5)
     .evaluate(function() {
       spaniel.off('scroll', window.STATE.scrollHandler);;
     })
     .scrollTo(30)
-    .wait(20)
+    .wait(RAF_THRESHOLD * 3)
     .scrollTo(30)
-    .wait(20)
+    .wait(RAF_THRESHOLD * 3)
     .getExecution()
+    .wait(RAF_THRESHOLD)
     .evaluate(function() {
       return window.STATE.scrollEvents;
     }).then(function(result) {
