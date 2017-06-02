@@ -32,14 +32,30 @@ export class Frame implements FrameInterface {
     public timestamp: number,
     public scrollTop: number,
     public scrollLeft: number,
+    public x: number,
+    public y: number,
     public width: number,
     public height: number
   ) {}
-  static generate(): Frame {
+  static generate(root?: Element): Frame {
+    if (root && document.documentElement.contains(root)) {
+      let rootBcr = root.getBoundingClientRect();
+      return new Frame(
+        Date.now(),
+        root.scrollTop,
+        root.scrollLeft,
+        rootBcr.left,
+        rootBcr.top,
+        rootBcr.width,
+        rootBcr.height
+      );
+    }
     return new Frame(
       Date.now(),
       W.getScrollTop(),
       W.getScrollLeft(),
+      0,
+      0,
       W.getWidth(),
       W.getHeight()
     );
@@ -51,15 +67,19 @@ export function generateToken() {
 }
 
 export abstract class BaseScheduler {
+  protected root: Element;
   protected engine: EngineInterface;
   protected queue: QueueInterface;
   protected isTicking: Boolean = false;
   protected toRemove: Array<string| Element | Function> = [];
-  constructor(customEngine?: EngineInterface) {
+  constructor(customEngine?: EngineInterface, root?: Element) {
     if (customEngine) {
       this.engine = customEngine;
     } else {
       this.engine = getGlobalEngine();
+    }
+    if (root) {
+       this.root = root;
     }
   }
   protected abstract applyQueue(frame: Frame): void;
@@ -74,7 +94,7 @@ export abstract class BaseScheduler {
         }
         this.toRemove = [];
       }
-      this.applyQueue(Frame.generate());
+      this.applyQueue(Frame.generate(this.root));
       this.engine.scheduleRead(this.tick.bind(this));
     }
   }
@@ -143,8 +163,8 @@ export class PredicatedScheduler extends Scheduler implements SchedulerInterface
 
 export class ElementScheduler extends BaseScheduler implements ElementSchedulerInterface {
   protected queue: DOMQueue;
-  constructor(customEngine?: EngineInterface) {
-    super(customEngine);
+  constructor(customEngine?: EngineInterface, root?: Element) {
+    super(customEngine, root);
     this.queue = new DOMQueue();
   }
   applyQueue(frame: Frame) {

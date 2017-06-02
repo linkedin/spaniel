@@ -10,6 +10,10 @@ import {
   TestClass
 } from './../test-module';
 
+import constants from './../../constants.js';
+
+const { time: { IMPRESSION_THRESHOLD } } = constants;
+
 testModule('IntersectionObserver', class extends TestClass {
   ['@test observing a visible element should fire callback immediately']() {
     return this.context.evaluate(() => {
@@ -81,9 +85,9 @@ testModule('IntersectionObserver', class extends TestClass {
       });
       observer.observe(target);
     })
-    .wait(100)
+    .wait(IMPRESSION_THRESHOLD)
     .scrollTo(80)
-    .wait(100)
+    .wait(IMPRESSION_THRESHOLD)
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
@@ -103,11 +107,11 @@ testModule('IntersectionObserver', class extends TestClass {
       });
       observer.observe(target);
     })
-    .wait(100)
+    .wait(IMPRESSION_THRESHOLD)
     .scrollTo(80)
-    .wait(100)
+    .wait(IMPRESSION_THRESHOLD)
     .scrollTo(70)
-    .wait(100)
+    .wait(IMPRESSION_THRESHOLD)
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
@@ -128,11 +132,11 @@ testModule('IntersectionObserver', class extends TestClass {
       });
       observer.observe(target);
     })
-    .wait(100)
+    .wait(IMPRESSION_THRESHOLD)
     .scrollTo(105)
-    .wait(100)
+    .wait(IMPRESSION_THRESHOLD)
     .scrollTo(95)
-    .wait(100)
+    .wait(IMPRESSION_THRESHOLD)
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
@@ -229,5 +233,36 @@ testModule('IntersectionObserver', class extends TestClass {
     }).then(function(result) {
       assert.equal(result, 6, 'Callback fired 6 times');
     });
+  }
+
+  /* Root inlcusion test case */
+  ['@test observing a non visible element within a root and then scrolling should fire callbacks']() {
+    return this.context.evaluate(function() {
+      window.STATE.impressions = 0;
+      let root = document.getElementById('root');
+      let target = document.querySelector('.tracked-item-root[data-root-target-id="5"]');
+      let observer = new spaniel.IntersectionObserver(function() {
+        window.STATE.impressions++;
+      }, {
+        root: root,
+        threshold: 0.6
+      });
+      observer.observe(target);
+    })
+    .wait(IMPRESSION_THRESHOLD)
+    .evaluate(function() {
+      root.scrollTop = 300;
+    })
+    .wait(IMPRESSION_THRESHOLD)
+    .evaluate(function() {
+      root.scrollTop = 180;
+    })
+    .wait(IMPRESSION_THRESHOLD)
+    .getExecution()
+    .evaluate(function() {
+      return window.STATE.impressions;
+      }).then(function(result) {
+        assert.equal(result, 2, 'Callback fired twice');
+      });
   }
 });
