@@ -59,3 +59,45 @@ let observer = new spaniel.SpanielObserver(function(changes) {
   }]
 });
 observer.observe(target);
+
+//Example usage of SpanielObserver with a custom root element
+var root = document.getElementById('root');
+var rootTarget = document.querySelector('.tracked-item-root[data-root-target-id="5"]');
+var rootObserver = new spaniel.SpanielObserver(function(changes) {
+  console.log(changes[0]);
+}, {
+  root: root,
+  rootMargin: '0px 0px',
+  threshold: [{
+    label: 'impressed',
+    ratio: 0.5,
+    time: 1000
+  }]
+});
+
+//Sample usage of watcher with Root element
+window.rootWatcher = new spaniel.Watcher({
+  time: 100,
+  ratio: 0.8,
+  root: root
+});
+rootObserver.observe(rootTarget);
+
+var elements = document.getElementsByClassName('tracked-item-root');
+
+for (var i = 0; i < elements.length; i++) {
+  (function(el) {
+    if (i < 6) {
+      var id = el.getAttribute('data-root-target-id');
+      window.rootWatcher.watch(el, function(e, meta) {
+        var end = meta && meta.duration ? ' for ' + meta.duration + ' milliseconds' : '';
+        console.log('root: '+id + ' ' + e + end);
+        GLOBAL_TEST_EVENTS.push({
+          id: parseInt(id),
+          e: e,
+          meta: meta || {}
+        });
+      });
+    }
+  })(elements[i]);
+}

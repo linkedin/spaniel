@@ -132,6 +132,7 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
     this.id = generateToken();
     options.threshold = options.threshold || 0;
     this.rootMarginObj = rootMarginToDOMMargin(options.rootMargin || '0px');
+    this.root = options.root;
 
     if (Array.isArray(options.threshold)) {
       this.thresholds = <Array<number>>options.threshold;
@@ -139,7 +140,7 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
       this.thresholds = [<number>options.threshold];
     }
 
-    this.scheduler = new ElementScheduler();
+    this.scheduler = new ElementScheduler(null, this.root);
   }
 };
 
@@ -182,8 +183,8 @@ export class IntersectionObserverEntry implements IntersectionObserverEntryInit 
 export function generateEntry(frame: Frame, bcr: DOMRectReadOnly, el: Element, rootMargin: DOMMargin): IntersectionObserverEntry {
   let { top, bottom, left, right } = bcr;
   let rootBounds: ClientRect = {
-    left: rootMargin.left,
-    top: rootMargin.top,
+    left: frame.x + rootMargin.left,
+    top: frame.y + rootMargin.top,
     bottom: rootMargin.bottom,
     right: rootMargin.right,
     width: frame.width - (rootMargin.right + rootMargin.left),
