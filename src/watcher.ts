@@ -95,8 +95,8 @@ export class Watcher {
       callback
     });
   }
-  unwatch(el: SpanielTrackedElement) {
-    this.observer.unobserve(el);
+  unwatch(el: Element) {
+    this.observer.unobserve(el as SpanielTrackedElement);
   }
   disconnect() {
     this.observer.disconnect();
