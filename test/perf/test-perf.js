@@ -1,5 +1,4 @@
-var chromeTracing = require("chrome-tracing");
-var InitialRenderBenchmark = chromeTracing.InitialRenderBenchmark;
+var { InitialRenderBenchmark, Runner } = require("chrome-tracing");
 
 let benchmark = new InitialRenderBenchmark({
   name: "app initial render",
@@ -10,7 +9,9 @@ let benchmark = new InitialRenderBenchmark({
   }
 });
 
-benchmark.run().then((result) => {
+let runner = new Runner([benchmark]);
+
+runner.run(1).then((result) => {
     console.log('RESULTZ');
   console.log(result);
 }).catch((err) => {
