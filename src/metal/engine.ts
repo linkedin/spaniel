@@ -12,10 +12,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import { EngineInterface } from './interfaces';
 import W from './window-proxy';
 
+const NUM_SKIPPED_FRAMES = 3;
+
 export class Engine implements EngineInterface {
   private reads: Array<Function> = [];
   private work: Array<Function> = [];
   private running: Boolean = false;
+  private skipCounter: number = NUM_SKIPPED_FRAMES + 1;
   scheduleRead(callback: Function) {
     this.reads.unshift(callback);
     this.run();
@@ -28,14 +31,18 @@ export class Engine implements EngineInterface {
     if (!this.running) {
       this.running = true;
       W.rAF(() => {
-        this.running = false;
-        for (let i = 0, rlen = this.reads.length; i < rlen; i++) {
-          this.reads.pop()();
+        if (this.skipCounter > NUM_SKIPPED_FRAMES) {
+          this.skipCounter = 0;
+          for (let i = 0, rlen = this.reads.length; i < rlen; i++) {
+            this.reads.pop()();
+          }
+          for (let i = 0, wlen = this.work.length; i < wlen; i++) {
+            this.work.pop()();
+          }
         }
-        for (let i = 0, wlen = this.work.length; i < wlen; i++) {
-          this.work.pop()();
-        }
+        this.skipCounter++;
         if (this.work.length > 0 || this.reads.length > 0) {
+          this.running = false;
           this.run();
         }
       });

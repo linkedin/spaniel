@@ -24,7 +24,7 @@ testModule('IntersectionObserver', class extends TestClass {
       });
       observer.observe(target);
     })
-    .wait(50)
+    .wait(100)
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
@@ -44,7 +44,7 @@ testModule('IntersectionObserver', class extends TestClass {
       });
       observer.observe(target);
     })
-    .wait(50)
+    .wait(100)
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
@@ -154,7 +154,7 @@ testModule('IntersectionObserver', class extends TestClass {
       });
       window.observer.observe(window.target);
     })
-    .wait(50)
+    .wait(100)
     .evaluate(function() {
       window.observer.unobserve(window.target);
     })
@@ -184,7 +184,7 @@ testModule('IntersectionObserver', class extends TestClass {
       window.observer.observe(target2);
       window.observer.observe(target3);
     })
-    .wait(50)
+    .wait(100)
     .evaluate(function() {
       window.observer.disconnect();
     })
@@ -214,15 +214,15 @@ testModule('IntersectionObserver', class extends TestClass {
       window.observer.observe(target2);
       window.observer.observe(target3);
     })
-    .wait(50)
+    .wait(100)
     .evaluate(function() {
       window.observer.disconnect();
     })
-    .wait(50)
+    .wait(100)
     .evaluate(function() {
       window.observer.observe(document.querySelector('.tracked-item[data-id="1"]'));
     })
-    .wait(50)
+    .wait(100)
     .scrollTo(500)
     .wait(50)
     .scrollTo(0)

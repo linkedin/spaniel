@@ -12,7 +12,7 @@ import {
 
 import constants from './../../../constants.js';
 
-const { time: { RAF_THRESHOLD }, ITEM_TO_OBSERVE } = constants;
+const { time: { RAF_THRESHOLD }, ITEM_TO_OBSERVE, NUM_SKIPPED_FRAMES } = constants;
 
 testModule('Watcher Exposed Event', class extends WatcherTestClass {
   ['@test should not fire if item is not exposed']() {
@@ -40,13 +40,13 @@ testModule('Watcher Exposed Event', class extends WatcherTestClass {
   ['@test should fire twice if moved in, out, and then back in viewport']() {
     return this.context.scrollTo(100)
       .scrollTo(140)
-      .wait(RAF_THRESHOLD)
+      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
       .scrollTo(120)
-      .wait(RAF_THRESHOLD)
+      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
       .scrollTo(0)
-      .wait(RAF_THRESHOLD)
+      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
       .scrollTo(50)
-      .wait(RAF_THRESHOLD)
+      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
       .assertEvent(ITEM_TO_OBSERVE, 'exposed', 2)
       .done();
   }

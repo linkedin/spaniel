@@ -12,12 +12,12 @@ import {
 
 import constants from './../../../constants.js';
 
-const { time: { IMPRESSION_THRESHOLD, RAF_THRESHOLD, SMALL }, ITEM_TO_OBSERVE } = constants;
+const { time: { IMPRESSION_THRESHOLD, RAF_THRESHOLD, SMALL }, ITEM_TO_OBSERVE, NUM_SKIPPED_FRAMES } = constants;
 
 testModule('Impression event', class extends WatcherTestClass {
   ['@test should not fire if item is exposed but not impressed']() {
     return this.context.scrollTo(50)
-      .wait(RAF_THRESHOLD * 2)
+      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
       .assertOnce(ITEM_TO_OBSERVE, 'exposed')
       .assertNever(ITEM_TO_OBSERVE, 'impressed')
       .assertOnce(ITEM_TO_OBSERVE, 'exposed')
@@ -34,7 +34,6 @@ testModule('Impression event', class extends WatcherTestClass {
     return this.context.scrollTo(150)
       .wait(RAF_THRESHOLD)
       .scrollTo(250)
-      .wait(RAF_THRESHOLD)
       .scrollTo(0)
       .assertNever(ITEM_TO_OBSERVE, 'impressed').done();
   }
@@ -66,7 +65,7 @@ testModule('Impression event', class extends WatcherTestClass {
       .wait(RAF_THRESHOLD)
       .assertNever(ITEM_TO_OBSERVE, 'impressed')
       .scrollTo(200)
-      .wait(IMPRESSION_THRESHOLD + RAF_THRESHOLD)
+      .wait(IMPRESSION_THRESHOLD + RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
       .assertOnce(ITEM_TO_OBSERVE, 'impressed')
       .done();
   }

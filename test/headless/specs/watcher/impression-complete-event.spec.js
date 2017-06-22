@@ -12,7 +12,7 @@ import {
 
 import constants from './../../../constants.js';
 
-const { time: { IMPRESSION_THRESHOLD, RAF_THRESHOLD }, ITEM_TO_OBSERVE } = constants;
+const { time: { IMPRESSION_THRESHOLD, RAF_THRESHOLD }, ITEM_TO_OBSERVE, NUM_SKIPPED_FRAMES } = constants;
 
 testModule('Impression Complete event', class extends WatcherTestClass {
   ['@test should not fire if item is not exposed']() {
@@ -47,6 +47,7 @@ testModule('Impression Complete event', class extends WatcherTestClass {
     return this.context.scrollTo(200)
       .wait(IMPRESSION_THRESHOLD + RAF_THRESHOLD * 4)
       .scrollTo(0)
+      .wait(RAF_THRESHOLD * 3)
       .assertOnce(ITEM_TO_OBSERVE, 'impression-complete')
       .done();
   }
@@ -55,7 +56,7 @@ testModule('Impression Complete event', class extends WatcherTestClass {
     return this.context.scrollTo(200)
       .wait(IMPRESSION_THRESHOLD + RAF_THRESHOLD * 4)
       .unwatch(ITEM_TO_OBSERVE)
-      .wait(RAF_THRESHOLD * 2)
+      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
       .assertOnce(ITEM_TO_OBSERVE, 'impression-complete')
       .done();
   }
@@ -64,9 +65,9 @@ testModule('Impression Complete event', class extends WatcherTestClass {
     return this.context.scrollTo(150)
       .wait(IMPRESSION_THRESHOLD * 5)
       .scrollTo(0)
-      .wait(RAF_THRESHOLD)
+      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
       .assert(function(e) {
-        return e.meta.duration >= 495 && e.meta.duration <= 545 && e.id === 5 && e.e === 'impression-complete';
+        return e.meta.duration >= ((IMPRESSION_THRESHOLD * 5) - (RAF_THRESHOLD * NUM_SKIPPED_FRAMES)) && e.meta.duration <= ((IMPRESSION_THRESHOLD * 5) + (RAF_THRESHOLD * NUM_SKIPPED_FRAMES)) && e.id === 5 && e.e === 'impression-complete';
       }, 1)
       .done();
   }
@@ -90,7 +91,7 @@ testModule('Impression Complete event', class extends WatcherTestClass {
       .scrollTo(250)
       .wait(IMPRESSION_THRESHOLD + RAF_THRESHOLD * 4)
       .scrollTo(0)
-      .wait(RAF_THRESHOLD)
+      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
       .assertEvent(ITEM_TO_OBSERVE, 'impression-complete', 2)
       .done();
   }

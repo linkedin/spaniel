@@ -4,7 +4,8 @@ const constants = {
 		RAF_THRESHOLD : 16,
 		SMALL: 5
 	},
-	ITEM_TO_OBSERVE: 5
+	ITEM_TO_OBSERVE: 5,
+	NUM_SKIPPED_FRAMES: 3
 };
 
 
