@@ -10,7 +10,7 @@ var runTest = function(threshold, options) {
   }
   options = options || {};
   var thresholds = [threshold];
-  var timeout = 50 + (options.timeout || 0);
+  var timeout = 100 + (options.timeout || 0);
   var entries = [];
   var target = options.target || document.createElement('div');
   target.style.height = '10px';

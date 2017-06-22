@@ -12,7 +12,7 @@ import {
 
 import constants from './../../constants.js';
 
-const { time: { RAF_THRESHOLD }, ITEM_TO_OBSERVE } = constants;
+const { time: { RAF_THRESHOLD }, ITEM_TO_OBSERVE, NUM_SKIPPED_FRAMES } = constants;
 
 testModule('elementSatisfiesRatio', class extends TestClass {
   ['@test passes true into callback when ratio satisfied']() {
@@ -79,11 +79,11 @@ testModule('Eventing', class extends TestClass {
       });
     })
     .scrollTo(10)
-    .wait(RAF_THRESHOLD * 3)
+    .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
     .scrollTo(20)
-    .wait(RAF_THRESHOLD * 3)
+    .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
     .getExecution()
-    .wait(RAF_THRESHOLD)
+    .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
     .evaluate(function() {
       return window.STATE.scrollEvents;
     }).then(function(result) {

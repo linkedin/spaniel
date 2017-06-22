@@ -50,7 +50,7 @@ testModule('SpanielObserver', class extends SpanielObserverTestClass {
   }
   ['@test observing a visible element should fire after threshold time has passed']() {
     return this.setupTest()
-      .wait(250)
+      .wait(300)
       .getExecution()
       .evaluate(function() {
         return window.STATE.impressions;
@@ -64,7 +64,7 @@ testModule('SpanielObserver', class extends SpanielObserverTestClass {
       .evaluate(function() {
         window.observer.unobserve(window.target);
       })
-      .wait(20)
+      .wait(100)
       .getExecution()
       .evaluate(function() {
         return window.STATE.impressions === 1 && window.STATE.completes === 1;

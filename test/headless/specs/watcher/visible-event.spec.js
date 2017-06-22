@@ -12,12 +12,12 @@ import {
 
 import constants from './../../../constants.js';
 
-const { time: { RAF_THRESHOLD }, ITEM_TO_OBSERVE } = constants;
+const { time: { RAF_THRESHOLD }, ITEM_TO_OBSERVE, NUM_SKIPPED_FRAMES } = constants;
 
 testModule('Visible event', class extends WatcherTestClass {
   ['@test should not fire if item is exposed but not visible']() {
     return this.context.scrollTo(50)
-      .wait(RAF_THRESHOLD * 2)
+      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
       .assertOnce(ITEM_TO_OBSERVE, 'exposed')
       .assertNever(ITEM_TO_OBSERVE, 'visible')
       .done();
@@ -36,6 +36,7 @@ testModule('Visible event', class extends WatcherTestClass {
       .scrollTo(300)
       .wait(RAF_THRESHOLD * 5)
       .scrollTo(250)
+      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
       .assertOnce(ITEM_TO_OBSERVE, 'visible')
       .done();
   }
@@ -50,7 +51,7 @@ testModule('Visible event', class extends WatcherTestClass {
       .scrollTo(10)
       .wait(RAF_THRESHOLD * 5)
       .scrollTo(200)
-      .wait(RAF_THRESHOLD)
+      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
       .assertEvent(ITEM_TO_OBSERVE, 'visible', 2)
       .done();
   }
