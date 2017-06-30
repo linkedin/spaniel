@@ -14,44 +14,83 @@ import constants from './../../../constants.js';
 
 const { time: { RAF_THRESHOLD }, ITEM_TO_OBSERVE, NUM_SKIPPED_FRAMES } = constants;
 
-testModule('Visible event', class extends WatcherTestClass {
+class VisibleEventTestClass extends WatcherTestClass {
+  setupTest(customSetup) {
+    return this.context.evaluate(customSetup || (() => {
+      watcher.disconnect();
+      var el = document.querySelector('.tracked-item[data-id="5"]')
+      var id = el.getAttribute('data-id');
+      window.STATE.exposed = 0;
+      
+      window.watcher.watch(el, function(e, meta) {
+        var end = meta && meta.duration ? ' for ' + meta.duration + ' milliseconds' : '';
+        console.log(id + ' ' + e + end);
+        if (e == 'exposed') {
+          window.STATE.exposed++;
+          createDiv("exposed-div-" + window.STATE.exposed);
+        }
+        GLOBAL_TEST_EVENTS.push({
+          id: parseInt(id),
+          e: e,
+          meta: meta || {}
+        });
+      });
+
+      var referenceElement = document.querySelector('.tracked-item[data-id="1"]')
+      window.STATE.exposedFirst = 0;
+      window.watcher.watch(referenceElement, function(e, meta) {
+        if (e == 'exposed') {
+          window.STATE.exposedFirst++;
+          createDiv('first-element-exposed-div-' + window.STATE.exposedFirst);
+        }
+      });
+    }));
+  }
+}
+
+testModule('Visible event', class extends VisibleEventTestClass {
   ['@test should not fire if item is exposed but not visible']() {
-    return this.context.scrollTo(50)
-      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
+    return this.setupTest()
+      .onDOMReady()
+      .scrollTo(50)
+      .waitForExposed(1)
       .assertOnce(ITEM_TO_OBSERVE, 'exposed')
       .assertNever(ITEM_TO_OBSERVE, 'visible')
       .done();
   }
 
   ['@test should fire if item is visible']() {
-    return this.context.scrollTo(200)
-      .wait(RAF_THRESHOLD * 5)
+    return this.setupTest()
+      .onDOMReady()
+      .scrollTo(200)
+      .waitForExposed(1)
       .assertOnce(ITEM_TO_OBSERVE, 'visible')
       .done();
   }
 
   ['@test should fire only once when item is moved while visible']() {
-    return this.context.scrollTo(200)
-      .wait(RAF_THRESHOLD * 5)
+    return this.setupTest()
+      .onDOMReady()
+      .scrollTo(200)
+      .waitForExposed(1)
       .scrollTo(300)
-      .wait(RAF_THRESHOLD * 5)
       .scrollTo(250)
-      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
       .assertOnce(ITEM_TO_OBSERVE, 'visible')
       .done();
   }
 
   ['@test should fire only twice when item is moved into viewport, out, and then back in']() {
-    return this.context.scrollTo(200)
-      .wait(RAF_THRESHOLD * 5)
+    return this.setupTest()
+      .onDOMReady()
+      .scrollTo(200)
+      .waitForExposed(1)
       .scrollTo(300)
-      .wait(RAF_THRESHOLD * 5)
       .scrollTo(250)
       .assertOnce(ITEM_TO_OBSERVE, 'visible')
       .scrollTo(10)
-      .wait(RAF_THRESHOLD * 5)
+      .waitForNthElemEvent('first', 'exposed', '1')
       .scrollTo(200)
-      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
+      .waitForExposed(2)
       .assertEvent(ITEM_TO_OBSERVE, 'visible', 2)
       .done();
   }

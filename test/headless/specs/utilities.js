@@ -21,11 +21,12 @@ testModule('elementSatisfiesRatio', class extends TestClass {
       var el = document.querySelector('.tracked-item[data-id="1"]');
       spaniel.elementSatisfiesRatio(el, 1, function(a) {
         window.STATE.satisfied = true;
+        createDiv('satisfied-div');
+        document.body.appendChild(div);
       })
     })
-    .wait(RAF_THRESHOLD * 5)
+    .waitForRatioSatisfiedDiv()
     .getExecution()
-    .wait(RAF_THRESHOLD)
     .evaluate(function() {
       return window.STATE.satisfied;
     }).then(function(result) {
@@ -39,11 +40,11 @@ testModule('elementSatisfiesRatio', class extends TestClass {
       var el = document.querySelector('.tracked-item[data-id="10"]');
       spaniel.elementSatisfiesRatio(el, 1, function(a) {
         window.STATE.satisfied = false;
+        createDiv('satisfied-div');
       })
     })
-    .wait(RAF_THRESHOLD * 8)
+    .waitForRatioSatisfiedDiv('#satisfied-div')
     .getExecution()
-    .wait(RAF_THRESHOLD)
     .evaluate(function() {
       return window.STATE.satisfied;
     }).then(function(result) {
@@ -58,12 +59,12 @@ testModule('Eventing', class extends TestClass {
       window.STATE.scrollEvents = 0;
       spaniel.on('scroll', function() {
         window.STATE.scrollEvents++;
+        createDiv('scroll-div-' + window.STATE.scrollEvents);
       });
     })
     .scrollTo(10)
-    .wait(RAF_THRESHOLD * 4)
+    .waitForScroll(1)
     .getExecution()
-    .wait(RAF_THRESHOLD)
     .evaluate(function() {
       return window.STATE.scrollEvents;
     }).then(function(result) {
@@ -76,14 +77,14 @@ testModule('Eventing', class extends TestClass {
       window.STATE.scrollEvents = 0;
       spaniel.on('scroll', function() {
         window.STATE.scrollEvents++;
+        createDiv('scroll-div-' + window.STATE.scrollEvents);
       });
     })
     .scrollTo(10)
-    .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
+    .waitForScroll(1)
     .scrollTo(20)
-    .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
+    .waitForScroll(2)
     .getExecution()
-    .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
     .evaluate(function() {
       return window.STATE.scrollEvents;
     }).then(function(result) {
@@ -96,20 +97,18 @@ testModule('Eventing', class extends TestClass {
       window.STATE.scrollEvents = 0;
       window.STATE.scrollHandler = function() {
         window.STATE.scrollEvents++;
+        createDiv('scroll-div-' + window.STATE.scrollEvents);
       };
       spaniel.on('scroll',  window.STATE.scrollHandler);
     })
     .scrollTo(10)
-    .wait(RAF_THRESHOLD * 5)
+    .waitForScroll(1)
     .evaluate(function() {
       spaniel.off('scroll', window.STATE.scrollHandler);;
     })
     .scrollTo(30)
-    .wait(RAF_THRESHOLD * 3)
     .scrollTo(30)
-    .wait(RAF_THRESHOLD * 3)
     .getExecution()
-    .wait(RAF_THRESHOLD)
     .evaluate(function() {
       return window.STATE.scrollEvents;
     }).then(function(result) {

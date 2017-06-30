@@ -14,10 +14,45 @@ import constants from './../../../constants.js';
 
 const { time: { IMPRESSION_THRESHOLD, RAF_THRESHOLD, SMALL }, ITEM_TO_OBSERVE, NUM_SKIPPED_FRAMES } = constants;
 
-testModule('Impression event', class extends WatcherTestClass {
+class ImpressionEventTestClass extends WatcherTestClass {
+  setupTest(customSetup) {
+    return this.context.evaluate(customSetup || (() => {
+      watcher.disconnect();
+      var el = document.querySelector('.tracked-item[data-id="5"]')
+      var id = el.getAttribute('data-id');
+      window.watcher.watch(el, function(e, meta) {
+        if (e == 'visible') {
+          createDiv('visible-div');
+        } else if (e == 'exposed') {
+          createDiv('exposed-div');
+        }
+        var end = meta && meta.duration ? ' for ' + meta.duration + ' milliseconds' : '';
+        console.log(id + ' ' + e + end);
+        GLOBAL_TEST_EVENTS.push({
+          id: parseInt(id),
+          e: e,
+          meta: meta || {}
+        });
+      });
+
+      var referenceElement = document.querySelector('.tracked-item[data-id="1"]');
+      window.STATE.exposedFirst = 0;
+      window.watcher.watch(referenceElement, function(e, meta) {
+        if (e == 'exposed') {
+          window.STATE.exposedFirst++;
+          createDiv('first-element-exposed-div-' + window.STATE.exposedFirst);
+        }
+      });
+    }));
+  }
+}
+
+testModule('Impression event', class extends ImpressionEventTestClass {
   ['@test should not fire if item is exposed but not impressed']() {
-    return this.context.scrollTo(50)
-      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
+    return this.setupTest()
+      .onDOMReady()
+      .scrollTo(50)
+      .waitForExposed()
       .assertOnce(ITEM_TO_OBSERVE, 'exposed')
       .assertNever(ITEM_TO_OBSERVE, 'impressed')
       .assertOnce(ITEM_TO_OBSERVE, 'exposed')
@@ -25,47 +60,57 @@ testModule('Impression event', class extends WatcherTestClass {
   }
 
   ['@test should not fire if item is visible, but not enough time lapsed']() {
-    return this.context.scrollTo(200)
-      .wait(20)
-      .assertNever(ITEM_TO_OBSERVE, 'impressed').done();
+    return this.setupTest()
+      .onDOMReady()
+      .scrollTo(200)
+      .assertNever(ITEM_TO_OBSERVE, 'impressed')
+      .done();
   }
 
   ['@test should not fire when item is visible, moves several times, but not enough time lapsed']() {
-    return this.context.scrollTo(150)
-      .wait(RAF_THRESHOLD)
+    return this.setupTest()
+      .onDOMReady()
+      .scrollTo(150)
       .scrollTo(250)
       .scrollTo(0)
-      .assertNever(ITEM_TO_OBSERVE, 'impressed').done();
+      .waitForNthElemEvent('first', 'exposed', '1')
+      .assertNever(ITEM_TO_OBSERVE, 'impressed')
+      .done();
   }
 
   ['@test should fire only once when item is moved into viewport and remains the threshold time']() {
-    return this.context.scrollTo(200)
-      .wait(IMPRESSION_THRESHOLD * 2)
+    return this.setupTest()
+      .onDOMReady()
+      .scrollTo(200)
+      .waitForVisible()
+      .wait(IMPRESSION_THRESHOLD + RAF_THRESHOLD)
       .assertOnce(ITEM_TO_OBSERVE, 'impressed')
       .done();
   }
 
   ['@test should fire only once when item is moved into viewport, is moved while remaining in viewport, after the threshold time']() {
-    return this.context.scrollTo(300)
-      .wait(SMALL)
+    return this.setupTest()
+      .onDOMReady()
+      .scrollTo(300)
       .scrollTo(250)
-      .wait(SMALL)
       .scrollTo(275)
-      .wait(SMALL)
       .assertNever(ITEM_TO_OBSERVE, 'impressed', 'should not be impressed before threshold')
-      .wait(IMPRESSION_THRESHOLD + RAF_THRESHOLD * 5)
+      .waitForVisible()
+      .wait(IMPRESSION_THRESHOLD + RAF_THRESHOLD)
       .assertOnce(ITEM_TO_OBSERVE, 'impressed', 'should be impressed after threshold')
       .done();
   }
 
   ['@test should fire only once when item is moved into viewport, out, and then back in, all before threshold time']() {
-    return this.context.scrollTo(200)
-      .wait(RAF_THRESHOLD)
+    return this.setupTest()
+      .onDOMReady()
+      .scrollTo(200)
+      .wait(RAF_THRESHOLD * 3)
       .scrollTo(0)
-      .wait(RAF_THRESHOLD)
       .assertNever(ITEM_TO_OBSERVE, 'impressed')
       .scrollTo(200)
-      .wait(IMPRESSION_THRESHOLD + RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
+      .waitForVisible()
+      .wait(IMPRESSION_THRESHOLD + RAF_THRESHOLD)
       .assertOnce(ITEM_TO_OBSERVE, 'impressed')
       .done();
   }

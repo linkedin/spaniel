@@ -20,8 +20,10 @@ class SpanielObserverTestClass extends TestClass {
       window.observer = new spaniel.SpanielObserver(function(changes) {
         for (var i = 0; i < changes.length; i++) {
           if (changes[i].entering) {
+            createDiv('impression-div');
             window.STATE.impressions++;
           } else {
+            createDiv('complete-div');
             window.STATE.completes++;
           }
         }
@@ -50,6 +52,7 @@ testModule('SpanielObserver', class extends SpanielObserverTestClass {
   }
   ['@test observing a visible element should fire after threshold time has passed']() {
     return this.setupTest()
+      .onDOMReady()
       .wait(300)
       .getExecution()
       .evaluate(function() {
@@ -60,11 +63,12 @@ testModule('SpanielObserver', class extends SpanielObserverTestClass {
   }
   ['@test unobserving after threshold results in exiting event']() {
     return this.setupTest()
+      .onDOMReady()
       .wait(300)
       .evaluate(function() {
         window.observer.unobserve(window.target);
       })
-      .wait(100)
+      .waitForImpressionCompelete()
       .getExecution()
       .evaluate(function() {
         return window.STATE.impressions === 1 && window.STATE.completes === 1;
@@ -74,7 +78,7 @@ testModule('SpanielObserver', class extends SpanielObserverTestClass {
   }
   ['@test unobserving before threshold results in no events']() {
     return this.setupTest()
-      .wait(20)
+      .onDOMReady()
       .evaluate(function() {
         window.observer.unobserve(window.target);
       })
@@ -88,31 +92,34 @@ testModule('SpanielObserver', class extends SpanielObserverTestClass {
   }
   ['@test unobserving inside observer callback results in one entering entry and one exiting entry']() {
     return this.setupTest(() => {
-      window.STATE.impressions = 0;
-      window.STATE.completes = 0;
-      window.target = document.querySelector('.tracked-item[data-id="1"]');
-      window.observer = new spaniel.SpanielObserver(function(changes) {
-        for (var i = 0; i < changes.length; i++) {
-          if (changes[i].entering) {
-            window.STATE.impressions++;
-          } else {
-            window.STATE.completes++;
+        window.STATE.impressions = 0;
+        window.STATE.completes = 0;
+        window.target = document.querySelector('.tracked-item[data-id="1"]');
+        window.observer = new spaniel.SpanielObserver(function(changes) {
+          for (var i = 0; i < changes.length; i++) {
+            if (changes[i].entering) {
+              createDiv('impression-div');
+              window.STATE.impressions++;
+            } else {
+              createDiv('complete-div');
+              window.STATE.completes++;
+            }
           }
-        }
-        window.observer.unobserve(window.target);
-      }, {
-        threshold: [{
-          label: 'impressed',
-          ratio: 0.5,
-          time: 0
-        }]
-      });
-      window.observer.observe(window.target);
-    }).wait(300)
+          window.observer.unobserve(window.target);
+        }, {
+          threshold: [{
+            label: 'impressed',
+            ratio: 0.5,
+            time: 0
+          }]
+        });
+        window.observer.observe(window.target);
+      })
+      .waitForImpression()
       .evaluate(function() {
         window.observer.unobserve(window.target);
       })
-      .wait(20)
+      .waitForImpressionCompelete()
       .getExecution()
       .evaluate(function() {
         return window.STATE.impressions === 1 && window.STATE.completes === 1;

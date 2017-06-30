@@ -20,11 +20,12 @@ testModule('IntersectionObserver', class extends TestClass {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="1"]');
       let observer = new spaniel.IntersectionObserver(function() {
+        createDiv('impression-div');
         window.STATE.impressions++;
       });
       observer.observe(target);
     })
-    .wait(100)
+    .waitForImpression()
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
@@ -38,13 +39,14 @@ testModule('IntersectionObserver', class extends TestClass {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="1"]');
       let observer = new spaniel.IntersectionObserver(function() {
+        createDiv('impression-div');
         window.STATE.impressions++;
       }, {
         threshold: 0.9
       });
       observer.observe(target);
     })
-    .wait(100)
+    .waitForImpression()
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
@@ -79,6 +81,7 @@ testModule('IntersectionObserver', class extends TestClass {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="5"]');
       let observer = new spaniel.IntersectionObserver(function() {
+        createDiv('impression-div');
         window.STATE.impressions++;
       }, {
         threshold: 0.75
@@ -87,7 +90,7 @@ testModule('IntersectionObserver', class extends TestClass {
     })
     .wait(IMPRESSION_THRESHOLD)
     .scrollTo(80)
-    .wait(IMPRESSION_THRESHOLD)
+    .waitForImpression()
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
@@ -102,6 +105,7 @@ testModule('IntersectionObserver', class extends TestClass {
       let target = document.querySelector('.tracked-item[data-id="5"]');
       let observer = new spaniel.IntersectionObserver(function() {
         window.STATE.impressions++;
+        createDiv('impression-div-' + window.STATE.impressions);
       }, {
         threshold: 0.75
       });
@@ -109,9 +113,9 @@ testModule('IntersectionObserver', class extends TestClass {
     })
     .wait(IMPRESSION_THRESHOLD)
     .scrollTo(80)
-    .wait(IMPRESSION_THRESHOLD)
+    .waitForImpression(1)
     .scrollTo(70)
-    .wait(IMPRESSION_THRESHOLD)
+    .waitForImpression(2)
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
@@ -126,6 +130,7 @@ testModule('IntersectionObserver', class extends TestClass {
       let target = document.querySelector('.tracked-item[data-id="5"]');
       let observer = new spaniel.IntersectionObserver(function() {
         window.STATE.impressions++;
+        createDiv('impression-div-' + window.STATE.impressions);
       }, {
         threshold: 0.75,
         rootMargin: '-25px 0px'
@@ -134,9 +139,9 @@ testModule('IntersectionObserver', class extends TestClass {
     })
     .wait(IMPRESSION_THRESHOLD)
     .scrollTo(105)
-    .wait(IMPRESSION_THRESHOLD)
+    .waitForImpression(1)
     .scrollTo(95)
-    .wait(IMPRESSION_THRESHOLD)
+    .waitForImpression(2)
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
@@ -151,10 +156,11 @@ testModule('IntersectionObserver', class extends TestClass {
       window.target = document.querySelector('.tracked-item[data-id="1"]');
       window.observer = new spaniel.IntersectionObserver(function() {
         window.STATE.impressions++;
+        createDiv('impression-div');
       });
       window.observer.observe(window.target);
     })
-    .wait(100)
+    .waitForImpression()
     .evaluate(function() {
       window.observer.unobserve(window.target);
     })
@@ -179,12 +185,13 @@ testModule('IntersectionObserver', class extends TestClass {
       target3 = document.querySelector('.tracked-item[data-id="3"]');
       window.observer = new spaniel.IntersectionObserver(function(event) {
         window.STATE.impressions+= event.length;
+        createDiv('impression-div-' + window.STATE.impressions);
       });
       window.observer.observe(target1);
       window.observer.observe(target2);
       window.observer.observe(target3);
     })
-    .wait(100)
+    .waitForImpression(1)
     .evaluate(function() {
       window.observer.disconnect();
     })
@@ -209,12 +216,13 @@ testModule('IntersectionObserver', class extends TestClass {
       target3 = document.querySelector('.tracked-item[data-id="3"]');
       window.observer = new spaniel.IntersectionObserver(function(event) {
         window.STATE.impressions+= event.length;
+        createDiv('impression-div-' + window.STATE.impressions);
       });
       window.observer.observe(target1);
       window.observer.observe(target2);
       window.observer.observe(target3);
     })
-    .wait(100)
+    .waitForImpression(1)
     .evaluate(function() {
       window.observer.disconnect();
     })
@@ -222,11 +230,11 @@ testModule('IntersectionObserver', class extends TestClass {
     .evaluate(function() {
       window.observer.observe(document.querySelector('.tracked-item[data-id="1"]'));
     })
-    .wait(100)
+    .waitForImpression(4)
     .scrollTo(500)
     .wait(50)
     .scrollTo(0)
-    .wait(50)
+    .waitForImpression(6)
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
@@ -243,6 +251,7 @@ testModule('IntersectionObserver', class extends TestClass {
       let target = document.querySelector('.tracked-item-root[data-root-target-id="5"]');
       let observer = new spaniel.IntersectionObserver(function() {
         window.STATE.impressions++;
+        createDiv('impression-div-' + window.STATE.impressions);
       }, {
         root: root,
         threshold: 0.6
@@ -253,11 +262,11 @@ testModule('IntersectionObserver', class extends TestClass {
     .evaluate(function() {
       root.scrollTop = 300;
     })
-    .wait(IMPRESSION_THRESHOLD)
+    .waitForImpression(1)
     .evaluate(function() {
       root.scrollTop = 180;
     })
-    .wait(IMPRESSION_THRESHOLD)
+    .waitForImpression(2)
     .getExecution()
     .evaluate(function() {
       return window.STATE.impressions;
