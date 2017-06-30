@@ -20,6 +20,11 @@ export default class Context {
     this._assertions = [];
     this._execution = this._root = this._nightmare.goto('http://localhost:3000/').wait(10).evaluate(function() {
       window.STATE = {};
+      window.createDiv = function(id) {
+        var div = document.createElement('div');
+        div.id = id;
+        document.body.appendChild(div);
+      }
     });
   }
   close() {
@@ -52,6 +57,61 @@ export default class Context {
 
   wait(time) {
     this._execution = this._execution.wait(time);
+    return this;
+  }
+
+  onDOMReady() {
+    this.wait('.tracked-item[data-id="1"]');
+    return this;
+  }
+
+  waitForImpression(identifierNum) {
+    if (identifierNum) {
+      this.wait(`#impression-div-${identifierNum}`, 200);
+    } else {
+      this.wait('#impression-div', 200);
+    }
+    return this;
+  }
+
+  waitForImpressionCompelete(identifierNum) {
+    if (identifierNum) {
+      this.wait(`#complete-div-${identifierNum}`, 200);
+    } else {
+      this.wait('#complete-div', 200);
+    }
+    return this;
+  }
+
+  waitForExposed(identifierNum) {
+    if (identifierNum) {
+      this.wait(`#exposed-div-${identifierNum}`, 200);
+    } else {
+      this.wait('#exposed-div', 200);
+    }
+    return this;
+  }
+
+  waitForScroll(identifierNum) {
+    if (identifierNum) {
+      this.wait(`#scroll-div-${identifierNum}`, 200);
+    } else {
+      this.wait('#scroll-div', 200);
+    }
+    return this;
+  }
+
+  waitForNthElemEvent(elementNum, event, identifierNum) {
+    if (identifierNum) {
+      this.wait(`#${elementNum}-element-${event}-div-${identifierNum}`, 200);
+    } else {
+      this.wait(`#${elementNum}-${event}-div`, 200);
+    }
+    return this;
+  }
+
+  waitForRatioSatisfiedDiv() {
+    this.wait('#satisfied-div', 200);
     return this;
   }
 }

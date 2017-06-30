@@ -18,7 +18,14 @@ export default class SpanielContext {
     this._results = [];
     this._assertions = [];
 
-    this._execution = this._nightmare.goto('http://localhost:3000/').wait(TIMEOUT);
+    this._execution = this._nightmare.goto('http://localhost:3000/').wait(TIMEOUT).evaluate(function() {
+      window.STATE = {};
+      window.createDiv = function(id) {
+        var div = document.createElement('div');
+        div.id = id;
+        document.body.appendChild(div);
+      }
+    });
   }
 
   close() {
@@ -27,6 +34,11 @@ export default class SpanielContext {
 
   getExecution() {
     return this._execution;
+  }
+
+  evaluate(func) {
+    this._execution = this._execution.evaluate(func);
+    return this;
   }
 
   getEvents() {
@@ -122,5 +134,46 @@ export default class SpanielContext {
         this._assert(events, a.predicate, a.message, a.expectedCount);
       }
     }.bind(this));
+  }
+
+  onDOMReady() {
+    this.wait('.tracked-item[data-id="1"]');
+    return this;
+  }
+
+  waitForImpression(identifierNum) {
+    if (identifierNum) {
+      this.wait(`#impression-div-${identifierNum}`, 200);
+    } else {
+      this.wait('#impression-div', 200);
+    }
+    return this;
+  }
+
+  waitForVisible(identifierNum) {
+    if (identifierNum) {
+      this.wait(`#visible-div-${identifierNum}`, 200);
+    } else {
+      this.wait('#visible-div', 200);
+    }
+    return this;
+  }
+
+  waitForExposed(identifierNum) {
+    if (identifierNum) {
+      this.wait(`#exposed-div-${identifierNum}`, 200);
+    } else {
+      this.wait('#exposed-div', 200);
+    }
+    return this;
+  }
+
+  waitForNthElemEvent(elementNum, event, identifierNum) {
+    if (identifierNum) {
+      this.wait(`#${elementNum}-element-${event}-div-${identifierNum}`, 200);
+    } else {
+      this.wait(`#${elementNum}-${event}-div`, 200);
+    }
+    return this;
   }
 }

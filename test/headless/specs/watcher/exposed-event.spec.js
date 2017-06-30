@@ -14,39 +14,78 @@ import constants from './../../../constants.js';
 
 const { time: { RAF_THRESHOLD }, ITEM_TO_OBSERVE, NUM_SKIPPED_FRAMES } = constants;
 
-testModule('Watcher Exposed Event', class extends WatcherTestClass {
+class ExposedEventTestClass extends WatcherTestClass {
+  setupTest(customSetup) {
+    return this.context.evaluate(customSetup || (() => {
+      watcher.disconnect();
+      var el = document.querySelector('.tracked-item[data-id="5"]')
+      var id = el.getAttribute('data-id');
+      window.STATE.exposed = 0;
+      window.watcher.watch(el, function(e, meta) {
+        var end = meta && meta.duration ? ' for ' + meta.duration + ' milliseconds' : '';
+        console.log(id + ' ' + e + end);
+        if (e == 'exposed') {
+          window.STATE.exposed++;
+          createDiv('exposed-div-' + window.STATE.exposed);
+        }
+        GLOBAL_TEST_EVENTS.push({
+          id: parseInt(id),
+          e: e,
+          meta: meta || {}
+        });
+      });
+      
+      var referenceElement = document.querySelector('.tracked-item[data-id="1"]')
+      window.STATE.exposedFirst = 0;
+      window.watcher.watch(referenceElement, function(e, meta) {
+        if (e == 'exposed') {
+          window.STATE.exposedFirst++;
+          createDiv('first-element-exposed-div-' + window.STATE.exposedFirst);
+        }
+      });
+    }));
+  }
+}
+
+testModule('Watcher Exposed Event', class extends ExposedEventTestClass {
   ['@test should not fire if item is not exposed']() {
-    return this.context.assertNever(ITEM_TO_OBSERVE, 'exposed')
+    return this.setupTest()
+      .onDOMReady()
+      .assertNever(ITEM_TO_OBSERVE, 'exposed')
       .done();
   }
 
   ['@test should fire if item is exposed']() {
-    return this.context.wait(20)
+    return this.setupTest()
+      .onDOMReady()
       .scrollTo(300)
-      .wait(RAF_THRESHOLD * 4)
+      .waitForExposed(1)
       .assertOnce(ITEM_TO_OBSERVE, 'exposed')
       .done();
   }
 
   ['@test should fire once if item is exposed and window moves while still exposed']() {
-    return this.context.scrollTo(100)
+    return this.setupTest()
+      .onDOMReady()
+      .scrollTo(100)
       .scrollTo(140)
       .scrollTo(120)
-      .wait(RAF_THRESHOLD)
+      .waitForExposed(1)
       .assertOnce(ITEM_TO_OBSERVE, 'exposed')
       .done();
   }
 
   ['@test should fire twice if moved in, out, and then back in viewport']() {
-    return this.context.scrollTo(100)
+    return this.setupTest()
+      .onDOMReady()
+      .scrollTo(100)
       .scrollTo(140)
-      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
       .scrollTo(120)
-      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
+      .waitForExposed(1)
       .scrollTo(0)
-      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
+      .waitForNthElemEvent('first', 'exposed', '1')
       .scrollTo(50)
-      .wait(RAF_THRESHOLD * NUM_SKIPPED_FRAMES)
+      .waitForExposed(2)
       .assertEvent(ITEM_TO_OBSERVE, 'exposed', 2)
       .done();
   }

@@ -19,23 +19,32 @@ testModule('Watcher', class extends TestClass {
   ['@test unwatch works']() {
     return this.context.evaluate(() => {
       window.STATE.exposed = 0;
+      window.STATE.exposedFirst = 0;
       window.watcher = new spaniel.Watcher();
       window.target = document.querySelector('.tracked-item[data-id="6"]');
+      
       window.watcher.watch(window.target, function() {
         window.STATE.exposed++;
+        createDiv('exposed-div-' + window.STATE.exposed);
+      });
+      
+      var referenceElement = document.querySelector('.tracked-item[data-id="1"]');
+      window.watcher.watch(referenceElement, function(e, meta) {
+        if (e == 'exposed') {
+          window.STATE.exposedFirst++;
+          createDiv('first-element-exposed-div-' + window.STATE.exposedFirst);
+        }
       });
     })
-    .wait(RAF_THRESHOLD * 5)
+    .onDOMReady()
     .scrollTo(200)
-    .wait(RAF_THRESHOLD * 5)
+    .waitForExposed(1)
     .scrollTo(0)
-    .wait(RAF_THRESHOLD * 5)
+    .waitForNthElemEvent('first', 'exposed', '1')
     .evaluate(() => {
       window.watcher.unwatch(window.target);
     })
-    .wait(RAF_THRESHOLD * 5)
     .scrollTo(200)
-    .wait(RAF_THRESHOLD * 5)
     .getExecution()
     .evaluate(function() {
       return window.STATE.exposed;
@@ -73,27 +82,37 @@ testModule('Watcher', class extends TestClass {
   ['@test unwatching from one watcher does not unwatch others']() {
     return this.context.evaluate(() => {
       window.STATE.exposed = 0;
+      window.STATE.exposedFirst = 0;
       window.watcher1 = new spaniel.Watcher();
       window.watcher2 = new spaniel.Watcher();
       window.target = document.querySelector('.tracked-item[data-id="6"]');
       window.watcher1.watch(window.target, function() {
         window.STATE.exposed++;
+        createDiv('exposed-div-' + window.STATE.exposed);
       });
       window.watcher2.watch(window.target, function() {
         window.STATE.exposed++;
+        createDiv('exposed-div-' + window.STATE.exposed);
+      });
+      
+      var referenceElement = document.querySelector('.tracked-item[data-id="1"]');
+      window.watcher.watch(referenceElement, function(e, meta) {
+        if (e == 'exposed') {
+          window.STATE.exposedFirst++;
+          createDiv('first-element-exposed-div-' + window.STATE.exposedFirst);
+        }
       });
     })
-    .wait(RAF_THRESHOLD * 5)
+    .onDOMReady()
     .scrollTo(200)
-    .wait(RAF_THRESHOLD * 5)
+    .waitForExposed(1)
     .scrollTo(0)
-    .wait(RAF_THRESHOLD * 5)
+    .waitForNthElemEvent('first', 'exposed', '1')
     .evaluate(() => {
       window.watcher1.unwatch(window.target);
     })
-    .wait(RAF_THRESHOLD * 5)
     .scrollTo(200)
-    .wait(RAF_THRESHOLD * 5)
+    .waitForExposed(3)
     .getExecution()
     .evaluate(function() {
       return window.STATE.exposed;
@@ -109,12 +128,16 @@ testModule('Watcher', class extends TestClass {
       var t2 = document.querySelector('.tracked-item[data-id="2"]');
       window.watcher.watch(t1, function() {
         window.STATE.order.push(1);
+        createDiv('exposed-div-1');
       });
       window.watcher.watch(t2, function() {
+       createDiv('exposed-div-2');
         window.STATE.order.push(2);
       });
     })
-    .wait(RAF_THRESHOLD * 5)
+    .onDOMReady()
+    .waitForExposed(1)
+    .waitForExposed(2)
     .getExecution()
     .evaluate(function() {
       return window.STATE.order;
