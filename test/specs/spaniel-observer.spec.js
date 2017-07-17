@@ -44,15 +44,15 @@ describe('SpanielObserver', function() {
       ratio: 0.5
     }).then(function(result) {
       result.observer.onTabHidden();
-      return wait50ms(result);
+      return wait100ms(result);
     }).then(function(result) {
       expect(result.entries.length).to.equal(2, 'Two events have been fired');
       expect(result.entries[1].entering).to.equal(false, 'Second event is exiting');
       result.observer.onTabShown();
-      return wait50ms(result);
+      return wait100ms(result);
     }).then(function(result) {
       result.observer.onTabHidden();
-      return wait50ms(result);
+      return wait100ms(result);
     }).then(function(result) {
       expect(result.entries.length).to.equal(4, 'Three events have been fired');
       expect(result.entries[2].entering).to.equal(true, 'second to last event is entering');

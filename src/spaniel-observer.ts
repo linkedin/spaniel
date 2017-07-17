@@ -36,6 +36,8 @@ import { generateToken, on, scheduleWork } from './metal/index';
 
 let emptyRect = { x: 0, y: 0, width: 0, height: 0 };
 
+const IntersectionObserver = !!w.IntersectionObserver ? w.IntersectionObserver : SpanielIntersectionObserver;
+
 export function DOMMarginToRootMargin(d: DOMMargin): DOMString {
   return `${d.top}px ${d.right}px ${d.bottom}px ${d.left}px`;
 }
@@ -62,7 +64,8 @@ export class SpanielObserver implements SpanielObserverInterface {
       rootMargin: convertedRootMargin,
       threshold: this.thresholds.map((t: SpanielThreshold) => t.ratio)
     };
-    this.observer = new SpanielIntersectionObserver((records: IntersectionObserverEntry[]) => this.internalCallback(records), o);
+
+    this.observer = new IntersectionObserver((records: IntersectionObserverEntry[]) => this.internalCallback(records), o);
 
     if (w.hasDOM) {
       on('unload', this.onWindowClosed.bind(this));

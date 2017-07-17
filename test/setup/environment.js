@@ -39,10 +39,10 @@ function cleanUp(value) {
   value.observer.disconnect();
 }
 
-function wait50ms(result) {
+function wait100ms(result) {
   return new RSVP.Promise(function(resolve) {
     setTimeout(function() {
       resolve(result);
-    }, 50);
+    }, 100);
   });
 }
