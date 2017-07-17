@@ -22,7 +22,8 @@ import {
   SpanielTrackedElement,
   SpanielObserverEntry,
   DOMString,
-  DOMMargin
+  DOMMargin,
+  IntersectionObserverClass
 } from './interfaces';
 
 export { Watcher, WatcherConfig } from './watcher';
@@ -46,12 +47,16 @@ import {
   Frame
 } from './metal/index';
 
+import w from './metal/window-proxy';
+
+const IntersectionObserver: IntersectionObserverClass  = !!w.IntersectionObserver ? w.IntersectionObserver : SpanielIntersectionObserver;
+
 export {
   on,
   off,
   scheduleRead,
   scheduleWork,
-  SpanielIntersectionObserver as IntersectionObserver,
+  IntersectionObserver,
   SpanielObserver,
   SpanielTrackedElement,
   setGlobalEngine,

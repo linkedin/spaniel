@@ -12,6 +12,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // detect the presence of DOM
 const nop = () => 0;
 
+import {
+  IntersectionObserverClass
+} from '../interfaces';
+
 interface WindowProxy {
   hasDOM: boolean;
   hasRAF: boolean;
@@ -20,6 +24,7 @@ interface WindowProxy {
   getHeight: Function;
   getWidth: Function;
   rAF: Function;
+  IntersectionObserver: IntersectionObserverClass;
 }
 
 const hasDOM = !!((typeof window !== 'undefined') && window && (typeof document !== 'undefined') && document);
@@ -32,7 +37,8 @@ let W: WindowProxy = {
   getScrollLeft: nop,
   getHeight: nop,
   getWidth: nop,
-  rAF: hasRAF ? window.requestAnimationFrame.bind(window) : (callback: Function) => { callback(); }
+  rAF: hasRAF ? window.requestAnimationFrame.bind(window) : (callback: Function) => { callback(); },
+  IntersectionObserver: hasDOM && (window as any).IntersectionObserver
 };
 
 function hasDomSetup() {

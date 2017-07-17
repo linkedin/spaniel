@@ -177,8 +177,8 @@ testModule('IntersectionObserver', class extends TestClass {
       target1 = document.querySelector('.tracked-item[data-id="1"]');
       target2 = document.querySelector('.tracked-item[data-id="2"]');
       target3 = document.querySelector('.tracked-item[data-id="3"]');
-      window.observer = new spaniel.IntersectionObserver(function() {
-        window.STATE.impressions++;
+      window.observer = new spaniel.IntersectionObserver(function(event) {
+        window.STATE.impressions+= event.length;
       });
       window.observer.observe(target1);
       window.observer.observe(target2);
@@ -207,8 +207,8 @@ testModule('IntersectionObserver', class extends TestClass {
       target1 = document.querySelector('.tracked-item[data-id="1"]');
       target2 = document.querySelector('.tracked-item[data-id="2"]');
       target3 = document.querySelector('.tracked-item[data-id="3"]');
-      window.observer = new spaniel.IntersectionObserver(function() {
-        window.STATE.impressions++;
+      window.observer = new spaniel.IntersectionObserver(function(event) {
+        window.STATE.impressions+= event.length;
       });
       window.observer.observe(target1);
       window.observer.observe(target2);
