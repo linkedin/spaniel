@@ -11,7 +11,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 import { SpanielIntersectionObserver, generateEntry } from './intersection-observer';
 
-import { SpanielTrackedElement, DOMMargin } from './interfaces';
+import { SpanielTrackedElement, DOMMargin, IntersectionObserverClass } from './interfaces';
 
 export { Watcher, WatcherConfig } from './watcher';
 
@@ -25,12 +25,16 @@ import w from './metal/window-proxy';
 
 import { invalidate } from './metal/window-proxy';
 
+const IntersectionObserver: IntersectionObserverClass = !!w.IntersectionObserver
+  ? w.IntersectionObserver
+  : SpanielIntersectionObserver;
+
 export {
   on,
   off,
   scheduleRead,
   scheduleWork,
-  SpanielIntersectionObserver as IntersectionObserver,
+  IntersectionObserver,
   SpanielObserver,
   SpanielTrackedElement,
   setGlobalEngine,

@@ -6,6 +6,10 @@
   <body>
     <div id="app"></div>
     <div id="root"></div>
+    <script>
+      // Disable browser default IntersectionObserver so as to use IntersectionObserver of spaniel.
+      window.IntersectionObserver = null; 
+    </script>
 
     <script type="text/javascript" src="../../exports/spaniel.js"></script>
     <script type="text/javascript" src="setup.js"></script>
