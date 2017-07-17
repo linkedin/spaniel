@@ -13,6 +13,8 @@ import { MetaInterface } from './interfaces';
 
 const nop = () => 0;
 
+import { IntersectionObserverClass } from '../interfaces';
+
 interface WindowProxy {
   hasDOM: boolean;
   hasRAF: boolean;
@@ -27,6 +29,7 @@ interface WindowProxy {
   updateMeta: Function;
   isDirty: boolean;
   document: Document;
+  IntersectionObserver: IntersectionObserverClass;
 }
 
 const hasDOM = !!(typeof window !== 'undefined' && window && typeof document !== 'undefined' && document);
@@ -60,7 +63,8 @@ let W: WindowProxy = {
   get isDirty(): boolean {
     return W.version !== W.lastVersion;
   },
-  document: window.document
+  document: window.document,
+  IntersectionObserver: hasDOM && (window as any).IntersectionObserver
 };
 
 export function invalidate() {
