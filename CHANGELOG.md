@@ -2,7 +2,9 @@
 
 ### 3.0.0 (July 27, 2017)
 
-Fix `rootMargin` [sign bug](https://github.com/linkedin/spaniel/issues/24). Positive `rootMargin` values should expand the offset. This is a breaking change for anyone currently setting `rootMargin`.
+* Fix `rootMargin` [sign bug](https://github.com/linkedin/spaniel/issues/24). Positive `rootMargin` values should expand the offset. This is a breaking change for anyone currently setting `rootMargin`.
+* Use native `IntersectionObserver` when available
+* When polling `requestAnimationFrame`, only poll every 3 frames instead of every single frame. This improves performance, but will slightly slow down reaction time to changes.
 
 ### 2.2.0 (March 1, 2017)
 
