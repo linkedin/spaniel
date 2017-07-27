@@ -222,6 +222,7 @@ export class SpanielObserver implements SpanielObserverInterface {
     this.setAllHidden();
     this.observer.disconnect();
     this.recordStore = {};
+    this.callback = null;
   }
   unobserve(element: SpanielTrackedElement) {
     let record = this.recordStore[element.__spanielId];
@@ -231,7 +232,7 @@ export class SpanielObserver implements SpanielObserverInterface {
       scheduleWork(() => {
         this.handleRecordExiting(record);
         this.flushQueuedEntries();
-      })
+      });
     }
   }
   observe(target: Element, payload: any = null) {
