@@ -31,6 +31,7 @@ export class Engine implements EngineInterface {
     if (!this.running) {
       this.running = true;
       W.rAF(() => {
+        this.running = false;
         if (this.skipCounter > NUM_SKIPPED_FRAMES) {
           this.skipCounter = 0;
           for (let i = 0, rlen = this.reads.length; i < rlen; i++) {
@@ -42,7 +43,6 @@ export class Engine implements EngineInterface {
         }
         this.skipCounter++;
         if (this.work.length > 0 || this.reads.length > 0) {
-          this.running = false;
           this.run();
         }
       });
