@@ -1,5 +1,9 @@
 # spaniel Changelog
 
+### 3.1.0 (July 27, 2017)
+
+* Add `SpanielObserver.destroy()` to cleanup memory.
+
 ### 3.0.0 (July 27, 2017)
 
 * Fix `rootMargin` [sign bug](https://github.com/linkedin/spaniel/issues/24). Positive `rootMargin` values should expand the offset. This is a breaking change for anyone currently setting `rootMargin`.

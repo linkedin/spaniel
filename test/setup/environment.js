@@ -36,7 +36,7 @@ var runTest = function(threshold, options) {
 }
 
 function cleanUp(value) {
-  value.observer.disconnect();
+  value.observer.destroy();
 }
 
 function wait100ms(result) {
