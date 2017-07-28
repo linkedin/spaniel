@@ -101,4 +101,12 @@ export class Watcher {
   disconnect() {
     this.observer.disconnect();
   }
+
+  /*
+   * Must be called when the Watcher is done being used.
+   * This will prevent memory leaks.
+   */
+  destroy() {
+    this.observer.destroy();
+  }
 }

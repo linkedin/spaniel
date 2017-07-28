@@ -93,6 +93,9 @@ watcher.watch(target, (eventName, meta) => {
 });
 
 watcher.unwatch(myOtherTarget);
+
+// Cleanup memory
+watcher.destroy();
 ```
 
 There are four different event types passed to the watcher callback:

@@ -43,6 +43,33 @@ testModule('Watcher', class extends TestClass {
       assert.equal(result, 1, 'Callback fired only once');
     });
   }
+  ['@test destroy works']() {
+    return this.context.evaluate(() => {
+      window.STATE.exposed = 0;
+      window.watcher = new spaniel.Watcher();
+      window.target = document.querySelector('.tracked-item[data-id="6"]');
+      window.watcher.watch(window.target, function() {
+        window.STATE.exposed++;
+      });
+    })
+    .wait(RAF_THRESHOLD * 5)
+    .scrollTo(200)
+    .wait(RAF_THRESHOLD * 5)
+    .scrollTo(0)
+    .wait(RAF_THRESHOLD * 5)
+    .evaluate(() => {
+      window.watcher.destroy();
+    })
+    .wait(RAF_THRESHOLD * 5)
+    .scrollTo(200)
+    .wait(RAF_THRESHOLD * 5)
+    .getExecution()
+    .evaluate(function() {
+      return window.STATE.exposed;
+    }).then(function(result) {
+      assert.equal(result, 1, 'Callback fired only once');
+    });
+  }
   ['@test unwatching from one watcher does not unwatch others']() {
     return this.context.evaluate(() => {
       window.STATE.exposed = 0;

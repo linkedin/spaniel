@@ -1,5 +1,8 @@
 # spaniel Changelog
 
+* Add `SpanielObserver.destroy()` to cleanup memory.
+* Add `Watcher.destroy()` to cleanup memory.
+
 ### 2.2.0 (March 1, 2017)
 
 * Better TypeScript support
