@@ -1036,6 +1036,12 @@ img { max-width: 100%; }
 			<a href="interfaces/spanieltrackedelement.html" class="tsd-kind-icon">Spaniel<wbr>Tracked<wbr>Element</a>
 		</li>
 		<li class=" tsd-kind-interface">
+			<a href="interfaces/threshold.html" class="tsd-kind-icon">Threshold</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="interfaces/watchercallbackoptions.html" class="tsd-kind-icon">Watcher<wbr>Callback<wbr>Options</a>
+		</li>
+		<li class=" tsd-kind-interface">
 			<a href="interfaces/watcherconfig.html" class="tsd-kind-icon">Watcher<wbr>Config</a>
 		</li>
 		<li class=" tsd-kind-interface tsd-is-not-exported">
@@ -1046,6 +1052,18 @@ img { max-width: 100%; }
 		</li>
 		<li class=" tsd-kind-type-alias">
 			<a href="globals.html#domstring" class="tsd-kind-icon">DOMString</a>
+		</li>
+		<li class=" tsd-kind-type-alias">
+			<a href="globals.html#eventname" class="tsd-kind-icon">Event<wbr>Name</a>
+		</li>
+		<li class=" tsd-kind-type-alias">
+			<a href="globals.html#watchercallback" class="tsd-kind-icon">Watcher<wbr>Callback</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-is-not-exported">
+			<a href="globals.html#intersectionobserver" class="tsd-kind-icon">Intersection<wbr>Observer</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-is-not-exported">
+			<a href="globals.html#num_skipped_frames" class="tsd-kind-icon">NUM_<wbr>SKIPPED_<wbr>FRAMES</a>
 		</li>
 		<li class=" tsd-kind-variable tsd-is-not-exported">
 			<a href="globals.html#token_seed" class="tsd-kind-icon">TOKEN_<wbr>SEED</a>
@@ -1198,6 +1216,9 @@ img { max-width: 100%; }
 observer.observe(target, {
   <span class="hljs-attr">name</span>: <span class="hljs-string">'My Element'</span>
 });
+
+<span class="hljs-comment">// Cleanup when done to prevent memory leaks.</span>
+observer.destroy();
 </code></pre>
 			<h3 id="spaniel-watcher">spaniel.Watcher</h3>
 			<p>The <code>Watcher</code> API is similar in structure, but simpler compared to the <code>IntersectionObserver</code>. <code>Watcher</code> is streamlined for practical scenarios.</p>
@@ -1212,6 +1233,9 @@ watcher.watch(target, (eventName, meta) =&gt; {
 });
 
 watcher.unwatch(myOtherTarget);
+
+<span class="hljs-comment">// Cleanup memory</span>
+watcher.destroy();
 </code></pre>
 			<p>There are four different event types passed to the watcher callback:</p>
 			<ul>
@@ -1226,6 +1250,7 @@ watcher.unwatch(myOtherTarget);
 				<li><code>time</code> - The time threshold</li>
 				<li><code>ratio</code> - The ratio threshold</li>
 				<li><code>rootMargin</code> - The <a href="https://wicg.github.io/IntersectionObserver/#dom-intersectionobserverinit-rootmargin">rootMargin</a> in object form.</li>
+				<li><code>root</code> - The <a href="https://wicg.github.io/IntersectionObserver/#intersectionobserver-intersection-root">root</a> element with respect to which we want to watch the target. By default it is window.</li>
 			</ul>
 			<h2 id="utility-api">Utility API</h2>
 			<p>Under the hood, Spaniel uses <code>requestAnmiationFrame</code> to preform microtask scheduling. Spaniel does not use mutation observers, scroll listeners, or resize listeners. Instead, <code>requestAnmiationFrame</code> polling is used for <a href="https://developers.google.com/web/fundamentals/performance/rendering/optimize-javascript-execution#use_requestanimationframe_for_visual_changes">performance reasons</a>.</p>
@@ -1322,6 +1347,8 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 							<li class="tsd-kind-interface"><a href="interfaces/spanielthreshold.html" class="tsd-kind-icon">Spaniel<wbr>Threshold</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/spanielthresholdstate.html" class="tsd-kind-icon">Spaniel<wbr>Threshold<wbr>State</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/spanieltrackedelement.html" class="tsd-kind-icon">Spaniel<wbr>Tracked<wbr>Element</a></li>
+							<li class="tsd-kind-interface"><a href="interfaces/threshold.html" class="tsd-kind-icon">Threshold</a></li>
+							<li class="tsd-kind-interface"><a href="interfaces/watchercallbackoptions.html" class="tsd-kind-icon">Watcher<wbr>Callback<wbr>Options</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/watcherconfig.html" class="tsd-kind-icon">Watcher<wbr>Config</a></li>
 							<li class="tsd-kind-interface tsd-is-not-exported"><a href="interfaces/windowproxy.html" class="tsd-kind-icon">Window<wbr>Proxy</a></li>
 						</ul>
@@ -1331,11 +1358,15 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-type-alias"><a href="globals.html#domhighrestimestamp" class="tsd-kind-icon">DOMHigh<wbr>Res<wbr>Time<wbr>Stamp</a></li>
 							<li class="tsd-kind-type-alias"><a href="globals.html#domstring" class="tsd-kind-icon">DOMString</a></li>
+							<li class="tsd-kind-type-alias"><a href="globals.html#eventname" class="tsd-kind-icon">Event<wbr>Name</a></li>
+							<li class="tsd-kind-type-alias"><a href="globals.html#watchercallback" class="tsd-kind-icon">Watcher<wbr>Callback</a></li>
 						</ul>
 					</section>
 					<section class="tsd-index-section tsd-is-not-exported">
 						<h3>Variables</h3>
 						<ul class="tsd-index-list">
+							<li class="tsd-kind-variable tsd-is-not-exported"><a href="globals.html#intersectionobserver" class="tsd-kind-icon">Intersection<wbr>Observer</a></li>
+							<li class="tsd-kind-variable tsd-is-not-exported"><a href="globals.html#num_skipped_frames" class="tsd-kind-icon">NUM_<wbr>SKIPPED_<wbr>FRAMES</a></li>
 							<li class="tsd-kind-variable tsd-is-not-exported"><a href="globals.html#token_seed" class="tsd-kind-icon">TOKEN_<wbr>SEED</a></li>
 							<li class="tsd-kind-variable tsd-is-not-exported"><a href="globals.html#eventstore" class="tsd-kind-icon">event<wbr>Store</a></li>
 							<li class="tsd-kind-variable tsd-is-not-exported"><a href="globals.html#globalengine" class="tsd-kind-icon">global<wbr>Engine</a></li>
@@ -1389,7 +1420,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 				<div class="tsd-signature tsd-kind-icon">DOMHigh<wbr>Res<wbr>Time<wbr>Stamp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/interfaces.ts#L71">interfaces.ts:71</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/interfaces.ts#L71">interfaces.ts:71</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1399,20 +1430,87 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 				<div class="tsd-signature tsd-kind-icon">DOMString<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/interfaces.ts#L70">interfaces.ts:70</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/interfaces.ts#L70">interfaces.ts:70</a></li>
 					</ul>
 				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-type-alias">
+				<a name="eventname" class="tsd-anchor"></a>
+				<h3>Event<wbr>Name</h3>
+				<div class="tsd-signature tsd-kind-icon">Event<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"impressed"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"exposed"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"visible"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"impression-complete"</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/watcher.ts#L30">watcher.ts:30</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/native-watcher.ts#L31">native-watcher.ts:31</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-type-alias">
+				<a name="watchercallback" class="tsd-anchor"></a>
+				<h3>Watcher<wbr>Callback</h3>
+				<div class="tsd-signature tsd-kind-icon">Watcher<wbr>Callback<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/watcher.ts#L32">watcher.ts:32</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/native-watcher.ts#L33">native-watcher.ts:33</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-type-declaration">
+					<h4>Type declaration</h4>
+					<ul class="tsd-parameters">
+						<li class="tsd-parameter-siganture">
+							<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias tsd-is-not-exported">
+								<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>eventName<span class="tsd-signature-symbol">: </span><a href="globals.html#eventname" class="tsd-signature-type">EventName</a>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">WatcherCallbackOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+							</ul>
+							<ul class="tsd-descriptions">
+								<li class="tsd-description">
+									<h4 class="tsd-parameters-title">Parameters</h4>
+									<ul class="tsd-parameters">
+										<li>
+											<h5>eventName: <a href="globals.html#eventname" class="tsd-signature-type">EventName</a></h5>
+										</li>
+										<li>
+											<h5>callback: <span class="tsd-signature-type">WatcherCallbackOptions</span></h5>
+										</li>
+									</ul>
+									<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
 			</section>
 		</section>
 		<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 			<h2>Variables</h2>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-is-not-exported">
+				<a name="intersectionobserver" class="tsd-anchor"></a>
+				<h3>Intersection<wbr>Observer</h3>
+				<div class="tsd-signature tsd-kind-icon">Intersection<wbr>Observer<span class="tsd-signature-symbol">:</span> <a href="interfaces/intersectionobserverclass.html" class="tsd-signature-type">IntersectionObserverClass</a><span class="tsd-signature-symbol"> =&nbsp;!!w.IntersectionObserver ? w.IntersectionObserver : SpanielIntersectionObserver</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/spaniel-observer.ts#L45">spaniel-observer.ts:45</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/index.ts#L52">index.ts:52</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-is-not-exported">
+				<a name="num_skipped_frames" class="tsd-anchor"></a>
+				<h3>NUM_<wbr>SKIPPED_<wbr>FRAMES</h3>
+				<div class="tsd-signature tsd-kind-icon">NUM_<wbr>SKIPPED_<wbr>FRAMES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">3</span><span class="tsd-signature-symbol"> =&nbsp;3</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/engine.ts#L15">metal/engine.ts:15</a></li>
+					</ul>
+				</aside>
+			</section>
 			<section class="tsd-panel tsd-member tsd-kind-variable tsd-is-not-exported">
 				<a name="token_seed" class="tsd-anchor"></a>
 				<h3>TOKEN_<wbr>SEED</h3>
 				<div class="tsd-signature tsd-kind-icon">TOKEN_<wbr>SEED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&#x27;xxxx&#x27;.replace(/[xy]/g, function(c) {let r &#x3D; Math.random() * 16 | 0, v &#x3D; c &#x3D;&#x3D;&#x3D; &#x27;x&#x27; ? r : (r &amp; 0x3 | 0x8);return v.toString(16);})</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L24">metal/scheduler.ts:24</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L24">metal/scheduler.ts:24</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1422,7 +1520,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 				<div class="tsd-signature tsd-kind-icon">event<wbr>Store<span class="tsd-signature-symbol">:</span> <a href="interfaces/eventstore.html" class="tsd-signature-type">EventStore</a><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/events.ts#L74">metal/events.ts:74</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/events.ts#L74">metal/events.ts:74</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1432,7 +1530,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 				<div class="tsd-signature tsd-kind-icon">global<wbr>Engine<span class="tsd-signature-symbol">:</span> <a href="interfaces/engineinterface.html" class="tsd-signature-type">EngineInterface</a><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/engine.ts#L46">metal/engine.ts:46</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/engine.ts#L53">metal/engine.ts:53</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1442,7 +1540,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 				<div class="tsd-signature tsd-kind-icon">global<wbr>Scheduler<span class="tsd-signature-symbol">:</span> <a href="classes/scheduler.html" class="tsd-signature-type">Scheduler</a><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L169">metal/scheduler.ts:169</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L189">metal/scheduler.ts:189</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1452,7 +1550,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 				<div class="tsd-signature tsd-kind-icon">hasDOM<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;!!((typeof window !&#x3D;&#x3D; &#x27;undefined&#x27;) &amp;&amp; window &amp;&amp; (typeof document !&#x3D;&#x3D; &#x27;undefined&#x27;) &amp;&amp; document)</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/window-proxy.ts#L25">metal/window-proxy.ts:25</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/window-proxy.ts#L30">metal/window-proxy.ts:30</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1462,7 +1560,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 				<div class="tsd-signature tsd-kind-icon">hasRAF<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;hasDOM &amp;&amp; !!window.requestAnimationFrame</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/window-proxy.ts#L26">metal/window-proxy.ts:26</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/window-proxy.ts#L31">metal/window-proxy.ts:31</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1472,7 +1570,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 				<div class="tsd-signature tsd-kind-icon">token<wbr>Counter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L28">metal/scheduler.ts:28</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L28">metal/scheduler.ts:28</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1489,7 +1587,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/spaniel-observer.ts#L39">spaniel-observer.ts:39</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/spaniel-observer.ts#L47">spaniel-observer.ts:47</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1512,7 +1610,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/intersection-observer.ts#L146">intersection-observer.ts:146</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/intersection-observer.ts#L147">intersection-observer.ts:147</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1535,7 +1633,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/index.ts#L65">index.ts:65</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/index.ts#L70">index.ts:70</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1585,7 +1683,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/utils.ts#L1">utils.ts:1</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/utils.ts#L1">utils.ts:1</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1611,7 +1709,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/intersection-observer.ts#L182">intersection-observer.ts:182</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/intersection-observer.ts#L183">intersection-observer.ts:183</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1643,7 +1741,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L49">metal/scheduler.ts:49</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L65">metal/scheduler.ts:65</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -1660,7 +1758,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/events.ts#L76">metal/events.ts:76</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/events.ts#L76">metal/events.ts:76</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <a href="interfaces/eventstore.html" class="tsd-signature-type">EventStore</a></h4>
@@ -1677,7 +1775,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/engine.ts#L56">metal/engine.ts:56</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/engine.ts#L63">metal/engine.ts:63</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <a href="interfaces/engineinterface.html" class="tsd-signature-type">EngineInterface</a></h4>
@@ -1694,7 +1792,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L171">metal/scheduler.ts:171</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L191">metal/scheduler.ts:191</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <a href="classes/scheduler.html" class="tsd-signature-type">Scheduler</a></h4>
@@ -1711,7 +1809,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/window-proxy.ts#L38">metal/window-proxy.ts:38</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/window-proxy.ts#L44">metal/window-proxy.ts:44</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1728,7 +1826,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/intersection-observer.ts#L40">intersection-observer.ts:40</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/intersection-observer.ts#L40">intersection-observer.ts:40</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1751,7 +1849,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/window-proxy.ts#L13">metal/window-proxy.ts:13</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/window-proxy.ts#L13">metal/window-proxy.ts:13</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -1768,7 +1866,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/events.ts#L119">metal/events.ts:119</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/events.ts#L119">metal/events.ts:119</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1794,7 +1892,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/events.ts#L112">metal/events.ts:112</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/events.ts#L112">metal/events.ts:112</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1841,7 +1939,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/watcher.ts#L29">watcher.ts:29</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/watcher.ts#L45">watcher.ts:45</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1864,7 +1962,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/index.ts#L61">index.ts:61</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/index.ts#L66">index.ts:66</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1911,7 +2009,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/intersection-observer.ts#L52">intersection-observer.ts:52</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/intersection-observer.ts#L52">intersection-observer.ts:52</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1934,7 +2032,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/events.ts#L149">metal/events.ts:149</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/events.ts#L149">metal/events.ts:149</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1963,7 +2061,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/events.ts#L141">metal/events.ts:141</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/events.ts#L141">metal/events.ts:141</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1992,7 +2090,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/engine.ts#L48">metal/engine.ts:48</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/engine.ts#L55">metal/engine.ts:55</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2015,7 +2113,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/events.ts#L128">metal/events.ts:128</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/events.ts#L128">metal/events.ts:128</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2040,16 +2138,26 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 				<div class="tsd-signature tsd-kind-icon">W<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/window-proxy.ts#L28">metal/window-proxy.ts:28</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/window-proxy.ts#L33">metal/window-proxy.ts:33</a></li>
 					</ul>
 				</aside>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+					<a name="w.intersectionobserver" class="tsd-anchor"></a>
+					<h3>Intersection<wbr>Observer</h3>
+					<div class="tsd-signature tsd-kind-icon">Intersection<wbr>Observer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;hasDOM &amp;&amp; (window as any).IntersectionObserver</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/window-proxy.ts#L41">metal/window-proxy.ts:41</a></li>
+						</ul>
+					</aside>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
 					<a name="w.getheight" class="tsd-anchor"></a>
 					<h3>get<wbr>Height</h3>
 					<div class="tsd-signature tsd-kind-icon">get<wbr>Height<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">nop</a><span class="tsd-signature-symbol"> =&nbsp;nop</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/window-proxy.ts#L33">metal/window-proxy.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/window-proxy.ts#L38">metal/window-proxy.ts:38</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -2059,7 +2167,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<div class="tsd-signature tsd-kind-icon">get<wbr>Scroll<wbr>Left<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">nop</a><span class="tsd-signature-symbol"> =&nbsp;nop</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/window-proxy.ts#L32">metal/window-proxy.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/window-proxy.ts#L37">metal/window-proxy.ts:37</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -2069,7 +2177,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<div class="tsd-signature tsd-kind-icon">get<wbr>Scroll<wbr>Top<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">nop</a><span class="tsd-signature-symbol"> =&nbsp;nop</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/window-proxy.ts#L31">metal/window-proxy.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/window-proxy.ts#L36">metal/window-proxy.ts:36</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -2079,7 +2187,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<div class="tsd-signature tsd-kind-icon">get<wbr>Width<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">nop</a><span class="tsd-signature-symbol"> =&nbsp;nop</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/window-proxy.ts#L34">metal/window-proxy.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/window-proxy.ts#L39">metal/window-proxy.ts:39</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -2089,7 +2197,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<div class="tsd-signature tsd-kind-icon">hasDOM<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/window-proxy.ts#L30">metal/window-proxy.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/window-proxy.ts#L35">metal/window-proxy.ts:35</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -2099,7 +2207,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<div class="tsd-signature tsd-kind-icon">hasRAF<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/window-proxy.ts#L29">metal/window-proxy.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/window-proxy.ts#L34">metal/window-proxy.ts:34</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -2109,7 +2217,7 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<div class="tsd-signature tsd-kind-icon">rAF<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;hasRAF ? window.requestAnimationFrame.bind(window) : (callback: Function) &#x3D;&gt; { callback(); }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/window-proxy.ts#L35">metal/window-proxy.ts:35</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/window-proxy.ts#L40">metal/window-proxy.ts:40</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -2120,8 +2228,8 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 				<div class="tsd-signature tsd-kind-icon">empty<wbr>Rect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/spaniel-observer.ts#L37">spaniel-observer.ts:37</a></li>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/native-spaniel-observer.ts#L34">native-spaniel-observer.ts:34</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/spaniel-observer.ts#L43">spaniel-observer.ts:43</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/native-spaniel-observer.ts#L34">native-spaniel-observer.ts:34</a></li>
 					</ul>
 				</aside>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
@@ -2130,8 +2238,8 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<div class="tsd-signature tsd-kind-icon">height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/spaniel-observer.ts#L37">spaniel-observer.ts:37</a></li>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/native-spaniel-observer.ts#L34">native-spaniel-observer.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/spaniel-observer.ts#L43">spaniel-observer.ts:43</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/native-spaniel-observer.ts#L34">native-spaniel-observer.ts:34</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -2141,8 +2249,8 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<div class="tsd-signature tsd-kind-icon">width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/spaniel-observer.ts#L37">spaniel-observer.ts:37</a></li>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/native-spaniel-observer.ts#L34">native-spaniel-observer.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/spaniel-observer.ts#L43">spaniel-observer.ts:43</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/native-spaniel-observer.ts#L34">native-spaniel-observer.ts:34</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -2152,8 +2260,8 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<div class="tsd-signature tsd-kind-icon">x<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/spaniel-observer.ts#L37">spaniel-observer.ts:37</a></li>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/native-spaniel-observer.ts#L34">native-spaniel-observer.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/spaniel-observer.ts#L43">spaniel-observer.ts:43</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/native-spaniel-observer.ts#L34">native-spaniel-observer.ts:34</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -2163,8 +2271,8 @@ scheduleWork(<span class="hljs-function"><span class="hljs-params">()</span> =&g
 					<div class="tsd-signature tsd-kind-icon">y<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/spaniel-observer.ts#L37">spaniel-observer.ts:37</a></li>
-							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/native-spaniel-observer.ts#L34">native-spaniel-observer.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/spaniel-observer.ts#L43">spaniel-observer.ts:43</a></li>
+							<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/native-spaniel-observer.ts#L34">native-spaniel-observer.ts:34</a></li>
 						</ul>
 					</aside>
 				</section>

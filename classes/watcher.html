@@ -919,6 +919,9 @@ img { max-width: 100%; }
 					<a href="watcher.html#observer" class="tsd-kind-icon">observer</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class">
+					<a href="watcher.html#destroy" class="tsd-kind-icon">destroy</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class">
 					<a href="watcher.html#disconnect" class="tsd-kind-icon">disconnect</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -960,6 +963,7 @@ img { max-width: 100%; }
 					<section class="tsd-index-section ">
 						<h3>Methods</h3>
 						<ul class="tsd-index-list">
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="watcher.html#destroy" class="tsd-kind-icon">destroy</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="watcher.html#disconnect" class="tsd-kind-icon">disconnect</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="watcher.html#unwatch" class="tsd-kind-icon">unwatch</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="watcher.html#watch" class="tsd-kind-icon">watch</a></li>
@@ -980,7 +984,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/watcher.ts#L45">watcher.ts:45</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/watcher.ts#L61">watcher.ts:61</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1002,14 +1006,31 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">observer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">SpanielObserver</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/watcher.ts#L45">watcher.ts:45</a></li>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/native-watcher.ts#L46">native-watcher.ts:46</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/watcher.ts#L61">watcher.ts:61</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/native-watcher.ts#L62">native-watcher.ts:62</a></li>
 					</ul>
 				</aside>
 			</section>
 		</section>
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Methods</h2>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="destroy" class="tsd-anchor"></a>
+				<h3>destroy</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">destroy<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/watcher.ts#L111">watcher.ts:111</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 				<a name="disconnect" class="tsd-anchor"></a>
 				<h3>disconnect</h3>
@@ -1020,7 +1041,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/watcher.ts#L86">watcher.ts:86</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/watcher.ts#L103">watcher.ts:103</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1031,19 +1052,19 @@ img { max-width: 100%; }
 				<a name="unwatch" class="tsd-anchor"></a>
 				<h3>unwatch</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">unwatch<span class="tsd-signature-symbol">(</span>el<span class="tsd-signature-symbol">: </span><a href="../interfaces/spanieltrackedelement.html" class="tsd-signature-type">SpanielTrackedElement</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<li class="tsd-signature tsd-kind-icon">unwatch<span class="tsd-signature-symbol">(</span>el<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/watcher.ts#L83">watcher.ts:83</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/watcher.ts#L100">watcher.ts:100</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>el: <a href="../interfaces/spanieltrackedelement.html" class="tsd-signature-type">SpanielTrackedElement</a></h5>
+								<h5>el: <span class="tsd-signature-type">Element</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1054,13 +1075,13 @@ img { max-width: 100%; }
 				<a name="watch" class="tsd-anchor"></a>
 				<h3>watch</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">watch<span class="tsd-signature-symbol">(</span>el<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<li class="tsd-signature tsd-kind-icon">watch<span class="tsd-signature-symbol">(</span>el<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, callback<span class="tsd-signature-symbol">: </span><a href="../globals.html#watchercallback" class="tsd-signature-type">WatcherCallback</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/watcher.ts#L78">watcher.ts:78</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/watcher.ts#L95">watcher.ts:95</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1069,7 +1090,7 @@ img { max-width: 100%; }
 								<h5>el: <span class="tsd-signature-type">Element</span></h5>
 							</li>
 							<li>
-								<h5>callback: <span class="tsd-signature-type">Function</span></h5>
+								<h5>callback: <a href="../globals.html#watchercallback" class="tsd-signature-type">WatcherCallback</a></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>

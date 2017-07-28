@@ -925,6 +925,9 @@ img { max-width: 100%; }
 					<a href="scheduler.html#queue" class="tsd-kind-icon">queue</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a href="scheduler.html#root" class="tsd-kind-icon">root</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 					<a href="scheduler.html#toremove" class="tsd-kind-icon">to<wbr>Remove</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
@@ -1000,6 +1003,7 @@ img { max-width: 100%; }
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="scheduler.html#engine" class="tsd-kind-icon">engine</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="scheduler.html#isticking" class="tsd-kind-icon">is<wbr>Ticking</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-protected"><a href="scheduler.html#queue" class="tsd-kind-icon">queue</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="scheduler.html#root" class="tsd-kind-icon">root</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="scheduler.html#toremove" class="tsd-kind-icon">to<wbr>Remove</a></li>
 						</ul>
 					</section>
@@ -1026,20 +1030,23 @@ img { max-width: 100%; }
 				<a name="constructor" class="tsd-anchor"></a>
 				<h3>constructor</h3>
 				<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-					<li class="tsd-signature tsd-kind-icon">new <wbr>Scheduler<span class="tsd-signature-symbol">(</span>customEngine<span class="tsd-signature-symbol">?: </span><a href="../interfaces/engineinterface.html" class="tsd-signature-type">EngineInterface</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="scheduler.html" class="tsd-signature-type">Scheduler</a></li>
+					<li class="tsd-signature tsd-kind-icon">new <wbr>Scheduler<span class="tsd-signature-symbol">(</span>customEngine<span class="tsd-signature-symbol">?: </span><a href="../interfaces/engineinterface.html" class="tsd-signature-type">EngineInterface</a>, root<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="scheduler.html" class="tsd-signature-type">Scheduler</a></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="basescheduler.html">BaseScheduler</a>.<a href="basescheduler.html#constructor">constructor</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L57">metal/scheduler.ts:57</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L74">metal/scheduler.ts:74</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
 								<h5><span class="tsd-flag ts-flagOptional">Optional</span> customEngine: <a href="../interfaces/engineinterface.html" class="tsd-signature-type">EngineInterface</a></h5>
+							</li>
+							<li>
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> root: <span class="tsd-signature-type">Element</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <a href="scheduler.html" class="tsd-signature-type">Scheduler</a></h4>
@@ -1056,7 +1063,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="basescheduler.html">BaseScheduler</a>.<a href="basescheduler.html#engine">engine</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L54">metal/scheduler.ts:54</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L71">metal/scheduler.ts:71</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1067,7 +1074,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="basescheduler.html">BaseScheduler</a>.<a href="basescheduler.html#isticking">isTicking</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L56">metal/scheduler.ts:56</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L73">metal/scheduler.ts:73</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1078,7 +1085,18 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Overrides <a href="basescheduler.html">BaseScheduler</a>.<a href="basescheduler.html#queue">queue</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L113">metal/scheduler.ts:113</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L133">metal/scheduler.ts:133</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+				<a name="root" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagProtected">Protected</span> root</h3>
+				<div class="tsd-signature tsd-kind-icon">root<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Element</span></div>
+				<aside class="tsd-sources">
+					<p>Inherited from <a href="basescheduler.html">BaseScheduler</a>.<a href="basescheduler.html#root">root</a></p>
+					<ul>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L70">metal/scheduler.ts:70</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1089,7 +1107,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="basescheduler.html">BaseScheduler</a>.<a href="basescheduler.html#toremove">toRemove</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L57">metal/scheduler.ts:57</a></li>
+						<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L74">metal/scheduler.ts:74</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1107,7 +1125,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Overrides <a href="basescheduler.html">BaseScheduler</a>.<a href="basescheduler.html#applyqueue">applyQueue</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L114">metal/scheduler.ts:114</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L134">metal/scheduler.ts:134</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1131,7 +1149,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="basescheduler.html">BaseScheduler</a>.<a href="basescheduler.html#queryelement">queryElement</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L87">metal/scheduler.ts:87</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L107">metal/scheduler.ts:107</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1179,7 +1197,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="basescheduler.html">BaseScheduler</a>.<a href="basescheduler.html#scheduleread">scheduleRead</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L84">metal/scheduler.ts:84</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L104">metal/scheduler.ts:104</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1203,7 +1221,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="basescheduler.html">BaseScheduler</a>.<a href="basescheduler.html#schedulework">scheduleWork</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L81">metal/scheduler.ts:81</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L101">metal/scheduler.ts:101</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1227,7 +1245,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="basescheduler.html">BaseScheduler</a>.<a href="basescheduler.html#startticking">startTicking</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L104">metal/scheduler.ts:104</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L124">metal/scheduler.ts:124</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1245,7 +1263,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="basescheduler.html">BaseScheduler</a>.<a href="basescheduler.html#tick">tick</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L67">metal/scheduler.ts:67</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L87">metal/scheduler.ts:87</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1263,7 +1281,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="basescheduler.html">BaseScheduler</a>.<a href="basescheduler.html#unwatch">unwatch</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L98">metal/scheduler.ts:98</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L118">metal/scheduler.ts:118</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1287,7 +1305,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="basescheduler.html">BaseScheduler</a>.<a href="basescheduler.html#unwatchall">unwatchAll</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L101">metal/scheduler.ts:101</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L121">metal/scheduler.ts:121</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1304,7 +1322,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/5f0a9fb/src/metal/scheduler.ts#L120">metal/scheduler.ts:120</a></li>
+								<li>Defined in <a href="https://github.com/linkedin/spaniel/blob/b4e6464/src/metal/scheduler.ts#L140">metal/scheduler.ts:140</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
