@@ -72,6 +72,9 @@ let target = document.getElementById('my-element');
 observer.observe(target, {
   name: 'My Element'
 });
+
+// Cleanup when done to prevent memory leaks.
+observer.destroy();
 ```
 
 ### spaniel.Watcher

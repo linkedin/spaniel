@@ -32,7 +32,13 @@ import {
 
 import w from './metal/window-proxy';
 
-import { generateToken, on, scheduleWork } from './metal/index';
+import {
+  FrameInterface,
+  generateToken,
+  on,
+  off,
+  scheduleWork
+} from './metal/index';
 
 let emptyRect = { x: 0, y: 0, width: 0, height: 0 };
 
@@ -47,6 +53,9 @@ export class SpanielObserver implements SpanielObserverInterface {
   recordStore: { [key: string]: SpanielRecord; };
   queuedEntries: SpanielObserverEntry[];
   private paused: boolean;
+  private onWindowClosed: () => void;
+  private onTabHidden: () => void;
+  private onTabShown: () => void;
   constructor(callback: (entries: SpanielObserverEntry[]) => void, options: SpanielObserverInit = {}) {
     this.paused = false;
     this.queuedEntries = [];
@@ -64,13 +73,17 @@ export class SpanielObserver implements SpanielObserverInterface {
     };
     this.observer = new SpanielIntersectionObserver((records: IntersectionObserverEntry[]) => this.internalCallback(records), o);
 
+    this.onTabHidden = this._onTabHidden.bind(this);
+    this.onWindowClosed = this._onWindowClosed.bind(this);
+    this.onTabShown = this._onTabShown.bind(this);
+
     if (w.hasDOM) {
-      on('unload', this.onWindowClosed.bind(this));
-      on('hide', this.onTabHidden.bind(this));
-      on('show', this.onTabShown.bind(this));
+      on('unload', this.onWindowClosed);
+      on('hide', this.onTabHidden);
+      on('show', this.onTabShown);
     }
   }
-  private onWindowClosed() {
+  private _onWindowClosed() {
     this.onTabHidden();
   }
   private setAllHidden() {
@@ -81,11 +94,11 @@ export class SpanielObserver implements SpanielObserverInterface {
     }
     this.flushQueuedEntries();
   }
-  private onTabHidden() {
+  private _onTabHidden() {
     this.paused = true;
     this.setAllHidden();
   }
-  private onTabShown() {
+  private _onTabShown() {
     this.paused = false;
 
     let ids = Object.keys(this.recordStore);
@@ -220,6 +233,19 @@ export class SpanielObserver implements SpanielObserverInterface {
     this.observer.disconnect();
     this.recordStore = {};
   }
+
+  /*
+   * Must be called when the SpanielObserver is done being used.
+   * This will prevent memory leaks.
+   */
+  destroy() {
+    this.disconnect();
+    if (w.hasDOM) {
+      off('unload', this.onWindowClosed);
+      off('hide', this.onTabHidden);
+      off('show', this.onTabShown);
+    }
+  }
   unobserve(element: SpanielTrackedElement) {
     let record = this.recordStore[element.__spanielId];
     if (record) {
@@ -228,7 +254,7 @@ export class SpanielObserver implements SpanielObserverInterface {
       scheduleWork(() => {
         this.handleRecordExiting(record);
         this.flushQueuedEntries();
-      })
+      });
     }
   }
   observe(target: Element, payload: any = null) {
