@@ -193,42 +193,43 @@ export class SpanielObserver implements SpanielObserverInterface {
     clearTimeout(state.timeoutId);
   }
   private handleObserverEntry(entry: IntersectionObserverEntry) {
-    let { time } = entry;
-    let target = <SpanielTrackedElement>entry.target;
-    let record = this.recordStore[target.__spanielId];
-    record.lastSeenEntry = entry;
+    const { time } = entry;
+    const target = <SpanielTrackedElement>entry.target;
+    const record = this.recordStore[target.__spanielId];
+    if (record) {
+      record.lastSeenEntry = entry;
+      if (!this.paused) {
+        record.thresholdStates.forEach((state: SpanielThresholdState) => {
+          // Find the thresholds that were crossed. Since you can have multiple thresholds
+          // for the same ratio, could be multiple thresholds
+          let hasTimeThreshold = !!state.threshold.time;
+          let spanielEntry: SpanielObserverEntry = this.generateSpanielEntry(entry, state);
 
-    if (!this.paused) {
-      record.thresholdStates.forEach((state: SpanielThresholdState) => {
-        // Find the thresholds that were crossed. Since you can have multiple thresholds
-        // for the same ratio, could be multiple thresholds
-        let hasTimeThreshold = !!state.threshold.time;
-        let spanielEntry: SpanielObserverEntry = this.generateSpanielEntry(entry, state);
+          const ratioSatisfied = entrySatisfiesRatio(entry, state.threshold.ratio);
 
-        const ratioSatisfied = entrySatisfiesRatio(entry, state.threshold.ratio);
-
-        if (ratioSatisfied && !state.lastSatisfied) {
-          spanielEntry.entering = true;
-          if (hasTimeThreshold) {
-            state.lastVisible = time;
-            const timerId: number = Number(setTimeout(() => {
+          if (ratioSatisfied && !state.lastSatisfied) {
+            spanielEntry.entering = true;
+            if (hasTimeThreshold) {
+              state.lastVisible = time;
+              const timerId: number = Number(setTimeout(() => {
+                state.visible = true;
+                spanielEntry.duration = Date.now() - state.lastVisible;
+                this.callback([spanielEntry]);
+              }, state.threshold.time));
+              state.timeoutId = timerId;
+            } else {
               state.visible = true;
-              spanielEntry.duration = Date.now() - state.lastVisible;
-              this.callback([spanielEntry]);
-            }, state.threshold.time));
-            state.timeoutId = timerId;
-          } else {
-            state.visible = true;
-            this.queuedEntries.push(spanielEntry);
+              this.queuedEntries.push(spanielEntry);
+            }
+          } else if (!ratioSatisfied) {
+            this.handleThresholdExiting(spanielEntry, state);
           }
-        } else if (!ratioSatisfied) {
-          this.handleThresholdExiting(spanielEntry, state);
-        }
 
-        state.lastEntry = entry;
-        state.lastSatisfied = ratioSatisfied;
-      });
-      this.flushQueuedEntries();
+          state.lastEntry = entry;
+          state.lastSatisfied = ratioSatisfied;
+        });
+        this.flushQueuedEntries();
+      }
     }
   }
   disconnect() {
