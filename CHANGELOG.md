@@ -1,8 +1,9 @@
 # spaniel Changelog
 
-### 3.1.0 (July 27, 2017)
+### 3.1.1 (July 27, 2017)
 
 * Add `SpanielObserver.destroy()` to cleanup memory.
+* Add `Watcher.destroy()` to cleanup memory.
 
 ### 3.0.0 (July 27, 2017)
 
