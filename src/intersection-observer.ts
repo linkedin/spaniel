@@ -71,7 +71,7 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
   private id: string;
   private scheduler: ElementScheduler;
   private callback: Function;
-  public parent: SpanielInstance;
+  private parentSpanielInstance: SpanielInstance;
   public root: SpanielTrackedElement;
   public rootMargin: DOMString;
   protected rootMarginObj: DOMMargin;
@@ -130,21 +130,21 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
     };
   }
 
-  constructor(callback: Function, options: IntersectionObserverInit = {}, parent: SpanielInstance) {
+  constructor(callback: Function, options: IntersectionObserverInit = {}, parentSpanielInstance: SpanielInstance) {
     this.records = {};
     this.callback = callback;
     this.id = generateToken();
     options.threshold = options.threshold || 0;
     this.rootMarginObj = rootMarginToDOMMargin(options.rootMargin || '0px');
     this.root = options.root;
-    this.parent = parent;
+    this.parentSpanielInstance = parentSpanielInstance;
     if (Array.isArray(options.threshold)) {
       this.thresholds = <Array<number>>options.threshold;
     } else {
       this.thresholds = [<number>options.threshold];
     }
 
-    this.scheduler = new ElementScheduler(this.parent.getEngine(), this.root);
+    this.scheduler = new ElementScheduler(this.parentSpanielInstance.getEngine(), this.root);
   }
 };
 
