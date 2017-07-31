@@ -12,9 +12,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import { default as QueueElement, QueueDOMElement } from './element';
 import { default as Queue, DOMQueue, FunctionQueue } from './queue';
 import { QueueElementInterface, QueueDOMElementInterface, FrameInterface, QueueInterface } from './interfaces';
-import { generateToken, ElementScheduler, Scheduler, PredicatedScheduler, Frame, getGlobalScheduler } from './scheduler';
+import { generateToken, ElementScheduler, Scheduler, PredicatedScheduler, Frame } from './scheduler';
 import { Engine } from  './engine';
-import { on, off, scheduleRead, scheduleWork } from  './events';
 
 
 interface Offset {
@@ -40,10 +39,5 @@ export {
   Scheduler,
   Engine,
   generateToken,
-  Frame,
-  getGlobalScheduler,
-  on,
-  off,
-  scheduleRead,
-  scheduleWork
+  Frame
 };

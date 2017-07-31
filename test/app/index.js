@@ -20,7 +20,9 @@ var GLOBAL_TEST_EVENTS = {
   }
 };
 
-window.watcher = new spaniel.Watcher({
+var spanielInstance = new spaniel.SpanielInstance();
+
+window.watcher = new spanielInstance.Watcher({
   time: 100,
   ratio: 0.8
 });
@@ -48,7 +50,7 @@ for (var i = 0; i < elements.length; i++) {
 
 // Example usage of SpanielObserver
 var target = document.querySelector('.tracked-item[data-id="5"]');
-let observer = new spaniel.SpanielObserver(function(changes) {
+let observer = new spanielInstance.SpanielObserver(function(changes) {
   console.log(changes[0]);
 }, {
   rootMargin: '0px 0px',
@@ -63,7 +65,7 @@ observer.observe(target);
 //Example usage of SpanielObserver with a custom root element
 var root = document.getElementById('root');
 var rootTarget = document.querySelector('.tracked-item-root[data-root-target-id="5"]');
-var rootObserver = new spaniel.SpanielObserver(function(changes) {
+var rootObserver = new spanielInstance.SpanielObserver(function(changes) {
   console.log(changes[0]);
 }, {
   root: root,
@@ -76,7 +78,7 @@ var rootObserver = new spaniel.SpanielObserver(function(changes) {
 });
 
 //Sample usage of watcher with Root element
-window.rootWatcher = new spaniel.Watcher({
+window.rootWatcher = new spanielInstance.Watcher({
   time: 100,
   ratio: 0.8,
   root: root

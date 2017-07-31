@@ -15,11 +15,11 @@ import constants from './../../constants.js';
 const { time: { IMPRESSION_THRESHOLD } } = constants;
 
 testModule('IntersectionObserver', class extends TestClass {
-  ['@test observing a visible element should fire callback immediately']() {
+   ['@test observing a visible element should fire callback immediately']() {
     return this.context.evaluate(() => {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="1"]');
-      let observer = new spaniel.IntersectionObserver(function() {
+      let observer = new spanielInstance.IntersectionObserver(function() {
         createDiv('impression-div');
         window.STATE.impressions++;
       });
@@ -38,9 +38,9 @@ testModule('IntersectionObserver', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="1"]');
-      let observer = new spaniel.IntersectionObserver(function() {
-        createDiv('impression-div');
+      let observer = new spanielInstance.IntersectionObserver(function() {
         window.STATE.impressions++;
+        createDiv('impression-div');
       }, {
         threshold: 0.9
       });
@@ -59,7 +59,7 @@ testModule('IntersectionObserver', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="5"]');
-      let observer = new spaniel.IntersectionObserver(function() {
+      let observer = new spanielInstance.IntersectionObserver(function() {
         window.STATE.impressions++;
       }, {
         threshold: 0.75
@@ -80,9 +80,9 @@ testModule('IntersectionObserver', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="5"]');
-      let observer = new spaniel.IntersectionObserver(function() {
-        createDiv('impression-div');
+      let observer = new spanielInstance.IntersectionObserver(function() {
         window.STATE.impressions++;
+        createDiv('impression-div');
       }, {
         threshold: 0.75
       });
@@ -103,7 +103,7 @@ testModule('IntersectionObserver', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="5"]');
-      let observer = new spaniel.IntersectionObserver(function() {
+      let observer = new spanielInstance.IntersectionObserver(function() {
         window.STATE.impressions++;
         createDiv('impression-div-' + window.STATE.impressions);
       }, {
@@ -128,7 +128,7 @@ testModule('IntersectionObserver', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="5"]');
-      let observer = new spaniel.IntersectionObserver(function() {
+      let observer = new spanielInstance.IntersectionObserver(function() {
         window.STATE.impressions++;
         createDiv('impression-div-' + window.STATE.impressions);
       }, {
@@ -154,7 +154,7 @@ testModule('IntersectionObserver', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.impressions = 0;
       window.target = document.querySelector('.tracked-item[data-id="1"]');
-      window.observer = new spaniel.IntersectionObserver(function() {
+      window.observer = new spanielInstance.IntersectionObserver(function() {
         window.STATE.impressions++;
         createDiv('impression-div');
       });
@@ -183,7 +183,7 @@ testModule('IntersectionObserver', class extends TestClass {
       target1 = document.querySelector('.tracked-item[data-id="1"]');
       target2 = document.querySelector('.tracked-item[data-id="2"]');
       target3 = document.querySelector('.tracked-item[data-id="3"]');
-      window.observer = new spaniel.IntersectionObserver(function(event) {
+      window.observer = new spanielInstance.IntersectionObserver(function(event) {
         window.STATE.impressions+= event.length;
         createDiv('impression-div-' + window.STATE.impressions);
       });
@@ -206,7 +206,7 @@ testModule('IntersectionObserver', class extends TestClass {
     }).then(function(result) {
       assert.equal(result, 3, 'Callback fired 3 times');
     });
-  }
+  } 
 
   ['@test can restart observing after disconnect']() {
     return this.context.evaluate(function() {
@@ -214,21 +214,22 @@ testModule('IntersectionObserver', class extends TestClass {
       target1 = document.querySelector('.tracked-item[data-id="1"]');
       target2 = document.querySelector('.tracked-item[data-id="2"]');
       target3 = document.querySelector('.tracked-item[data-id="3"]');
-      window.observer = new spaniel.IntersectionObserver(function(event) {
+      window.observer2 = new spanielInstance.IntersectionObserver(function(event) {
         window.STATE.impressions+= event.length;
         createDiv('impression-div-' + window.STATE.impressions);
       });
-      window.observer.observe(target1);
-      window.observer.observe(target2);
-      window.observer.observe(target3);
+      window.observer2.observe(target1);
+      window.observer2.observe(target2);
+      window.observer2.observe(target3);
     })
     .waitForImpression(1)
     .evaluate(function() {
-      window.observer.disconnect();
+      window.observer2.disconnect();
     })
     .wait(100)
     .evaluate(function() {
-      window.observer.observe(document.querySelector('.tracked-item[data-id="1"]'));
+      window.observer2.observe(document.querySelector('.tracked-item[data-id="1"]'));
+      window.observer2.observe(target1);
     })
     .waitForImpression(4)
     .scrollTo(500)
@@ -244,12 +245,12 @@ testModule('IntersectionObserver', class extends TestClass {
   }
 
   /* Root inlcusion test case */
-  ['@test observing a non visible element within a root and then scrolling should fire callbacks']() {
+   ['@test observing a non visible element within a root and then scrolling should fire callbacks']() {
     return this.context.evaluate(function() {
       window.STATE.impressions = 0;
       let root = document.getElementById('root');
       let target = document.querySelector('.tracked-item-root[data-root-target-id="5"]');
-      let observer = new spaniel.IntersectionObserver(function() {
+      let observer = new spanielInstance.IntersectionObserver(function() {
         window.STATE.impressions++;
         createDiv('impression-div-' + window.STATE.impressions);
       }, {
@@ -273,5 +274,5 @@ testModule('IntersectionObserver', class extends TestClass {
       }).then(function(result) {
         assert.equal(result, 2, 'Callback fired twice');
       });
-  }
+  } 
 });

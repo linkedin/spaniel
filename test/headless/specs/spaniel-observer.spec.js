@@ -17,7 +17,7 @@ class SpanielObserverTestClass extends TestClass {
       window.STATE.impressions = 0;
       window.STATE.completes = 0;
       window.target = document.querySelector('.tracked-item[data-id="1"]');
-      window.observer = new spaniel.SpanielObserver(function(changes) {
+      window.observer = new spanielInstance.SpanielObserver(function(changes) {
         for (var i = 0; i < changes.length; i++) {
           if (changes[i].entering) {
             createDiv('impression-div');
@@ -95,7 +95,7 @@ testModule('SpanielObserver', class extends SpanielObserverTestClass {
         window.STATE.impressions = 0;
         window.STATE.completes = 0;
         window.target = document.querySelector('.tracked-item[data-id="1"]');
-        window.observer = new spaniel.SpanielObserver(function(changes) {
+        window.observer = new spanielInstance.SpanielObserver(function(changes) {
           for (var i = 0; i < changes.length; i++) {
             if (changes[i].entering) {
               createDiv('impression-div');
