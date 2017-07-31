@@ -46,7 +46,7 @@ export class SpanielObserver implements SpanielObserverInterface {
   thresholds: SpanielThreshold[];
   recordStore: { [key: string]: SpanielRecord; };
   queuedEntries: SpanielObserverEntry[];
-  parentSpanielInstance: SpanielInstance;
+  private parentSpanielInstance: SpanielInstance;
   private paused: boolean;
   private onWindowClosed: () => void;
   private onTabHidden: () => void;
