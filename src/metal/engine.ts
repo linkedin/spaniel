@@ -14,11 +14,16 @@ import W from './window-proxy';
 
 const NUM_SKIPPED_FRAMES = 3;
 
+export interface OptimizedEngineInterface {
+  onMutate?: (func: Function) => void;
+  scheduleWork?: (func: Function) => void;
+}
+
 export class Engine implements EngineInterface {
-  private reads: Array<Function> = [];
-  private work: Array<Function> = [];
-  private running: Boolean = false;
-  private skipCounter: number = NUM_SKIPPED_FRAMES + 1;
+  protected reads: Array<Function> = [];
+  protected work: Array<Function> = [];
+  protected running: Boolean = false;
+  protected skipCounter: number = NUM_SKIPPED_FRAMES + 1;
   scheduleRead(callback: Function) {
     this.reads.unshift(callback);
     this.run();
@@ -27,7 +32,7 @@ export class Engine implements EngineInterface {
     this.work.unshift(callback);
     this.run();
   }
-  private run() {
+  protected run() {
     if (!this.running) {
       this.running = true;
       W.rAF(() => {
@@ -50,16 +55,18 @@ export class Engine implements EngineInterface {
   }
 }
 
-let globalEngine: EngineInterface = null;
-
-export function setGlobalEngine(engine: EngineInterface): boolean {
-  if (!!globalEngine) {
-    return false;
+export class OptimizedEngine extends Engine {
+  constructor(onMutate: (func: Function) => void, scheduleWork?: (func: Function) => void) {
+    super();
+    onMutate(this.run);
+    if (scheduleWork) {
+      this.scheduleWork = scheduleWork;
+    }
   }
-  globalEngine = engine;
-  return true;
-}
-
-export function getGlobalEngine() {
-  return globalEngine || (globalEngine = new Engine());
+  scheduleRead(callback: Function) {
+    this.reads.unshift(callback);
+  }
+  scheduleWork(callback: Function) {
+    this.work.unshift(callback);
+  }
 }

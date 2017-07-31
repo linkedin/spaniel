@@ -23,6 +23,10 @@ import {
 } from './metal/index';
 
 import {
+  SpanielInstance
+} from './spaniel-instance';
+
+import {
   SpanielTrackedElement,
   DOMString,
   DOMHighResTimeStamp,
@@ -67,7 +71,7 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
   private id: string;
   private scheduler: ElementScheduler;
   private callback: Function;
-
+  public parent: SpanielInstance;
   public root: SpanielTrackedElement;
   public rootMargin: DOMString;
   protected rootMarginObj: DOMMargin;
@@ -126,21 +130,21 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
     };
   }
 
-  constructor(callback: Function, options: IntersectionObserverInit = {}) {
+  constructor(callback: Function, options: IntersectionObserverInit = {}, parent: SpanielInstance) {
     this.records = {};
     this.callback = callback;
     this.id = generateToken();
     options.threshold = options.threshold || 0;
     this.rootMarginObj = rootMarginToDOMMargin(options.rootMargin || '0px');
     this.root = options.root;
-
+    this.parent = parent;
     if (Array.isArray(options.threshold)) {
       this.thresholds = <Array<number>>options.threshold;
     } else {
       this.thresholds = [<number>options.threshold];
     }
 
-    this.scheduler = new ElementScheduler(null, this.root);
+    this.scheduler = new ElementScheduler(this.parent.getEngine(), this.root);
   }
 };
 

@@ -18,7 +18,10 @@ export default class SpanielContext {
     this._results = [];
     this._assertions = [];
 
-    this._execution = this._nightmare.goto('http://localhost:3000/').wait(TIMEOUT);
+    this._execution = this._nightmare.goto('http://localhost:3000/').wait(TIMEOUT).evaluate(function() {
+      window.STATE = {};
+      window.spanielInstance = new spaniel.SpanielInstance();
+    });
   }
 
   close() {

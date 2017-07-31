@@ -19,7 +19,6 @@ import {
 import W from './window-proxy';
 
 import { default as Queue, DOMQueue} from './queue';
-import { getGlobalEngine } from './engine';
 
 const TOKEN_SEED = 'xxxx'.replace(/[xy]/g, function(c) {
   let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
@@ -72,11 +71,9 @@ export abstract class BaseScheduler {
   protected queue: QueueInterface;
   protected isTicking: Boolean = false;
   protected toRemove: Array<string| Element | Function> = [];
-  constructor(customEngine?: EngineInterface, root?: Element) {
+  constructor(customEngine: EngineInterface, root?: Element) {
     if (customEngine) {
       this.engine = customEngine;
-    } else {
-      this.engine = getGlobalEngine();
     }
     if (root) {
        this.root = root;
@@ -150,8 +147,8 @@ export class Scheduler extends BaseScheduler implements SchedulerInterface {
 
 export class PredicatedScheduler extends Scheduler implements SchedulerInterface {
   predicate: (frame: Frame) => Boolean;
-  constructor(predicate: (frame: Frame) => Boolean) {
-    super(null);
+  constructor(predicate: (frame: Frame) => Boolean, engine: EngineInterface) {
+    super(engine);
     this.predicate = predicate;
   }
   applyQueue(frame: Frame) {
@@ -163,7 +160,7 @@ export class PredicatedScheduler extends Scheduler implements SchedulerInterface
 
 export class ElementScheduler extends BaseScheduler implements ElementSchedulerInterface {
   protected queue: DOMQueue;
-  constructor(customEngine?: EngineInterface, root?: Element) {
+  constructor(customEngine: EngineInterface, root?: Element) {
     super(customEngine, root);
     this.queue = new DOMQueue();
   }
@@ -184,10 +181,4 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
     });
     return id;
   }
-}
-
-let globalScheduler: Scheduler = null;
-
-export function getGlobalScheduler() {
-  return globalScheduler || (globalScheduler = new Scheduler());
 }
