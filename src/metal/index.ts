@@ -13,9 +13,8 @@ import w from './window-proxy';
 import { default as QueueElement, QueueDOMElement } from './element';
 import { default as Queue, DOMQueue, FunctionQueue } from './queue';
 import { QueueElementInterface, QueueDOMElementInterface, FrameInterface, QueueInterface } from './interfaces';
-import { generateToken, ElementScheduler, Scheduler, PredicatedScheduler, Frame, getGlobalScheduler } from './scheduler';
+import { generateToken, ElementScheduler, Scheduler, PredicatedScheduler, Frame } from './scheduler';
 import { Engine } from  './engine';
-import { on, off, scheduleRead, scheduleWork } from  './events';
 
 interface AbsoluteRect {
   top: number;
@@ -47,10 +46,5 @@ export {
   Scheduler,
   Engine,
   generateToken,
-  Frame,
-  getGlobalScheduler,
-  on,
-  off,
-  scheduleRead,
-  scheduleWork
+  Frame
 };

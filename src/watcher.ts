@@ -20,6 +20,10 @@ import {
   SpanielTrackedElement
 } from './interfaces';
 
+import {
+  SpanielInstance
+} from './spaniel-instance';
+
 export interface WatcherConfig {
   ratio?: number;
   time?: number;
@@ -59,7 +63,8 @@ function onEntry(entries: SpanielObserverEntry[]) {
 
 export class Watcher {
   observer: SpanielObserver;
-  constructor(config: WatcherConfig = {}) {
+  parentSpanielInstance: SpanielInstance;
+  constructor(config: WatcherConfig = {}, parentSpanielInstance: SpanielInstance) {
     let { time, ratio, rootMargin, root } = config;
 
     let threshold: Threshold[] = [
@@ -77,7 +82,7 @@ export class Watcher {
         ratio: ratio || 0
       });
     }
-    
+
     if (ratio) {
       threshold.push({
         label: 'visible',
@@ -85,12 +90,12 @@ export class Watcher {
         ratio
       });
     }
-
+    this.parentSpanielInstance = parentSpanielInstance;
     this.observer = new SpanielObserver(onEntry, {
       rootMargin,
       threshold,
       root
-   });
+   }, this.parentSpanielInstance);
   }
   watch(el: Element, callback: WatcherCallback) {
     this.observer.observe(el, {

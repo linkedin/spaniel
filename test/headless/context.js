@@ -20,6 +20,7 @@ export default class Context {
     this._assertions = [];
     this._execution = this._root = this._nightmare.goto('http://localhost:3000/').wait(10).evaluate(function() {
       window.STATE = {};
+      window.spanielInstance = new spaniel.SpanielInstance();
     });
   }
   close() {

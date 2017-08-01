@@ -15,7 +15,8 @@ var runTest = function(threshold, options) {
   var target = options.target || document.createElement('div');
   target.style.height = '10px';
   document.body.appendChild(target);
-  var observer = new spaniel.SpanielObserver(function(changes) {
+  window.spanielInstance = new spaniel.SpanielInstance();
+  var observer = new spanielInstance.SpanielObserver(function(changes) {
     for (var i = 0; i < changes.length; i++) {
       entries.push(changes[i]);
     }
