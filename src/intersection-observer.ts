@@ -143,7 +143,13 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
     } else {
       this.thresholds = [<number>options.threshold];
     }
-
+    let parentElement = this.root ? this.root : window;
+    parentElement.addEventListener('scroll', () => {
+      this.parentSpanielInstance.getEngine().run();
+    });
+    parentElement.addEventListener('resize', () => {
+      this.parentSpanielInstance.getEngine().run();
+    });
     this.scheduler = new ElementScheduler(this.parentSpanielInstance.getEngine(), this.root);
   }
 };

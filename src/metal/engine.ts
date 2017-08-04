@@ -24,6 +24,7 @@ export class Engine implements EngineInterface {
   protected work: Array<Function> = [];
   protected running: Boolean = false;
   protected skipCounter: number = NUM_SKIPPED_FRAMES + 1;
+  protected optimizedEngine: Boolean = false;
   scheduleRead(callback: Function) {
     this.reads.unshift(callback);
     this.run();
@@ -32,7 +33,7 @@ export class Engine implements EngineInterface {
     this.work.unshift(callback);
     this.run();
   }
-  protected run() {
+  run() {
     if (!this.running) {
       this.running = true;
       W.rAF(() => {
@@ -46,9 +47,13 @@ export class Engine implements EngineInterface {
             this.work.pop()();
           }
         }
-        this.skipCounter++;
-        if (this.work.length > 0 || this.reads.length > 0) {
-          this.run();
+        if (!this.optimizedEngine) {
+          this.skipCounter++;
+          if (this.work.length > 0 || this.reads.length > 0) {
+            this.run();
+          }
+        } else {
+          this.skipCounter = NUM_SKIPPED_FRAMES + 1;
         }
       });
     }
@@ -58,10 +63,9 @@ export class Engine implements EngineInterface {
 export class OptimizedEngine extends Engine {
   constructor(onMutate: (func: Function) => void, scheduleWork?: (func: Function) => void) {
     super();
-    onMutate(this.run);
-    if (scheduleWork) {
-      this.scheduleWork = scheduleWork;
-    }
+    this.optimizedEngine = true;
+    onMutate && onMutate(this.run.bind(this));
+    scheduleWork && (this.scheduleWork = scheduleWork);
   }
   scheduleRead(callback: Function) {
     this.reads.unshift(callback);
