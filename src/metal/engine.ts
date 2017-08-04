@@ -58,6 +58,9 @@ export class Engine implements EngineInterface {
       });
     }
   }
+  isOptimizedEngine() {
+    return this.isOptimizedEngine;
+  }
 }
 
 export class OptimizedEngine extends Engine {
