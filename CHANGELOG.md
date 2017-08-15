@@ -1,5 +1,9 @@
 # spaniel Changelog
 
+### 4.0.0 (TBD)
+
+TODO
+
 ### 3.2.0 (August 22, 2017)
 
 * Add `boundingClientRect` as a `Watcher` callback parameter.
