@@ -1,8 +1,36 @@
 # Summary
-Improve the performance of the spaniel considering all possible ways.
+Changes the API to allow better customization of low-level behavior, which is required for certain performance optimizations. This RFC is focused on the API changes themselves, not the optimizations, which will be added in the future.
 
 # Motivation
-Polling requestAninmationFrame very frequently causes heigher CPU utilization and it is unnecessary. If there were no `scroll/resize/changes in the DOM` since last requestAnimationFrame cycle then there is no need to process the scheduled read and work queues unless one of them occurs.
+
+The API changes allow better customization of low-level behavior. In turn, this will:
+
+1. Enables certain performance optimizations
+2. Makes it easier to integrate Spaniel with a wider range of environments
+
+This RFC is focused on the API changes themselves, not the optimizations, which will be added in the future.
+
+## Environment configuration
+
+We want to make it easy to configure spaniel for use in any environment:
+
+1. Test environments
+2. Server side rendering environments
+3. Frameworks with their own job scheduling system (like Ember)
+
+For example, a test environment might want to stub `IntersectionObserver`. Or in SSR mode, we might want to consider any element to be in the viewport for rendering purposes. Frameworks like Ember might want to ensure that any callback is scheduled via the framework's job scheduler.
+
+## Performance Optimizations
+
+There are two known performance optimizations that require this API change.
+
+### Using Native IntersectionObserver when available
+
+Whenever native `IntersectionObserver` is available, it should be used. There is an assumption that the native `IntersectionObserver` is more performant than the polyfill implementation. However, we don't want to ship the polyfill code to the browser when the browser already implements the native `IntersectionObserver`. We want to support apps that have per-browser builds.
+
+### The polling optimization
+
+The current `IntersectionObserver` polyfill checks every observed element every frame to see if the intersection state of an element has changed. Using requestAninmationFrame to poll on every frame requires significant CPU utilization. Meanwhile, it's not actually necessary to poll on every frame. If there were no changes to the window (scroll/resize) and no DOM changes, then there is no need to re-calculate intersection state.
 
 The solution should:
 - Fire all the events as expected/ as it was before.
@@ -10,13 +38,12 @@ The solution should:
 - Should not create extra overhead while the system is idle.
 
 # Detailed design
-Rather than polling requestAnimationFrame very frequently and process whole scheduled read and work queues, it is better to process these queues in next earliest requestAnimationFrame callback only when one of the `scroll/resize/changes in the DOM` event occur. To achieve this we need to listen for scroll ,resize and DOM change events in the viewport/[root](https://wicg.github.io/IntersectionObserver/#intersectionobserver-intersection-root). 
+Rather than polling the viewport status of every time on every frame using `requestAnimationFrame`, Spaniel should just poll on the next animation frame after a scroll, resize or DOM change event occurs. To achieve this, we need to listen for scroll, resize and DOM change events, with respect to the viewport/[root](https://wicg.github.io/IntersectionObserver/#intersectionobserver-intersection-root). 
 
-We can listen for scroll or resize events using `addEventListener` function. But there is no standard/native way to detect the DOM modification. So we must provide an API which user can use to provide a function which will be fired when DOM change occurs. 
+We can listen for scroll or resize events using `addEventListener` function. But there is no universal way to listen for DOM changes, as [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) isn't universal. So we must provide an API through which the host app can provide a hook that allows Spaniel to listen for DOM changes.
 
-Suggested API to achieve this goal is a constructor to create Spaniel Instances.
+## Proposed API
 
-### API
 ```javascript
 import { SpanielInstance } from 'spaniel';
 const spanielInstance = new SpanielInstance({
