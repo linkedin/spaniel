@@ -105,7 +105,7 @@ testModule('Impression event', class extends ImpressionEventTestClass {
     return this.setupTest()
       .onDOMReady()
       .scrollTo(200)
-      .wait(RAF_THRESHOLD * 3)
+      .wait(RAF_THRESHOLD)
       .scrollTo(0)
       .assertNever(ITEM_TO_OBSERVE, 'impressed')
       .scrollTo(200)
