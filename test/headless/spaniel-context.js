@@ -160,6 +160,7 @@ export default class SpanielContext {
   }
 
   waitForExposed(identifierNum) {
+    console.log('Waiting for exposed' + identifierNum);
     if (identifierNum) {
       this.wait(`#exposed-div-${identifierNum}`, 200);
     } else {
@@ -169,6 +170,7 @@ export default class SpanielContext {
   }
 
   waitForNthElemEvent(elementNum, event, identifierNum) {
+    console.log('Waiting for ' + elementNum + ' - ' + event + ' : ' + identifierNum);
     if (identifierNum) {
       this.wait(`#${elementNum}-element-${event}-div-${identifierNum}`, 200);
     } else {
