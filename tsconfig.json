@@ -7,7 +7,8 @@
       "target": "es5",
       "outDir": "exports/es6",
       "sourceMap": true,
-      "moduleResolution": "node"
+      "moduleResolution": "node",
+      "noUnusedLocals": true
     },
     "filesGlob": [
       "**/*.ts"

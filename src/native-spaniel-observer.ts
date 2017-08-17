@@ -161,7 +161,7 @@ export class SpanielObserver implements SpanielObserverInterface {
     });
   }
   private handleThresholdExiting(spanielEntry: SpanielObserverEntry, state: SpanielThresholdState) {
-    let { time, intersectionRatio } = spanielEntry;
+    let { time } = spanielEntry;
     let hasTimeThreshold = !!state.threshold.time;
     if (state.lastSatisfied && (!hasTimeThreshold || (hasTimeThreshold && state.visible))) {
       // Make into function

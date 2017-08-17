@@ -20,8 +20,6 @@ import {
 
 import {
   SpanielTrackedElement,
-  SpanielObserverEntry,
-  DOMString,
   DOMMargin,
   IntersectionObserverClass
 } from './interfaces';
@@ -38,7 +36,6 @@ import {
 } from './metal/engine';
 
 import {
-  Scheduler,
   getGlobalScheduler,
   on,
   off,
