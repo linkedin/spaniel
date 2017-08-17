@@ -15,17 +15,13 @@ import {
 
 import {
   Frame,
-  QueueDOMElementInterface,
-  DOMQueue,
   ElementScheduler,
-  Engine,
   generateToken
 } from './metal/index';
 
 import {
   SpanielTrackedElement,
   DOMString,
-  DOMHighResTimeStamp,
   DOMRectReadOnly,
   IntersectionObserverInit,
   DOMMargin,
@@ -112,7 +108,6 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
   private generateEntryEvent(frame: Frame, bcr: DOMRectReadOnly, el: Element): EntryEvent {
     let count: number = 0;
     let entry = generateEntry(frame, bcr, el, this.rootMarginObj);
-    let ratio = entry.intersectionRatio;
 
     for (let i = 0; i < this.thresholds.length; i++) {
       let threshold = this.thresholds[i];
@@ -181,7 +176,7 @@ export class IntersectionObserverEntry implements IntersectionObserverEntryInit 
 */
 
 export function generateEntry(frame: Frame, bcr: DOMRectReadOnly, el: Element, rootMargin: DOMMargin): IntersectionObserverEntry {
-  let { top, bottom, left, right } = bcr;
+  let { bottom, right } = bcr;
   let rootBounds: ClientRect = {
     left: frame.x - rootMargin.left,
     top: frame.y - rootMargin.top,
