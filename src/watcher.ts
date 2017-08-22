@@ -40,13 +40,15 @@ export interface Threshold {
 export interface WatcherCallbackOptions {
   duration: number;
   visibleTime?: number;
+  boundingClientRect: DOMRectInit;
 }
 
 function onEntry(entries: SpanielObserverEntry[]) {
   entries.forEach((entry: SpanielObserverEntry) => {
-    const { label, duration } = entry;
+    const { label, duration, boundingClientRect } = entry;
     const opts: WatcherCallbackOptions = {
-      duration
+      duration,
+      boundingClientRect
     };
     if (entry.entering) {
       entry.payload.callback(label, opts);
@@ -77,7 +79,7 @@ export class Watcher {
         ratio: ratio || 0
       });
     }
-    
+
     if (ratio) {
       threshold.push({
         label: 'visible',
