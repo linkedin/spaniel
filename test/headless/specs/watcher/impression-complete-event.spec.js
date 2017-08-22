@@ -114,6 +114,8 @@ testModule('Impression Complete event', class extends ImpressionCompleteEventTes
   }
 
   ['@test should pass impression duration, within 50ms accuracy, to callback']() {
+    const lowerBounds = IMPRESSION_THRESHOLD * 3 - (RAF_THRESHOLD * NUM_SKIPPED_FRAMES);
+    const upperBounds = IMPRESSION_THRESHOLD * 3 + (RAF_THRESHOLD * NUM_SKIPPED_FRAMES);
     return this.setupTest()
       .onDOMReady()
       .scrollTo(150)
@@ -121,7 +123,17 @@ testModule('Impression Complete event', class extends ImpressionCompleteEventTes
       .scrollTo(0)
       .waitForNthElemEvent('first', 'exposed', '1')
       .assert(function(e) {
-        return e.meta.duration >= (IMPRESSION_THRESHOLD * 3 - (RAF_THRESHOLD * NUM_SKIPPED_FRAMES)) && e.meta.duration <= (IMPRESSION_THRESHOLD * 3 + (RAF_THRESHOLD * NUM_SKIPPED_FRAMES)) && e.id === 5 && e.e === 'impression-complete';
+        const matchedEvent = e.id === 5 && e.e === 'impression-complete';
+        if (!matchedEvent) {
+          return false;
+        }
+        const valid = e.meta.duration >= lowerBounds && e.meta.duration <= upperBounds;
+        if (!valid) {
+          console.log('upper', upperBounds);
+          console.log('lower', lowerBounds);
+          console.log('duration', e.meta.duration);
+        }
+        return valid;
       }, 1)
       .done();
   }
