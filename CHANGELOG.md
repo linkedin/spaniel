@@ -1,5 +1,9 @@
 # spaniel Changelog
 
+### 3.2.0 (August 22, 2017)
+
+* Add `boundingClientRect` as a `Watcher` callback parameter.
+
 ### 3.1.1 (July 27, 2017)
 
 * Add `SpanielObserver.destroy()` to cleanup memory.
