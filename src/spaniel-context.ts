@@ -29,9 +29,7 @@ import {
 } from './utils';
 
 import {
-  SpanielTrackedElement,
   SpanielObserverEntry,
-  DOMString,
   DOMMargin,
   IntersectionObserverClass,
   SpanielObserverInit,
@@ -46,9 +44,7 @@ import {
 
 import {
   Scheduler,
-  Frame,
-  generateToken,
-  ElementScheduler
+  Frame
 } from './metal/index';
 
 import {
@@ -64,7 +60,7 @@ export interface SpanielIntersectionObserverInterface {
   new(callback: Function, options: IntersectionObserverInit): SpanielIntersectionObserver;
 }
 
-function generateIntersectionObserverClass(parent: SpanielInstance): SpanielIntersectionObserverInterface {
+function generateIntersectionObserverClass(parent: SpanielContext): SpanielIntersectionObserverInterface {
   return class SpanielIntersectionObserverClass extends SpanielIntersectionObserver {
     constructor(callback: Function, options: IntersectionObserverInit = {}) {
       super(callback, options, parent);
@@ -76,7 +72,7 @@ export interface SpanielObserverInterface {
   new (callback: (entries: SpanielObserverEntry[]) => void, options: SpanielObserverInit): SpanielObserver;
 }
 
-function generateSpanielObserver(parent: SpanielInstance): SpanielObserverInterface {
+function generateSpanielObserver(parent: SpanielContext): SpanielObserverInterface {
   return class SpanielObserverClass extends SpanielObserver {
     constructor(callback: (entries: SpanielObserverEntry[]) => void, options: SpanielObserverInit = {}) {
       super(callback, options, parent);
@@ -88,7 +84,7 @@ export interface WatcherInterface {
   new(config: WatcherConfig): Watcher;
 }
 
-function generateWatcher(parent: SpanielInstance): WatcherInterface {
+function generateWatcher(parent: SpanielContext): WatcherInterface {
   return class WatcherClass extends Watcher {
     constructor(config: WatcherConfig = {}) {
       super(config, parent);
@@ -96,7 +92,7 @@ function generateWatcher(parent: SpanielInstance): WatcherInterface {
   };
 }
 
-export class SpanielInstance {
+export class SpanielContext {
   public IntersectionObserver: IntersectionObserverClass;
   private engine: Engine;
   private scheduler: Scheduler;

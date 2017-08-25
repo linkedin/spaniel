@@ -19,7 +19,7 @@ testModule('elementSatisfiesRatio', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.satisfied = null;
       var el = document.querySelector('.tracked-item[data-id="1"]');
-      spanielInstance.elementSatisfiesRatio(el, 1, function(a) {
+      spanielContext.elementSatisfiesRatio(el, 1, function(a) {
         window.STATE.satisfied = true;
         createDiv('satisfied-div');
         document.body.appendChild(div);
@@ -38,7 +38,7 @@ testModule('elementSatisfiesRatio', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.satisfied = null;
       var el = document.querySelector('.tracked-item[data-id="10"]');
-      spanielInstance.elementSatisfiesRatio(el, 1, function(a) {
+      spanielContext.elementSatisfiesRatio(el, 1, function(a) {
         window.STATE.satisfied = false;
         createDiv('satisfied-div');
       })
@@ -57,7 +57,7 @@ testModule('Eventing', class extends TestClass {
   ['@test scroll event callback fires']() {
     return this.context.evaluate(function() {
       window.STATE.scrollEvents = 0;
-      spanielInstance.on('scroll', function() {
+      spanielContext.on('scroll', function() {
         window.STATE.scrollEvents++;
         createDiv('scroll-div-' + window.STATE.scrollEvents);
       });
@@ -75,7 +75,7 @@ testModule('Eventing', class extends TestClass {
   ['@test scroll event callback fires twice with two scrolls']() {
     return this.context.evaluate(function() {
       window.STATE.scrollEvents = 0;
-      spanielInstance.on('scroll', function() {
+      spanielContext.on('scroll', function() {
         window.STATE.scrollEvents++;
         createDiv('scroll-div-' + window.STATE.scrollEvents);
       });
@@ -99,12 +99,12 @@ testModule('Eventing', class extends TestClass {
         window.STATE.scrollEvents++;
         createDiv('scroll-div-' + window.STATE.scrollEvents);
       };
-      spanielInstance.on('scroll',  window.STATE.scrollHandler);
+      spanielContext.on('scroll',  window.STATE.scrollHandler);
     })
     .scrollTo(10)
     .waitForScroll(1)
     .evaluate(function() {
-      spanielInstance.off('scroll', window.STATE.scrollHandler);;
+      spanielContext.off('scroll', window.STATE.scrollHandler);;
     })
     .scrollTo(30)
     .scrollTo(30)

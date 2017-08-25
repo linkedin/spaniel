@@ -20,7 +20,7 @@ testModule('Watcher', class extends TestClass {
     return this.context.evaluate(() => {
       window.STATE.exposed = 0;
       window.STATE.exposedFirst = 0;
-      window.watcher = new spanielInstance.Watcher();
+      window.watcher = new spanielContext.Watcher();
       window.target = document.querySelector('.tracked-item[data-id="6"]');
       
       window.watcher.watch(window.target, function() {
@@ -55,7 +55,7 @@ testModule('Watcher', class extends TestClass {
   ['@test destroy works']() {
     return this.context.evaluate(() => {
       window.STATE.exposed = 0;
-      window.watcher = new spanielInstance.Watcher();
+      window.watcher = new spanielContext.Watcher();
       window.target = document.querySelector('.tracked-item[data-id="6"]');
       window.watcher.watch(window.target, function() {
         window.STATE.exposed++;
@@ -83,8 +83,8 @@ testModule('Watcher', class extends TestClass {
     return this.context.evaluate(() => {
       window.STATE.exposed = 0;
       window.STATE.exposedFirst = 0;
-      window.watcher1 = new spanielInstance.Watcher();
-      window.watcher2 = new spanielInstance.Watcher();
+      window.watcher1 = new spanielContext.Watcher();
+      window.watcher2 = new spanielContext.Watcher();
       window.target = document.querySelector('.tracked-item[data-id="6"]');
       window.watcher1.watch(window.target, function() {
         window.STATE.exposed++;
@@ -123,7 +123,7 @@ testModule('Watcher', class extends TestClass {
   ['@test watched item callbacks fire in order']() {
     return this.context.evaluate(() => {
       window.STATE.order = [];
-      window.watcher = new spanielInstance.Watcher();
+      window.watcher = new spanielContext.Watcher();
       var t1 = document.querySelector('.tracked-item[data-id="1"]');
       var t2 = document.querySelector('.tracked-item[data-id="2"]');
       window.watcher.watch(t1, function() {

@@ -25,7 +25,7 @@ export default class Context {
         div.id = id;
         document.body.appendChild(div);
       }
-      window.spanielInstance = new spaniel.SpanielInstance();
+      window.spanielContext = new spaniel.SpanielContext();
     });
   }
   close() {

@@ -20,8 +20,8 @@ import {
 } from './metal/index';
 
 import {
-  SpanielInstance
-} from './spaniel-instance';
+  SpanielContext
+} from './spaniel-context';
 
 import {
   SpanielTrackedElement,
@@ -67,7 +67,7 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
   private id: string;
   private scheduler: ElementScheduler;
   private callback: Function;
-  private parentSpanielInstance: SpanielInstance;
+  private spaniel: SpanielContext;
   public root: SpanielTrackedElement;
   public rootMargin: DOMString;
   protected rootMarginObj: DOMMargin;
@@ -125,21 +125,21 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
     };
   }
 
-  constructor(callback: Function, options: IntersectionObserverInit = {}, parentSpanielInstance: SpanielInstance) {
+  constructor(callback: Function, options: IntersectionObserverInit = {}, spaniel: SpanielContext) {
     this.records = {};
     this.callback = callback;
     this.id = generateToken();
     options.threshold = options.threshold || 0;
     this.rootMarginObj = rootMarginToDOMMargin(options.rootMargin || '0px');
     this.root = options.root;
-    this.parentSpanielInstance = parentSpanielInstance;
+    this.spaniel = spaniel;
     if (Array.isArray(options.threshold)) {
       this.thresholds = <Array<number>>options.threshold;
     } else {
       this.thresholds = [<number>options.threshold];
     }
 
-    this.scheduler = new ElementScheduler(this.parentSpanielInstance.getEngine(), this.root);
+    this.scheduler = new ElementScheduler(this.spaniel.getEngine(), this.root);
   }
 };
 

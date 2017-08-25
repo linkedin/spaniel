@@ -45,8 +45,8 @@ We can listen for scroll or resize events using `addEventListener` function. But
 ## Proposed API
 
 ```javascript
-import { SpanielInstance } from 'spaniel';
-const spanielInstance = new SpanielInstance({
+import { SpanielContext } from 'spaniel';
+const spanielContext = new SpanielContext({
   IntersectionObserver,
   engine : {
      onMutate,
@@ -81,7 +81,7 @@ interface WatcherInterface {
   new(config: WatcherConfig): Watcher;
 }
 
-interface SpanielInstance {
+interface SpanielContext {
   public IntersectionObserver: IntersectionObserverClass;
   private engine: Engine;
   private scheduler: Scheduler;
@@ -118,19 +118,19 @@ new IntersectionObserver((entries) => { console.log('I see you') }, {
 ```
 to
 ```JavaScript
-import { SpanielInstance } from 'spaniel';
+import { SpanielContext } from 'spaniel';
 
-const spanielInstance = new SpanielInstance();
-new spanielInstance.IntersectionObserver((entries) => { console.log('I see you') }, {
+const spanielContext = new SpanielContext();
+new spanielContext.IntersectionObserver((entries) => { console.log('I see you') }, {
   threshold: 0.5
 }).observe(document.getElementById('my-element'));
 ```
 
 All the correspoding functions which were used directly before must be used along with instantiated object. 
 Example 
-- `spaniel.on()` -> `spanielInstance.on()`
-- `spaniel.off()` -> `spanielInstance.off()`
-- `spaniel.trigger()` -> `spanielInstance.trigger()`
+- `spaniel.on()` -> `spanielContext.on()`
+- `spaniel.off()` -> `spanielContext.off()`
+- `spaniel.trigger()` -> `spanielContext.trigger()`
 
 # Drawback
 

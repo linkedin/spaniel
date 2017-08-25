@@ -15,9 +15,7 @@ export {
 
 import { WatcherConfig } from './watcher';
 
-export {
-  SpanielInstance as default
-} from './spaniel-instance';
+export { SpanielContext } from './spaniel-context';
 
 export {
   WatcherConfig

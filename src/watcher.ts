@@ -21,8 +21,8 @@ import {
 } from './interfaces';
 
 import {
-  SpanielInstance
-} from './spaniel-instance';
+  SpanielContext
+} from './spaniel-context';
 
 export interface WatcherConfig {
   ratio?: number;
@@ -65,8 +65,8 @@ function onEntry(entries: SpanielObserverEntry[]) {
 
 export class Watcher {
   observer: SpanielObserver;
-  parentSpanielInstance: SpanielInstance;
-  constructor(config: WatcherConfig = {}, parentSpanielInstance: SpanielInstance) {
+  parentSpanielContext: SpanielContext;
+  constructor(config: WatcherConfig = {}, parentSpanielContext: SpanielContext) {
     let { time, ratio, rootMargin, root } = config;
 
     let threshold: Threshold[] = [
@@ -92,12 +92,12 @@ export class Watcher {
         ratio
       });
     }
-    this.parentSpanielInstance = parentSpanielInstance;
+    this.parentSpanielContext = parentSpanielContext;
     this.observer = new SpanielObserver(onEntry, {
       rootMargin,
       threshold,
       root
-   }, this.parentSpanielInstance);
+   }, this.parentSpanielContext);
   }
   watch(el: Element, callback: WatcherCallback) {
     this.observer.observe(el, {

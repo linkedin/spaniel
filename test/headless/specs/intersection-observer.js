@@ -19,7 +19,7 @@ testModule('IntersectionObserver', class extends TestClass {
     return this.context.evaluate(() => {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="1"]');
-      let observer = new spanielInstance.IntersectionObserver(function() {
+      let observer = new spanielContext.IntersectionObserver(function() {
         createDiv('impression-div');
         window.STATE.impressions++;
       });
@@ -38,7 +38,7 @@ testModule('IntersectionObserver', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="1"]');
-      let observer = new spanielInstance.IntersectionObserver(function() {
+      let observer = new spanielContext.IntersectionObserver(function() {
         window.STATE.impressions++;
         createDiv('impression-div');
       }, {
@@ -59,7 +59,7 @@ testModule('IntersectionObserver', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="5"]');
-      let observer = new spanielInstance.IntersectionObserver(function() {
+      let observer = new spanielContext.IntersectionObserver(function() {
         window.STATE.impressions++;
       }, {
         threshold: 0.75
@@ -80,7 +80,7 @@ testModule('IntersectionObserver', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="5"]');
-      let observer = new spanielInstance.IntersectionObserver(function() {
+      let observer = new spanielContext.IntersectionObserver(function() {
         window.STATE.impressions++;
         createDiv('impression-div');
       }, {
@@ -103,7 +103,7 @@ testModule('IntersectionObserver', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="5"]');
-      let observer = new spanielInstance.IntersectionObserver(function() {
+      let observer = new spanielContext.IntersectionObserver(function() {
         window.STATE.impressions++;
         createDiv('impression-div-' + window.STATE.impressions);
       }, {
@@ -128,7 +128,7 @@ testModule('IntersectionObserver', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.impressions = 0;
       let target = document.querySelector('.tracked-item[data-id="5"]');
-      let observer = new spanielInstance.IntersectionObserver(function() {
+      let observer = new spanielContext.IntersectionObserver(function() {
         window.STATE.impressions++;
         createDiv('impression-div-' + window.STATE.impressions);
       }, {
@@ -154,7 +154,7 @@ testModule('IntersectionObserver', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.impressions = 0;
       window.target = document.querySelector('.tracked-item[data-id="1"]');
-      window.observer = new spanielInstance.IntersectionObserver(function() {
+      window.observer = new spanielContext.IntersectionObserver(function() {
         window.STATE.impressions++;
         createDiv('impression-div');
       });
@@ -183,7 +183,7 @@ testModule('IntersectionObserver', class extends TestClass {
       target1 = document.querySelector('.tracked-item[data-id="1"]');
       target2 = document.querySelector('.tracked-item[data-id="2"]');
       target3 = document.querySelector('.tracked-item[data-id="3"]');
-      window.observer = new spanielInstance.IntersectionObserver(function(event) {
+      window.observer = new spanielContext.IntersectionObserver(function(event) {
         window.STATE.impressions+= event.length;
         createDiv('impression-div-' + window.STATE.impressions);
       });
@@ -214,7 +214,7 @@ testModule('IntersectionObserver', class extends TestClass {
       target1 = document.querySelector('.tracked-item[data-id="1"]');
       target2 = document.querySelector('.tracked-item[data-id="2"]');
       target3 = document.querySelector('.tracked-item[data-id="3"]');
-      window.observer2 = new spanielInstance.IntersectionObserver(function(event) {
+      window.observer2 = new spanielContext.IntersectionObserver(function(event) {
         window.STATE.impressions+= event.length;
         createDiv('impression-div-' + window.STATE.impressions);
       });
@@ -250,7 +250,7 @@ testModule('IntersectionObserver', class extends TestClass {
       window.STATE.impressions = 0;
       let root = document.getElementById('root');
       let target = document.querySelector('.tracked-item-root[data-root-target-id="5"]');
-      let observer = new spanielInstance.IntersectionObserver(function() {
+      let observer = new spanielContext.IntersectionObserver(function() {
         window.STATE.impressions++;
         createDiv('impression-div-' + window.STATE.impressions);
       }, {

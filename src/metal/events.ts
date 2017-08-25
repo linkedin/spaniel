@@ -19,8 +19,6 @@ import {
   FrameInterface
 } from './interfaces';
 
-import w from './window-proxy';
-
 export interface EventRecordInterface {
   listen: (callback: Function) => any;
   unlisten: (callback: Function) => void;

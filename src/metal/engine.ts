@@ -56,7 +56,7 @@ export class Engine implements EngineInterface {
 }
 
 export class OptimizedEngine extends Engine {
-  constructor(onMutate: (func: Function) => void, scheduleWork?: (func: Function) => void) {
+  constructor(onMutate: (func: () => void) => void, scheduleWork?: (func: () => void) => void) {
     super();
     onMutate(this.run);
     if (scheduleWork) {

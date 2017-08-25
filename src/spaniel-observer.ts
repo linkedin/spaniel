@@ -27,8 +27,8 @@ import {
 } from './interfaces';
 
 import {
-  SpanielInstance
-} from './spaniel-instance';
+  SpanielContext
+} from './spaniel-context';
 
 import w from './metal/window-proxy';
 
@@ -46,18 +46,18 @@ export class SpanielObserver implements SpanielObserverInterface {
   thresholds: SpanielThreshold[];
   recordStore: { [key: string]: SpanielRecord; };
   queuedEntries: SpanielObserverEntry[];
-  private parentSpanielInstance: SpanielInstance;
+  private parentSpanielContext: SpanielContext;
   private paused: boolean;
   private onWindowClosed: () => void;
   private onTabHidden: () => void;
   private onTabShown: () => void;
-  constructor(callback: (entries: SpanielObserverEntry[]) => void, options: SpanielObserverInit = {}, parentSpanielInstance: SpanielInstance) {
+  constructor(callback: (entries: SpanielObserverEntry[]) => void, options: SpanielObserverInit = {}, parentSpanielContext: SpanielContext) {
     this.paused = false;
     this.queuedEntries = [];
     this.recordStore = {};
     this.callback = callback;
     let { root, rootMargin, threshold } = options;
-    this.parentSpanielInstance = parentSpanielInstance;
+    this.parentSpanielContext = parentSpanielContext;
     rootMargin = rootMargin || '0px';
     let convertedRootMargin: DOMString = typeof rootMargin !== 'string' ? DOMMarginToRootMargin(rootMargin) : rootMargin;
     this.thresholds = threshold.sort((t: SpanielThreshold) => t.ratio );
@@ -71,16 +71,11 @@ export class SpanielObserver implements SpanielObserverInterface {
     this.onTabHidden = this._onTabHidden.bind(this);
     this.onWindowClosed = this._onWindowClosed.bind(this);
     this.onTabShown = this._onTabShown.bind(this);
-    // if (!!w.IntersectionObserver) {
-    //   this.observer = new IntersectionObserver((records: IntersectionObserverEntry[]) => this.internalCallback(records), o);
-    // } else {
-    //   this.observer = new SpanielIntersectionObserver(, parentSpanielInstance);
-    // }
-    this.observer = new parentSpanielInstance.IntersectionObserver((records: IntersectionObserverEntry[]) => this.internalCallback(records), o);
+    this.observer = new parentSpanielContext.IntersectionObserver((records: IntersectionObserverEntry[]) => this.internalCallback(records), o);
     if (w.hasDOM) {
-      this.parentSpanielInstance.on('unload', this.onWindowClosed.bind(this));
-      this.parentSpanielInstance.on('hide', this.onTabHidden.bind(this));
-      this.parentSpanielInstance.on('show', this.onTabShown.bind(this));
+      this.parentSpanielContext.on('unload', this.onWindowClosed.bind(this));
+      this.parentSpanielContext.on('hide', this.onTabHidden.bind(this));
+      this.parentSpanielContext.on('show', this.onTabShown.bind(this));
     }
   }
   private _onWindowClosed() {
@@ -242,9 +237,9 @@ export class SpanielObserver implements SpanielObserverInterface {
   destroy() {
     this.disconnect();
     if (w.hasDOM) {
-      this.parentSpanielInstance.off('unload', this.onWindowClosed);
-      this.parentSpanielInstance.off('hide', this.onTabHidden);
-      this.parentSpanielInstance.off('show', this.onTabShown);
+      this.parentSpanielContext.off('unload', this.onWindowClosed);
+      this.parentSpanielContext.off('hide', this.onTabHidden);
+      this.parentSpanielContext.off('show', this.onTabShown);
     }
   }
   unobserve(element: SpanielTrackedElement) {
@@ -252,7 +247,7 @@ export class SpanielObserver implements SpanielObserverInterface {
     if (record) {
       delete this.recordStore[element.__spanielId];
       this.observer.unobserve(element);
-      this.parentSpanielInstance.getScheduler().scheduleWork(() => {
+      this.parentSpanielContext.getScheduler().scheduleWork(() => {
         this.handleRecordExiting(record);
         this.flushQueuedEntries();
       });
