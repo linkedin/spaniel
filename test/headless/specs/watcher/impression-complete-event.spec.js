@@ -114,8 +114,8 @@ testModule('Impression Complete event', class extends ImpressionCompleteEventTes
   }
 
   ['@test should pass impression duration, within 50ms accuracy, to callback']() {
-    const lowerBounds = IMPRESSION_THRESHOLD * 3 - (RAF_THRESHOLD * NUM_SKIPPED_FRAMES);
-    const upperBounds = IMPRESSION_THRESHOLD * 3 + (RAF_THRESHOLD * NUM_SKIPPED_FRAMES);
+    const lowerBounds = IMPRESSION_THRESHOLD * 3;
+    const upperBounds = IMPRESSION_THRESHOLD * 3 + (RAF_THRESHOLD * NUM_SKIPPED_FRAMES * 2);
     return this.setupTest()
       .onDOMReady()
       .scrollTo(150)
