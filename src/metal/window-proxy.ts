@@ -10,6 +10,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
 // detect the presence of DOM
+import {
+  MetaInterface
+} from './interfaces';
+
 const nop = () => 0;
 
 interface WindowProxy {
@@ -20,11 +24,15 @@ interface WindowProxy {
   getHeight: Function;
   getWidth: Function;
   rAF: Function;
+  meta: MetaInterface;
 }
 
 const hasDOM = !!((typeof window !== 'undefined') && window && (typeof document !== 'undefined') && document);
 const hasRAF = hasDOM && !!window.requestAnimationFrame;
+const throttleDelay: number = 30;
 
+let resizeTimeout: number = 0;
+let scrollTimeout: number = 0;
 let W: WindowProxy = {
   hasRAF,
   hasDOM,
@@ -32,7 +40,13 @@ let W: WindowProxy = {
   getScrollLeft: nop,
   getHeight: nop,
   getWidth: nop,
-  rAF: hasRAF ? window.requestAnimationFrame.bind(window) : (callback: Function) => { callback(); }
+  rAF: hasRAF ? window.requestAnimationFrame.bind(window) : (callback: Function) => { callback(); },
+  meta: {
+    width: 0,
+    height: 0,
+    scrollTop: 0,
+    scrollLeft: 0
+  }
 };
 
 function hasDomSetup() {
@@ -41,16 +55,51 @@ function hasDomSetup() {
   W.getScrollLeft = se ? () => (<any>document).scrollingElement.scrollLeft : () => (<any>window).scrollX;
 }
 
+// Memoize window meta dimensions
+function windowSetDimensionsMeta() {
+  W.meta.height = W.getHeight();
+  W.meta.width = W.getWidth();
+}
+
+function windowSetScrollMeta() {
+  W.meta.scrollLeft = W.getScrollLeft();
+  W.meta.scrollTop = W.getScrollTop();
+}
+
+// Only invalidate window dimensions on resize
+function resizeThrottle() {
+  clearTimeout(resizeTimeout);
+
+  resizeTimeout = window.setTimeout(() => {
+    windowSetDimensionsMeta();
+  }, throttleDelay);
+}
+
+// Only invalidate window scroll on scroll
+function scrollThrottle() {
+  clearTimeout(scrollTimeout);
+
+  scrollTimeout = window.setTimeout(() => {
+    windowSetScrollMeta();
+  }, throttleDelay);
+}
+
 if (hasDOM) {
   // Set the height and width immediately because they will be available at this point
   W.getHeight = () => (<any>window).innerHeight;
   W.getWidth = () => (<any>window).innerWidth;
+
+  windowSetDimensionsMeta();
+  windowSetScrollMeta();
 
   if ((<any>document).readyState !== 'loading') {
     hasDomSetup();
   } else {
     (<any>document).addEventListener('DOMContentLoaded', hasDomSetup);
   }
+
+  window.addEventListener('resize', resizeThrottle, false);
+  window.addEventListener('scroll', scrollThrottle, false);
 }
 
 export {
