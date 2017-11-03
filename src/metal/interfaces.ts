@@ -52,3 +52,10 @@ export interface FrameInterface {
   width: number;
   height: number;
 }
+
+export interface MetaInterface {
+  width: number;
+  height: number;
+  scrollLeft: number;
+  scrollTop: number;
+}

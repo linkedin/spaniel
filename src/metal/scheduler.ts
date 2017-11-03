@@ -38,10 +38,10 @@ export class Frame implements FrameInterface {
   static generate(): Frame {
     return new Frame(
       Date.now(),
-      W.getScrollTop(),
-      W.getScrollLeft(),
-      W.getWidth(),
-      W.getHeight()
+      W.meta.scrollTop,
+      W.meta.scrollLeft,
+      W.meta.width,
+      W.meta.height
     );
   }
 }
