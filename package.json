@@ -44,7 +44,7 @@
   "devDependencies": {
     "assert": "^1.3.0",
     "babel-core": "^6.11.4",
-    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-env": "^1.6.1",
     "broccoli": "^1.1.0",
     "broccoli-cli": "1.0.0",
     "broccoli-funnel": "^1.2.0",
