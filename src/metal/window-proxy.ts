@@ -11,7 +11,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 // detect the presence of DOM
 import {
-  MetaInterface
+  MetaInterface,
+  OnWindowIsDirtyInterface
 } from './interfaces';
 
 const nop = () => 0;
@@ -25,6 +26,8 @@ interface WindowProxy {
   getWidth: Function;
   rAF: Function;
   meta: MetaInterface;
+  onWindowIsDirtyListeners: OnWindowIsDirtyInterface[];
+  __destroy__: Function;
 }
 
 const hasDOM = !!((typeof window !== 'undefined') && window && (typeof document !== 'undefined') && document);
@@ -40,12 +43,16 @@ let W: WindowProxy = {
   getScrollLeft: nop,
   getHeight: nop,
   getWidth: nop,
+  onWindowIsDirtyListeners: [],
   rAF: hasRAF ? window.requestAnimationFrame.bind(window) : (callback: Function) => { callback(); },
   meta: {
     width: 0,
     height: 0,
     scrollTop: 0,
     scrollLeft: 0
+  },
+  __destroy__() {
+    this.onWindowIsDirtyListeners = [];
   }
 };
 
@@ -73,6 +80,11 @@ function resizeThrottle() {
   resizeTimeout = window.setTimeout(() => {
     windowSetDimensionsMeta();
   }, throttleDelay);
+
+  W.onWindowIsDirtyListeners.forEach((obj) => {
+    let { fn, scope } = obj;
+    fn.call(scope);
+  });
 }
 
 // Only invalidate window scroll on scroll
@@ -82,6 +94,11 @@ function scrollThrottle() {
   scrollTimeout = window.setTimeout(() => {
     windowSetScrollMeta();
   }, throttleDelay);
+
+  W.onWindowIsDirtyListeners.forEach((obj) => {
+    let { fn, scope } = obj;
+    fn.call(scope);
+  });
 }
 
 if (hasDOM) {

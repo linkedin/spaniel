@@ -123,4 +123,26 @@ testModule('Watcher', class extends TestClass {
       assert.equal(result[1], 2, 'Second watched item callback fires second');
     });
   }
+  ['@test cached vs live clientRect should always be the same']() {
+    return this.context.evaluate(() => {
+      window.watcher = new spaniel.Watcher();
+      window.target = document.querySelector('.tracked-item[data-id="6"]');
+      window.watcher.watch(window.target, () => {});
+    })
+    .wait(RAF_THRESHOLD * 5)
+    .scrollTo(10)   
+    .wait(RAF_THRESHOLD * 5) 
+    .getExecution()
+    .evaluate(function() {
+      let a = [];
+      let queueItems = window.watcher.observer.observer.scheduler.queue.items;
+      let cachedClientRect = queueItems[0].clientRect;
+      let liveClientRect = queueItems[0].el.getBoundingClientRect();
+      a.push(cachedClientRect, liveClientRect);
+
+      return a;
+    }).then(function(result) {
+      assert.deepEqual(result[0], result[1], 'The element cached clientRect and live clientRect are identical');
+    });
+  }
 });

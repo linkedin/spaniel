@@ -12,7 +12,78 @@ import {
 
 import constants from './../../constants.js';
 
-const { time: { RAF_THRESHOLD }, ITEM_TO_OBSERVE } = constants;
+const { 
+  time: { 
+    RAF_THRESHOLD
+  },
+  ITEM_TO_OBSERVE,
+  VIEWPORT
+} = constants;
+
+testModule('Window Proxy', class extends TestClass {
+  ['@test destroy works']() {
+    return this.context.evaluate(() => {
+      window.watcher = new spaniel.Watcher();
+      window.target = document.querySelector('.tracked-item[data-id="6"]');
+      window.watcher.watch(window.target, () => {});
+    })
+    .wait(RAF_THRESHOLD * 5)
+    .evaluate(() => {
+      window.watcher.destroy();
+    })
+    .getExecution()
+    .evaluate(function() {
+      return spaniel.__w__.onWindowIsDirtyListeners.length;
+    }).then(function(result) {
+      assert.equal(result, 0, 'All window isDirty listeners have been removed');
+    });
+  }
+  ['@test can listen to window isDirty']() {
+    return this.context.evaluate(() => {
+      window.watcher = new spaniel.Watcher();
+      window.target = document.querySelector('.tracked-item[data-id="6"]');
+      window.watcher.watch(window.target, () => {});
+    })
+    .wait(RAF_THRESHOLD * 5)
+    .getExecution()
+    .evaluate(function() {
+      let id = window.watcher.observer.observer.scheduler.id;
+      return spaniel.__w__.onWindowIsDirtyListeners.filter(listener => listener.id === id);
+    }).then(function(result) {
+      assert.lengthOf(result, 1, 'This watcher is listening on window isDirty');
+    });
+  }
+  ['@test window isDirty validation on scroll']() {
+    return this.context.evaluate(() => {
+      window.testIsDirty = false;
+      spaniel.__w__.onWindowIsDirtyListeners.push({fn: () => { window.testIsDirty = true }, scope: window, id: 'foo1' });
+    })
+    .wait(RAF_THRESHOLD * 5)
+    .scrollTo(10)
+    .getExecution()
+    .evaluate(function() {
+      return window.testIsDirty;
+    }).then(function(result) {
+      assert.isTrue(result, 'The window isDirty');
+    });
+  }
+  ['@test window isDirty validation on resize']() {
+    return this.context.evaluate(() => {
+      window.testIsDirty = false;
+      spaniel.__w__.onWindowIsDirtyListeners.push({fn: () => { window.testIsDirty = true }, scope: window, id: 'foo2' });
+    })
+    .wait(RAF_THRESHOLD * 5)
+    .viewport(VIEWPORT.WIDTH + 100, VIEWPORT.HEIGHT + 100)   
+    .wait(RAF_THRESHOLD * 5)
+    .viewport(VIEWPORT.WIDTH, VIEWPORT.HEIGHT)   
+    .getExecution()
+    .evaluate(function() {
+      return window.testIsDirty;
+    }).then(function(result) {
+      assert.isTrue(result, 'The window isDirty');
+    });
+  }
+});
 
 testModule('elementSatisfiesRatio', class extends TestClass {
   ['@test passes true into callback when ratio satisfied']() {

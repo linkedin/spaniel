@@ -5,20 +5,24 @@ Unless required by applicable law or agreed to in writing, software  distribut
 */
 
 import { assert } from 'chai';
-import rsvp from 'rsvp';
+import constants from '../constants';
 import Nightmare from 'nightmare';
+import rsvp from 'rsvp';
 
-const TIMEOUT = 10;
-const MAC_WINDOW_BAR_HEIGHT = 22; // See https://github.com/segmentio/nightmare/issues/722
+const { 
+  VIEWPORT,
+  NIGHTMARE,
+  MAC_WINDOW_BAR_HEIGHT
+} = constants;
 
 export default class Context {
   constructor() {
-    this._nightmare = Nightmare({ show: false }),
-    this._nightmare.viewport(400, 400 + MAC_WINDOW_BAR_HEIGHT);
+    this._nightmare = Nightmare(NIGHTMARE.OPTIONS),
+    this._nightmare.viewport(VIEWPORT.WIDTH, VIEWPORT.HEIGHT + MAC_WINDOW_BAR_HEIGHT);
     this._events = [];
     this._results = [];
     this._assertions = [];
-    this._execution = this._root = this._nightmare.goto('http://localhost:3000/').wait(10).evaluate(function() {
+    this._execution = this._root = this._nightmare.goto('http://localhost:3000/').wait(NIGHTMARE.TIMEOUT).evaluate(function() {
       window.STATE = {};
     });
   }
@@ -41,12 +45,12 @@ export default class Context {
   }
 
   viewport(width, height) {
-    this._execution = this._execution.viewport(width, height).wait(TIMEOUT);
+    this._execution = this._execution.viewport(width, height).wait(NIGHTMARE.TIMEOUT);
     return this;
   }
 
   scrollTo(top, left) {
-    this._execution = this._execution.scrollTo(top, left).wait(TIMEOUT);
+    this._execution = this._execution.scrollTo(top, left).wait(NIGHTMARE.TIMEOUT);
     return this;
   }
 
