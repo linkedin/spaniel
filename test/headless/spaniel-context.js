@@ -5,20 +5,24 @@ Unless required by applicable law or agreed to in writing, software distribute
 */
 
 import { assert } from 'chai';
-import rsvp from 'rsvp';
+import constants from '../constants';
 import Nightmare from 'nightmare';
+import rsvp from 'rsvp';
 
-const TIMEOUT = 20;
+const { 
+  VIEWPORT,
+  NIGHTMARE
+} = constants;
 
 export default class SpanielContext {
   constructor() {
-    this._nightmare = Nightmare({ show: false }),
-    this._nightmare.viewport(400, 400);
+    this._nightmare = Nightmare(NIGHTMARE.OPTIONS),
+    this._nightmare.viewport(VIEWPORT.WIDTH, VIEWPORT.HEIGHT);
     this._events = [];
     this._results = [];
     this._assertions = [];
 
-    this._execution = this._nightmare.goto('http://localhost:3000/').wait(TIMEOUT);
+    this._execution = this._nightmare.goto('http://localhost:3000/').wait(NIGHTMARE.TIMEOUT);
   }
 
   close() {
@@ -44,7 +48,7 @@ export default class SpanielContext {
   }
 
   unwatch(id) {
-    this._execution = this._execution.wait(10).evaluate(function(id) {
+    this._execution = this._execution.wait(NIGHTMARE.TIMEOUT).evaluate(function(id) {
       var target = document.querySelector('.tracked-item[data-id="' + id + '"]');
       window.watcher.unwatch(target);
     }, id)
@@ -98,7 +102,7 @@ export default class SpanielContext {
   }
 
   scrollTo(top, left) {
-    this._execution = this._execution.scrollTo(top, left).wait(TIMEOUT);
+    this._execution = this._execution.scrollTo(top, left).wait(NIGHTMARE.TIMEOUT);
     return this;
   }
 
@@ -112,7 +116,7 @@ export default class SpanielContext {
       throw 'No assertions were made';
     }
 
-    return this._execution.wait(10).evaluate(function() {
+    return this._execution.wait(NIGHTMARE.TIMEOUT).evaluate(function() {
       return ASSERTIONS;
     }).end().then(function(assertionEvents) {
       let events = [];

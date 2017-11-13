@@ -24,7 +24,7 @@ export default QueueElement;
 
 export class QueueDOMElement implements QueueDOMElementInterface {
   el: Element;
-  callback: (frame: FrameInterface, id: string, bcr: ClientRect) => void;
+  callback: (frame: FrameInterface, id: string, clientRect: ClientRect) => void;
   id: string;
-  bcr: ClientRect;
+  clientRect: ClientRect;
 }

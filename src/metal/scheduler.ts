@@ -27,6 +27,10 @@ const TOKEN_SEED = 'xxxx'.replace(/[xy]/g, function(c) {
 });
 let tokenCounter = 0;
 
+function generateRandomToken() {
+  return Math.floor(Math.random() * (9999999 - 0o0)).toString(16);
+}
+
 export class Frame implements FrameInterface {
   constructor(
     public timestamp: number,
@@ -75,6 +79,7 @@ export abstract class BaseScheduler {
         }
         this.toRemove = [];
       }
+
       this.applyQueue(Frame.generate());
       this.engine.scheduleRead(this.tick.bind(this));
     }
@@ -85,15 +90,15 @@ export abstract class BaseScheduler {
   scheduleRead(callback: Function) {
     this.engine.scheduleRead(callback);
   }
-  queryElement(el: Element, callback: (bcr: ClientRect, frame: Frame) => void) {
-    let bcr: ClientRect = null;
+  queryElement(el: Element, callback: (clientRect: ClientRect, frame: Frame) => void) {
+    let clientRect: ClientRect = null;
     let frame: Frame = null;
     this.engine.scheduleRead(() => {
-      bcr = el.getBoundingClientRect();
+      clientRect = el.getBoundingClientRect();
       frame = Frame.generate();
     });
     this.engine.scheduleWork(() => {
-      callback(bcr, frame);
+      callback(clientRect, frame);
     });
   }
   unwatch(id: string| Element | Function) {
@@ -144,28 +149,46 @@ export class PredicatedScheduler extends Scheduler implements SchedulerInterface
 
 export class ElementScheduler extends BaseScheduler implements ElementSchedulerInterface {
   protected queue: DOMQueue;
+  protected isDirty: boolean = false;
+  protected id: string = '';
+
   constructor(customEngine?: EngineInterface) {
     super(customEngine);
     this.queue = new DOMQueue();
+    this.id = generateRandomToken();
+    W.onWindowIsDirtyListeners.push({ fn: this.windowIsDirtyHandler, scope: this, id: this.id });
   }
+
   applyQueue(frame: Frame) {
     for (let i = 0; i < this.queue.items.length; i++) {
-      let { callback, el, id } = this.queue.items[i];
-      let bcr = el.getBoundingClientRect();
+      let { callback, el, id, clientRect } = this.queue.items[i];
 
-      callback(frame, id, bcr);
+      if (this.isDirty || !clientRect) {
+        clientRect = this.queue.items[i].clientRect = el.getBoundingClientRect();
+      }
+
+      callback(frame, id, clientRect);
     }
+
+    this.isDirty = false;
   }
-  watch(el: Element, callback: (frame: FrameInterface, id: string, bcr: ClientRect) => void, id?: string): string {
+
+  watch(el: Element, callback: (frame: FrameInterface, id: string, clientRect?: ClientRect) => void, id?: string): string {
     this.startTicking();
     id = id || generateToken();
+    let clientRect = el.getBoundingClientRect();
 
     this.queue.push({
       el,
       callback,
-      id
+      id,
+      clientRect
     });
     return id;
+  }
+
+  windowIsDirtyHandler() {
+    this.isDirty = true;
   }
 }
 

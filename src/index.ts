@@ -46,6 +46,8 @@ import {
   Frame
 } from './metal/index';
 
+import w from './metal/window-proxy';
+
 export {
   on,
   off,
@@ -55,16 +57,17 @@ export {
   SpanielObserver,
   SpanielTrackedElement,
   setGlobalEngine,
-  getGlobalEngine
+  getGlobalEngine,
+  w as __w__
 };
 
-export function queryElement(el: Element, callback: (bcr: ClientRect, frame: Frame) => void) {
+export function queryElement(el: Element, callback: (clientRect: ClientRect, frame: Frame) => void) {
   getGlobalScheduler().queryElement(el, callback);
 }
 
 export function elementSatisfiesRatio(el: Element, ratio: number = 0, callback: (result: Boolean) => void, rootMargin: DOMMargin = { top: 0, bottom: 0, left: 0, right: 0}) {
-  queryElement(el, (bcr: ClientRect, frame: Frame) => {
-    let entry = generateEntry(frame, bcr, el, rootMargin);
+  queryElement(el, (clientRect: ClientRect, frame: Frame) => {
+    let entry = generateEntry(frame, clientRect, el, rootMargin);
     callback(entrySatisfiesRatio(entry, ratio));
   });
 }

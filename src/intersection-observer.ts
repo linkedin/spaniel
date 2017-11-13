@@ -79,13 +79,13 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
 
     let id = trackedTarget.__spanielId = trackedTarget.__spanielId || generateToken();
 
-    this.scheduler.watch(target, (frame: Frame, id: string, bcr: DOMRectReadOnly) => {
-      this.onTick(frame, id, bcr, trackedTarget);
+    this.scheduler.watch(target, (frame: Frame, id: string, clientRect: DOMRectReadOnly) => {
+      this.onTick(frame, id, clientRect, trackedTarget);
     }, trackedTarget.__spanielId);
     return id;
   }
-  private onTick(frame: Frame, id: string,  bcr: DOMRectReadOnly, el: Element) {
-    let { numSatisfiedThresholds, entry } = this.generateEntryEvent(frame, bcr, el);
+  private onTick(frame: Frame, id: string,  clientRect: DOMRectReadOnly, el: Element) {
+    let { numSatisfiedThresholds, entry } = this.generateEntryEvent(frame, clientRect, el);
     let record: EntryEvent = this.records[id] || (this.records[id] = {
       entry,
       numSatisfiedThresholds: 0
@@ -109,9 +109,9 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
   takeRecords(): IntersectionObserverEntry[] {
     return [];
   }
-  private generateEntryEvent(frame: Frame, bcr: DOMRectReadOnly, el: Element): EntryEvent {
+  private generateEntryEvent(frame: Frame, clientRect: DOMRectReadOnly, el: Element): EntryEvent {
     let count: number = 0;
-    let entry = generateEntry(frame, bcr, el, this.rootMarginObj);
+    let entry = generateEntry(frame, clientRect, el, this.rootMarginObj);
     let ratio = entry.intersectionRatio;
 
     for (let i = 0; i < this.thresholds.length; i++) {
@@ -179,8 +179,8 @@ export class IntersectionObserverEntry implements IntersectionObserverEntryInit 
 };
 */
 
-export function generateEntry(frame: Frame, bcr: DOMRectReadOnly, el: Element, rootMargin: DOMMargin): IntersectionObserverEntry {
-  let { top, bottom, left, right } = bcr;
+export function generateEntry(frame: Frame, clientRect: DOMRectReadOnly, el: Element, rootMargin: DOMMargin): IntersectionObserverEntry {
+  let { top, bottom, left, right } = clientRect;
   let rootBounds: ClientRect = {
     left: rootMargin.left,
     top: rootMargin.top,
@@ -190,11 +190,11 @@ export function generateEntry(frame: Frame, bcr: DOMRectReadOnly, el: Element, r
     height: frame.height - (rootMargin.bottom + rootMargin.top)
   };
 
-  let intersectX = Math.max(rootBounds.left, bcr.left);
-  let intersectY = Math.max(rootBounds.top, bcr.top);
+  let intersectX = Math.max(rootBounds.left, clientRect.left);
+  let intersectY = Math.max(rootBounds.top, clientRect.top);
 
-  let width = Math.min(rootBounds.left + rootBounds.width, bcr.right) - intersectX;
-  let height = Math.min(rootBounds.top + rootBounds.height, bcr.bottom) - intersectY;
+  let width = Math.min(rootBounds.left + rootBounds.width, clientRect.right) - intersectX;
+  let height = Math.min(rootBounds.top + rootBounds.height, clientRect.bottom) - intersectY;
 
   let intersectionRect: ClientRect = {
     left: width >= 0 ? intersectX : 0,
@@ -209,7 +209,7 @@ export function generateEntry(frame: Frame, bcr: DOMRectReadOnly, el: Element, r
     time: frame.timestamp,
     rootBounds,
     target: <SpanielTrackedElement>el,
-    boundingClientRect: marginToRect(bcr),
+    boundingClientRect: marginToRect(clientRect),
     intersectionRect
   });
 }

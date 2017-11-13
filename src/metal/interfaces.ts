@@ -16,8 +16,9 @@ export interface QueueElementInterface {
 
 export interface QueueDOMElementInterface {
   id: string;
-  callback: (frame: FrameInterface, id: string, bcr: ClientRect) => void;
+  callback: (frame: FrameInterface, id: string, clientRect: ClientRect) => void;
   el: Element;
+  clientRect: ClientRect;
 }
 
 export interface QueueInterface {
@@ -42,7 +43,7 @@ export interface SchedulerInterface extends BaseSchedulerInterface {
 }
 
 export interface ElementSchedulerInterface extends BaseSchedulerInterface {
-  watch: (el: Element, callback: (frame: FrameInterface, id: string, bcr: ClientRect) => void, id?: string) => string;
+  watch: (el: Element, callback: (frame: FrameInterface, id: string, clientRect: ClientRect) => void, id?: string) => string;
 }
 
 export interface FrameInterface {
@@ -58,4 +59,10 @@ export interface MetaInterface {
   height: number;
   scrollLeft: number;
   scrollTop: number;
+}
+
+export interface OnWindowIsDirtyInterface {
+  fn: any;
+  scope: any;
+  id: string;
 }
