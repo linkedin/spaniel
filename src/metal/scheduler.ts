@@ -55,6 +55,7 @@ export abstract class BaseScheduler {
   protected queue: QueueInterface;
   protected isTicking: Boolean = false;
   protected toRemove: Array<string| Element | Function> = [];
+
   constructor(customEngine?: EngineInterface) {
     if (customEngine) {
       this.engine = customEngine;
@@ -151,12 +152,14 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
     for (let i = 0; i < this.queue.items.length; i++) {
       let { callback, el, id } = this.queue.items[i];
       let bcr = el.getBoundingClientRect();
+
       callback(frame, id, bcr);
     }
   }
   watch(el: Element, callback: (frame: FrameInterface, id: string, bcr: ClientRect) => void, id?: string): string {
     this.startTicking();
     id = id || generateToken();
+
     this.queue.push({
       el,
       callback,

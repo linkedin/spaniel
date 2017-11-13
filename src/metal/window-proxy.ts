@@ -68,7 +68,7 @@ function windowSetScrollMeta() {
 
 // Only invalidate window dimensions on resize
 function resizeThrottle() {
-  clearTimeout(resizeTimeout);
+  window.clearTimeout(resizeTimeout);
 
   resizeTimeout = window.setTimeout(() => {
     windowSetDimensionsMeta();
@@ -77,7 +77,7 @@ function resizeThrottle() {
 
 // Only invalidate window scroll on scroll
 function scrollThrottle() {
-  clearTimeout(scrollTimeout);
+  window.clearTimeout(scrollTimeout);
 
   scrollTimeout = window.setTimeout(() => {
     windowSetScrollMeta();
