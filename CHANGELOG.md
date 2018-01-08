@@ -1,4 +1,11 @@
+
 # spaniel Changelog
+
+### 2.4.6 (January 8, 2018)
+
+* Fix performance issue with CPU on idle, scroll and resize.
+* Updated dependencies
+* Add `pkg.module`
 
 ### 2.4.0 (August 22, 2017)
 
