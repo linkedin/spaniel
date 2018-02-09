@@ -12,3 +12,15 @@ export function entrySatisfiesRatio(entry: IntersectionObserverEntry, threshold:
     return intersectionRatio > threshold || (intersectionRatio === 1 && threshold === 1);
   }
 }
+
+export function getBoundingClientRect(element: Element) {
+  try {
+    return element.getBoundingClientRect();
+  } catch (e) {
+    if (typeof e === 'object' && e !== null && e.description.split(' ')[0] === 'Unspecified' && (e.number & 0xFFFF) === 16389) {
+      return { top: 0, bottom: 0, left: 0, width: 0, height: 0, right: 0 };
+    } else {
+      throw e;
+    }
+  }
+}

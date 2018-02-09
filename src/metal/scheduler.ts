@@ -21,6 +21,8 @@ import W from './window-proxy';
 import { default as Queue, DOMQueue} from './queue';
 import { getGlobalEngine } from './engine';
 
+import { getBoundingClientRect } from '../utils';
+
 const TOKEN_SEED = 'xxxx'.replace(/[xy]/g, function(c) {
   let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
   return v.toString(16);
@@ -94,7 +96,7 @@ export abstract class BaseScheduler {
     let clientRect: ClientRect = null;
     let frame: Frame = null;
     this.engine.scheduleRead(() => {
-      clientRect = el.getBoundingClientRect();
+      clientRect = getBoundingClientRect(el);
       frame = Frame.generate();
     });
     this.engine.scheduleWork(() => {
@@ -106,6 +108,7 @@ export abstract class BaseScheduler {
   }
   unwatchAll() {
     this.queue.clear();
+    W.__destroy__();
   }
   startTicking() {
     if (!this.isTicking) {
@@ -156,7 +159,6 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
     super(customEngine);
     this.queue = new DOMQueue();
     this.id = generateRandomToken();
-    W.onWindowIsDirtyListeners.push({ fn: this.windowIsDirtyHandler, scope: this, id: this.id });
   }
 
   applyQueue(frame: Frame) {
@@ -164,7 +166,7 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
       let { callback, el, id, clientRect } = this.queue.items[i];
 
       if (this.isDirty || !clientRect) {
-        clientRect = this.queue.items[i].clientRect = el.getBoundingClientRect();
+        clientRect = this.queue.items[i].clientRect = getBoundingClientRect(el);
       }
 
       callback(frame, id, clientRect);
@@ -173,10 +175,11 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
     this.isDirty = false;
   }
 
-  watch(el: Element, callback: (frame: FrameInterface, id: string, clientRect?: ClientRect) => void, id?: string): string {
+  watch(el: Element, callback: (frame: FrameInterface, id: string, clientRect?: ClientRect | null) => void, id?: string): string {
+    this.initWindowIsDirtyListeners();
     this.startTicking();
     id = id || generateToken();
-    let clientRect = el.getBoundingClientRect();
+    let clientRect = null;
 
     this.queue.push({
       el,
@@ -185,6 +188,10 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
       clientRect
     });
     return id;
+  }
+
+  initWindowIsDirtyListeners() {
+    W.onWindowIsDirtyListeners.push({ fn: this.windowIsDirtyHandler, scope: this, id: this.id });
   }
 
   windowIsDirtyHandler() {
