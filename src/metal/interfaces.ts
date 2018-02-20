@@ -52,17 +52,30 @@ export interface FrameInterface {
   scrollLeft: number;
   width: number;
   height: number;
+  x: number;
+  y: number;
+  top: number;
+  left: number;
 }
 
 export interface MetaInterface {
+  scrollTop: number;
+  scrollLeft: number;
   width: number;
   height: number;
-  scrollLeft: number;
-  scrollTop: number;
+  x: number;
+  y: number;
+  top: number;
+  left: number;
 }
 
-export interface OnWindowIsDirtyInterface {
-  fn: any;
-  scope: any;
-  id: string;
+export interface SpanielClientRectInterface {
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+  bottom: number;
+  top: number;
+  left: number;
+  right: number;
 }

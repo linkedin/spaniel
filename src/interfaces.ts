@@ -23,6 +23,7 @@ export interface SpanielObserverInit {
   root?: SpanielTrackedElement;
   rootMargin?: DOMString | DOMMargin; // default: 0px
   threshold?: SpanielThreshold[]; // default: 0
+  ALLOW_CACHED_SCHEDULER?: boolean;
 }
 
 export interface SpanielRecord {
@@ -83,4 +84,5 @@ export interface IntersectionObserverInit {
   root?: SpanielTrackedElement;
   rootMargin?: DOMString; // default: 0px
   threshold?: number | number[]; // default: 0
+  ALLOW_CACHED_SCHEDULER?: boolean;
 }

@@ -47,6 +47,7 @@ testModule('Impression Complete event', class extends WatcherTestClass {
     return this.context.scrollTo(200)
       .wait(IMPRESSION_THRESHOLD + RAF_THRESHOLD * 4)
       .scrollTo(0)
+      .wait(IMPRESSION_THRESHOLD)
       .assertOnce(ITEM_TO_OBSERVE, 'impression-complete')
       .done();
   }

@@ -9,10 +9,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-// detect the presence of DOM
 import {
-  MetaInterface,
-  OnWindowIsDirtyInterface
+  MetaInterface
 } from './interfaces';
 
 const nop = () => 0;
@@ -26,88 +24,65 @@ interface WindowProxy {
   getWidth: Function;
   rAF: Function;
   meta: MetaInterface;
-  onWindowIsDirtyListeners: OnWindowIsDirtyInterface[];
-  __destroy__: Function;
+  version: number;
+  lastVersion: number;
+  updateMeta: Function;
+  isDirty: boolean;
 }
 
 const hasDOM = !!((typeof window !== 'undefined') && window && (typeof document !== 'undefined') && document);
 const hasRAF = hasDOM && !!window.requestAnimationFrame;
-const throttleDelay: number = 30;
 
-let resizeTimeout: number = 0;
-let scrollTimeout: number = 0;
 let W: WindowProxy = {
-  hasRAF,
   hasDOM,
+  hasRAF,
   getScrollTop: nop,
   getScrollLeft: nop,
   getHeight: nop,
   getWidth: nop,
-  onWindowIsDirtyListeners: [],
   rAF: hasRAF ? window.requestAnimationFrame.bind(window) : (callback: Function) => { callback(); },
   meta: {
     width: 0,
     height: 0,
     scrollTop: 0,
-    scrollLeft: 0
+    scrollLeft: 0,
+    x: 0,
+    y: 0,
+    top: 0,
+    left: 0
   },
-  __destroy__() {
-    this.onWindowIsDirtyListeners = [];
+  version: 0,
+  lastVersion: 0,
+  updateMeta: nop,
+  get isDirty(): boolean {
+    return W.version !== W.lastVersion;
   }
 };
 
+export function invalidate() {
+  ++W.version;
+}
+
+// Init after DOM Content has loaded
 function hasDomSetup() {
   let se = (<any>document).scrollingElement != null;
   W.getScrollTop = se ? () => (<any>document).scrollingElement.scrollTop : () => (<any>window).scrollY;
   W.getScrollLeft = se ? () => (<any>document).scrollingElement.scrollLeft : () => (<any>window).scrollX;
 }
 
-// Memoize window meta dimensions
-function windowSetDimensionsMeta() {
-  W.meta.height = W.getHeight();
-  W.meta.width = W.getWidth();
-}
-
-function windowSetScrollMeta() {
-  W.meta.scrollLeft = W.getScrollLeft();
-  W.meta.scrollTop = W.getScrollTop();
-}
-
-// Only invalidate window dimensions on resize
-function resizeThrottle() {
-  window.clearTimeout(resizeTimeout);
-
-  resizeTimeout = window.setTimeout(() => {
-    windowSetDimensionsMeta();
-  }, throttleDelay);
-
-  W.onWindowIsDirtyListeners.forEach((obj) => {
-    let { fn, scope } = obj;
-    fn.call(scope);
-  });
-}
-
-// Only invalidate window scroll on scroll
-function scrollThrottle() {
-  window.clearTimeout(scrollTimeout);
-
-  scrollTimeout = window.setTimeout(() => {
-    windowSetScrollMeta();
-  }, throttleDelay);
-
-  W.onWindowIsDirtyListeners.forEach((obj) => {
-    let { fn, scope } = obj;
-    fn.call(scope);
-  });
-}
-
 if (hasDOM) {
   // Set the height and width immediately because they will be available at this point
   W.getHeight = () => (<any>window).innerHeight;
   W.getWidth = () => (<any>window).innerWidth;
+  W.updateMeta = () => {
+    W.meta.height = W.getHeight();
+    W.meta.width = W.getWidth();
+    W.meta.scrollLeft = W.getScrollLeft();
+    W.meta.scrollTop = W.getScrollTop();
+    W.lastVersion = W.version;
+  };
 
-  windowSetDimensionsMeta();
-  windowSetScrollMeta();
+  W.updateMeta();
 
   if ((<any>document).readyState !== 'loading') {
     hasDomSetup();
@@ -115,8 +90,8 @@ if (hasDOM) {
     (<any>document).addEventListener('DOMContentLoaded', hasDomSetup);
   }
 
-  window.addEventListener('resize', resizeThrottle, false);
-  window.addEventListener('scroll', scrollThrottle, false);
+  window.addEventListener('resize', invalidate, false);
+  window.addEventListener('scroll', invalidate, false);
 }
 
 export {

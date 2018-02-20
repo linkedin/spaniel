@@ -21,10 +21,13 @@ import {
   IntersectionObserverClass
 } from './interfaces';
 
+import W from './metal/window-proxy';
+
 export interface WatcherConfig {
   ratio?: number;
   time?: number;
   rootMargin?: DOMString | DOMMargin;
+  root?: SpanielTrackedElement;
 }
 
 export type EventName = 'impressed' | 'exposed' | 'visible' | 'impression-complete';
@@ -62,7 +65,7 @@ function onEntry(entries: SpanielObserverEntry[]) {
 export class Watcher {
   observer: SpanielObserver;
   constructor(ObserverClass: IntersectionObserverClass, config: WatcherConfig = {}) {
-    let { time, ratio, rootMargin } = config;
+    let { time, ratio, rootMargin, root } = config;
 
     let threshold: Threshold[] = [
       {
@@ -79,7 +82,7 @@ export class Watcher {
         ratio: ratio || 0
       });
     }
-    
+
     if (ratio) {
       threshold.push({
         label: 'visible',
@@ -90,7 +93,8 @@ export class Watcher {
 
     this.observer = new SpanielObserver(ObserverClass, onEntry, {
       rootMargin,
-      threshold
+      threshold,
+      root
    });
   }
   watch(el: Element, callback: WatcherCallback) {

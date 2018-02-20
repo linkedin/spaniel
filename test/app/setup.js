@@ -15,3 +15,14 @@ for (var i = 0;  i < 100; i++) {
   app.appendChild(el);
 }
 
+/* Root feature test div */
+var root = document.getElementById('root');
+for (var i = 0;  i < 30; i++) {
+   var id = i + 1;
+   var content = Math.random(0, 100);
+   var el = document.createElement('div');
+   el.setAttribute('class', 'tracked-item-root');
+   el.setAttribute('data-root-target-id', id);
+   el.innerHTML = 'ID: ' + id + ' = ' + content;
+   root.appendChild(el);
+}
