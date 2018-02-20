@@ -13,9 +13,12 @@ const constants = {
 	NIGHTMARE: {
 		TIMEOUT: 10,
 		OPTIONS: {
-			show: false,
-			openDevTools: false,
-			waitTimeout: 0
+			// show: true,
+			// openDevTools: {
+			// 	mode: 'detach'
+			// },
+			// dock: true,
+			// closable: true
 		}
 	}
 };

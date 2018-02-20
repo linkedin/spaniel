@@ -21,56 +21,22 @@ const {
 } = constants;
 
 testModule('Window Proxy', class extends TestClass {
-  ['@test destroy works']() {
-    return this.context.evaluate(() => {
-      window.watcher = new spaniel.Watcher();
-      window.target = document.querySelector('.tracked-item[data-id="6"]');
-      window.watcher.watch(window.target, () => {});
-    })
-    .wait(RAF_THRESHOLD * 5)
-    .evaluate(() => {
-      window.watcher.destroy();
-    })
-    .getExecution()
-    .evaluate(function() {
-      return spaniel.__w__.onWindowIsDirtyListeners.length;
-    }).then(function(result) {
-      assert.equal(result, 0, 'All window isDirty listeners have been removed');
-    });
-  }
-  ['@test can listen to window isDirty']() {
-    return this.context.evaluate(() => {
-      window.watcher = new spaniel.Watcher();
-      window.target = document.querySelector('.tracked-item[data-id="6"]');
-      window.watcher.watch(window.target, () => {});
-    })
-    .wait(RAF_THRESHOLD * 5)
-    .getExecution()
-    .evaluate(function() {
-      let id = window.watcher.observer.observer.scheduler.id;
-      return spaniel.__w__.onWindowIsDirtyListeners.filter(listener => listener.id === id);
-    }).then(function(result) {
-      assert.lengthOf(result, 1, 'This watcher is listening on window isDirty');
-    });
-  }
   ['@test window isDirty validation on scroll']() {
     return this.context.evaluate(() => {
-      window.testIsDirty = false;
-      spaniel.__w__.onWindowIsDirtyListeners.push({fn: () => { window.testIsDirty = true }, scope: window, id: 'foo1' });
+      window.lastVersion = spaniel.__w__.version;
     })
     .wait(RAF_THRESHOLD * 5)
-    .scrollTo(10)
+    .scrollTo(100)
     .getExecution()
     .evaluate(function() {
-      return window.testIsDirty;
+      return window.lastVersion !== spaniel.__w__.version;
     }).then(function(result) {
       assert.isTrue(result, 'The window isDirty');
     });
   }
   ['@test window isDirty validation on resize']() {
     return this.context.evaluate(() => {
-      window.testIsDirty = false;
-      spaniel.__w__.onWindowIsDirtyListeners.push({fn: () => { window.testIsDirty = true }, scope: window, id: 'foo2' });
+      window.lastVersion = spaniel.__w__.version;
     })
     .wait(RAF_THRESHOLD * 5)
     .viewport(VIEWPORT.WIDTH + 100, VIEWPORT.HEIGHT + 100)   
@@ -78,7 +44,7 @@ testModule('Window Proxy', class extends TestClass {
     .viewport(VIEWPORT.WIDTH, VIEWPORT.HEIGHT)   
     .getExecution()
     .evaluate(function() {
-      return window.testIsDirty;
+      return window.lastVersion !== spaniel.__w__.version;
     }).then(function(result) {
       assert.isTrue(result, 'The window isDirty');
     });
@@ -168,7 +134,7 @@ testModule('Eventing', class extends TestClass {
       window.STATE.scrollHandler = function() {
         window.STATE.scrollEvents++;
       };
-      spaniel.on('scroll',  window.STATE.scrollHandler);
+      spaniel.on('scroll', window.STATE.scrollHandler);
     })
     .scrollTo(10)
     .wait(RAF_THRESHOLD * 5)

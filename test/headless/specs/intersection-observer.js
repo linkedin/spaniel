@@ -230,4 +230,35 @@ testModule('IntersectionObserver', class extends TestClass {
       assert.equal(result, 6, 'Callback fired 6 times');
     });
   }
+
+  ['@test observing an occluded element within a root and scrolling it into view should fire callbacks']() {
+    return this.context.evaluate(function() {
+      window.STATE.impressions = 0;
+      let root = document.getElementById('root');
+      let rootTarget = document.querySelector('.tracked-item-root[data-root-target-id="5"]');
+      let observer = new spaniel.IntersectionObserver(function() {
+        window.STATE.impressions++;
+      }, {
+        root: root,
+        threshold: 0.5
+      });
+      observer.observe(rootTarget);
+      root.addEventListener('scroll', () => spaniel.invalidate(), false);
+    })
+    .wait(100)
+    .evaluate(function() {
+      root.scrollTop = 350;
+    })
+    .wait(100)
+    .evaluate(function() {
+      root.scrollTop = 0;
+    })
+    .wait(100)
+    .getExecution()
+    .evaluate(function() {
+      return window.STATE.impressions;
+    }).then(function(result) {
+      assert.equal(result, 2, 'Callback fired twice');
+    });
+  }
 });

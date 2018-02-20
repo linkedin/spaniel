@@ -111,7 +111,8 @@ The `Watcher` constructor can be passed 3 different options:
 
 * `time` - The time threshold
 * `ratio` - The ratio threshold
-* `rootMargin` - The [rootMargin](https://wicg.github.io/IntersectionObserver/#dom-intersectionobserverinit-rootmargin) in object form.
+* `rootMargin` - The [rootMargin](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#Intersection_observer_options) in object form.
+* `root` - The [root](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#Intersection_observer_options) element with respect to which we want to watch the target. By default it is window.
 
 ## Utility API
 

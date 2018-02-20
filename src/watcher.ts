@@ -20,10 +20,14 @@ import {
   SpanielTrackedElement
 } from './interfaces';
 
+import W from './metal/window-proxy';
+
 export interface WatcherConfig {
   ratio?: number;
   time?: number;
   rootMargin?: DOMString | DOMMargin;
+  root?: SpanielTrackedElement;
+  ALLOW_CACHED_SCHEDULER?: boolean;
 }
 
 export type EventName = 'impressed' | 'exposed' | 'visible' | 'impression-complete';
@@ -61,7 +65,7 @@ function onEntry(entries: SpanielObserverEntry[]) {
 export class Watcher {
   observer: SpanielObserver;
   constructor(config: WatcherConfig = {}) {
-    let { time, ratio, rootMargin } = config;
+    let { time, ratio, rootMargin, root, ALLOW_CACHED_SCHEDULER } = config;
 
     let threshold: Threshold[] = [
       {
@@ -89,8 +93,10 @@ export class Watcher {
 
     this.observer = new SpanielObserver(onEntry, {
       rootMargin,
-      threshold
-   });
+      threshold,
+      root,
+      ALLOW_CACHED_SCHEDULER
+    });
   }
   watch(el: Element, callback: WatcherCallback) {
     this.observer.observe(el, {

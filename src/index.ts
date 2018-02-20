@@ -46,7 +46,10 @@ import {
   Frame
 } from './metal/index';
 
+
 import w from './metal/window-proxy';
+
+import { invalidate } from './metal/window-proxy';
 
 export {
   on,
@@ -58,7 +61,8 @@ export {
   SpanielTrackedElement,
   setGlobalEngine,
   getGlobalEngine,
-  w as __w__
+  w as __w__,
+  invalidate
 };
 
 export function queryElement(el: Element, callback: (clientRect: ClientRect, frame: Frame) => void) {
