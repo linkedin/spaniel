@@ -12,10 +12,6 @@ There are three different classes provided:
 * `spaniel.SpanielObserver` - Same API structure as the [IntersectionObserver](https://github.com/WICG/IntersectionObserver), but with some added functionality for adding time thresholds in addition to ratio thresholds.
 * `spaniel.Watcher` - Provides an API for receiving high level events about the visibility state of DOM elements.
 
-### spaniel.IntersectionObserver
-
-The main part of the [IntersectionObserver](https://github.com/WICG/IntersectionObserver) API not supported by Spaniel's pollyfill is [IntersectionObserver.root](https://wicg.github.io/IntersectionObserver/#intersectionobserver-intersection-root)
-
 ### spaniel.SpanielObserver
 
 A superset API of IntersectionObserver. There are three additions:
