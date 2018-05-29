@@ -58,6 +58,7 @@ export class Frame implements FrameInterface {
     );
   }
   static revalidateRootMeta(root: any = window): MetaInterface {
+    let _clientRect = null;
     let _rootMeta: MetaInterface = {
       width: 0,
       height: 0,
@@ -77,17 +78,19 @@ export class Frame implements FrameInterface {
       _rootMeta.width = W.meta.width;
       _rootMeta.scrollLeft = W.meta.scrollLeft;
       _rootMeta.scrollTop = W.meta.scrollTop;
-    }else if (root) {
-      let _clientRect = getBoundingClientRect(root);
-      _rootMeta.scrollTop = root.scrollTop;
-      _rootMeta.scrollLeft = root.scrollLeft;
-      _rootMeta.width = _clientRect.width;
-      _rootMeta.height = _clientRect.height;
-      _rootMeta.x = _clientRect.x;
-      _rootMeta.y = _clientRect.y;
-      _rootMeta.top = _clientRect.top;
-      _rootMeta.left = _clientRect.left;
+
+      return _rootMeta;
     }
+
+    _clientRect = getBoundingClientRect(root);
+    _rootMeta.scrollTop = root.scrollTop;
+    _rootMeta.scrollLeft = root.scrollLeft;
+    _rootMeta.width = _clientRect.width;
+    _rootMeta.height = _clientRect.height;
+    _rootMeta.x = _clientRect.x;
+    _rootMeta.y = _clientRect.y;
+    _rootMeta.top = _clientRect.top;
+    _rootMeta.left = _clientRect.left;
 
     return _rootMeta;
   }
@@ -212,13 +215,7 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
     for (let i = 0; i < this.queue.items.length; i++) {
       let { callback, el, id, clientRect } = this.queue.items[i];
 
-      if (this.isDirty || !clientRect) {
-        clientRect = this.queue.items[i].clientRect = getBoundingClientRect(el);
-      }
-
-      // FLAG WHICH WILL EVENTUALLY BE REMOVED
-      // THE EXPERIMENTAL FLAG DEFAULTS TO OFF
-      if (!this.ALLOW_CACHED_SCHEDULER) {
+      if (this.isDirty || !clientRect || !this.ALLOW_CACHED_SCHEDULER) {
         clientRect = this.queue.items[i].clientRect = getBoundingClientRect(el);
       }
 
