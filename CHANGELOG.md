@@ -1,6 +1,11 @@
 
 # spaniel Changelog
 
+### 2.5.0 (May 29, 2018)
+
+* Fix [Security Fix #82](https://github.com/linkedin/spaniel/pull/82). Nightmare (Electron) Security Fix Bump.
+* Fix [PR #80](https://github.com/linkedin/spaniel/pull/80). Backporting the custom root API. New memoization for CPU and redraw perf improvements.
+
 ### 2.4.7 (February 12, 2018)
 
 * Fix `scheduler` now handles window proxy listeners state properly.
