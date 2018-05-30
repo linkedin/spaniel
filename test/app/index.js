@@ -86,7 +86,7 @@ var rootObserver = new spaniel.SpanielObserver(function(changes) {
   ALLOW_CACHED_SCHEDULER: true
 });
 
-root.addEventListener('scroll', () => spaniel.invalidate(), false);
+root.addEventListener('scroll', function(){ spaniel.invalidate(), false });
 
 // Within the root keep an eye on this specific element
 // ie Watcher > SpanielObserver > SpanielIntersectionObserver
