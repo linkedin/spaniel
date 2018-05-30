@@ -15,17 +15,13 @@ import {
 
 import {
   Frame,
-  QueueDOMElementInterface,
-  DOMQueue,
   ElementScheduler,
-  Engine,
   generateToken
 } from './metal/index';
 
 import {
   SpanielTrackedElement,
   DOMString,
-  DOMHighResTimeStamp,
   DOMRectReadOnly,
   IntersectionObserverInit,
   DOMMargin,
@@ -152,32 +148,6 @@ function addRatio(entryInit: SpanielIntersectionObserverEntryInit): Intersection
     time, rootBounds, boundingClientRect, intersectionRect, target, intersectionRatio
   };
 }
-
-/*
-export class IntersectionObserverEntry implements IntersectionObserverEntryInit {
-  time: DOMHighResTimeStamp;
-  intersectionRatio: number;
-  rootBounds: DOMRectReadOnly;
-  boundingClientRect: DOMRectReadOnly;
-  intersectionRect: DOMRectReadOnly;
-  target: SpanielTrackedElement;
-
-  constructor(entryInit: IntersectionObserverEntryInit) {
-    this.time = entryInit.time;
-    this.rootBounds = entryInit.rootBounds;
-    this.boundingClientRect = entryInit.boundingClientRect;
-    this.intersectionRect = entryInit.intersectionRect;
-    this.target = entryInit.target;
-
-    let {
-      intersectionRect,
-      boundingClientRect
-    } = entryInit;
-    let boundingArea = boundingClientRect.height * boundingClientRect.width;
-    this.intersectionRatio = boundingArea > 0 ? (intersectionRect.width * intersectionRect.height) / boundingArea : 0;
-  }
-};
-*/
 
 export function generateEntry(frame: Frame, clientRect: DOMRectReadOnly, el: Element, rootMargin: DOMMargin): IntersectionObserverEntry {
   let { top, bottom, left, right } = clientRect;

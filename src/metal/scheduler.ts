@@ -22,7 +22,6 @@ import W from './window-proxy';
 
 import { default as Queue, DOMQueue} from './queue';
 import { getGlobalEngine } from './engine';
-
 import { getBoundingClientRect } from '../utils';
 
 const TOKEN_SEED = 'xxxx'.replace(/[xy]/g, function(c) {

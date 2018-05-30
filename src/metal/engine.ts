@@ -12,10 +12,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import { EngineInterface } from './interfaces';
 import W from './window-proxy';
 
+const nop = () => 0;
+
 export class Engine implements EngineInterface {
   private reads: Array<Function> = [];
   private work: Array<Function> = [];
   private running: Boolean = false;
+  private batchingWrapper: Function;
   scheduleRead(callback: Function) {
     this.reads.unshift(callback);
     this.run();
@@ -24,20 +27,26 @@ export class Engine implements EngineInterface {
     this.work.unshift(callback);
     this.run();
   }
+  setBatchingWrapper(fn = nop) {
+    this.batchingWrapper = fn;
+  }
+
   private run() {
     if (!this.running) {
       this.running = true;
       W.rAF(() => {
-        this.running = false;
-        for (let i = 0, rlen = this.reads.length; i < rlen; i++) {
-          this.reads.pop()();
-        }
-        for (let i = 0, wlen = this.work.length; i < wlen; i++) {
-          this.work.pop()();
-        }
-        if (this.work.length > 0 || this.reads.length > 0) {
-          this.run();
-        }
+        this.batchingWrapper(() => {
+          for (let i = 0, rlen = this.reads.length; i < rlen; i++) {
+            this.reads.pop()();
+          }
+          for (let i = 0, wlen = this.work.length; i < wlen; i++) {
+            this.work.pop()();
+          }
+          this.running = false;
+          if (this.work.length > 0 || this.reads.length > 0) {
+            this.run();
+          }
+        });
       });
     }
   }
