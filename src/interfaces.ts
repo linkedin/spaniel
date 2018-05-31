@@ -34,7 +34,7 @@ export interface SpanielRecord {
 }
 
 export interface SpanielThresholdState {
-  lastSatisfied: Boolean;
+  lastSatisfied: boolean;
   lastEntry: IntersectionObserverEntry;
   threshold: SpanielThreshold;
   lastVisible: number;

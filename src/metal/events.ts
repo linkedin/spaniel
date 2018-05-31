@@ -25,7 +25,7 @@ import {
 import w from './window-proxy';
 
 interface EventRecordInterface {
-  listen: (callback: Function) => any;
+  listen: (callback: Function) => void;
   unlisten: (callback: Function) => void;
   trigger: (value?: any) => void;
 }

@@ -9,6 +9,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
+import Backburner from 'backburner.js';
 import { EngineInterface } from './interfaces';
 import W from './window-proxy';
 
@@ -17,7 +18,7 @@ const nop = () => 0;
 export class Engine implements EngineInterface {
   private reads: Array<Function> = [];
   private work: Array<Function> = [];
-  private running: Boolean = false;
+  private running: boolean = false;
   private batchingWrapper: Function;
   scheduleRead(callback: Function) {
     this.reads.unshift(callback);

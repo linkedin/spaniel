@@ -103,7 +103,7 @@ export abstract class BaseScheduler {
   protected root: Element | Window;
   protected engine: EngineInterface;
   protected queue: QueueInterface;
-  protected isTicking: Boolean = false;
+  protected isTicking: boolean = false;
   protected toRemove: Array<string| Element | Function> = [];
   protected id?: string;
 
