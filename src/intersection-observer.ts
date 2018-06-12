@@ -180,6 +180,7 @@ export function generateEntry(frame: Frame, clientRect: DOMRectReadOnly, el: Ele
     rootBounds,
     target: <SpanielTrackedElement>el,
     boundingClientRect: marginToRect(clientRect),
-    intersectionRect
+    intersectionRect,
+    isIntersecting: false
   });
 }
