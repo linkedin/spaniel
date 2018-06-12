@@ -4,41 +4,37 @@ Copyright 2017 LinkedIn Corp. Licensed under the Apache License, Version 2.0 (th
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-var Funnel = require('broccoli-funnel');
-var uglify = require('broccoli-uglify-sourcemap');
-var typescript = require('broccoli-typescript-compiler').typescript;
-var Rollup = require('broccoli-rollup');
-var Merge = require('broccoli-merge-trees');
-var replace = require('broccoli-string-replace');
+const Funnel = require('broccoli-funnel');
+const uglify = require('broccoli-uglify-sourcemap');
+const typescript = require('broccoli-typescript-compiler').default;
+const Rollup = require('broccoli-rollup');
+const Merge = require('broccoli-merge-trees');
+const replace = require('broccoli-string-replace');
 
-var es6Tree = typescript('src', {
-  tsconfig: {
-    compilerOptions: {
-      "noImplicitAny": true,
-      "declaration": true,
-      "isolatedModules": false,
-      "module": "es2015",
-      "target": "es5",
-      "outDir": "es6",
-      "sourceMap": true,
-      "moduleResolution": "node"
-    },
-    filesGlob: [
-      "**/*.ts"
-    ]
+const es6Tree = typescript('src');
+
+const spaniel = new Rollup(es6Tree, {
+  rollup: {
+    input: 'src/index.js',
+    output: [{
+      file: 'es6/index.js',
+      format: 'es',
+      sourcemap: true,
+      exports: 'named'
+    }]
   }
 });
 
-// use replace to fix ES6 + Typescript helpers issue
-// Possibly won't be needed after https://github.com/Microsoft/TypeScript/pull/9097
-var umdTree = replace(new Rollup(es6Tree, {
+const umdTree = replace(new Rollup(es6Tree, {
   rollup: {
-    entry: 'es6/index.js',
-    dest: 'spaniel.js',
-    format: 'umd',
-    moduleName: 'spaniel',
-    exports: 'named',
-    sourceMap: true,
+    input: 'src/index.js',
+    output: [{
+      file: 'spaniel.js',
+      exports: 'named',
+      format: 'umd',
+      name: 'spaniel',
+      sourcemap: true
+    }]
   }
 }), {
   files: [ 'spaniel.js' ],
@@ -48,12 +44,11 @@ var umdTree = replace(new Rollup(es6Tree, {
   }
 });
 
-
-var minTree = uglify(new Funnel(umdTree, {
+const minTree = uglify(new Funnel(umdTree, {
   destDir: 'min'
 }), {
   mangle: true,
   compress: true
 });
 
-module.exports = new Merge([es6Tree, umdTree, minTree]);
+module.exports = new Merge([spaniel, es6Tree, umdTree, minTree]);

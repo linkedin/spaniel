@@ -48,6 +48,7 @@ export interface SpanielIntersectionObserverEntryInit {
   boundingClientRect: ClientRect;
   intersectionRect: ClientRect;
   target: SpanielTrackedElement;
+  isIntersecting: boolean;
 }
 
 export interface SpanielObserverEntry extends IntersectionObserverEntryInit {

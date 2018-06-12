@@ -140,12 +140,12 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
 };
 
 function addRatio(entryInit: SpanielIntersectionObserverEntryInit): IntersectionObserverEntry {
-  const { time, rootBounds, boundingClientRect, intersectionRect, target } = entryInit;
+  const { time, rootBounds, boundingClientRect, intersectionRect, target, isIntersecting } = entryInit;
   const boundingArea = boundingClientRect.height * boundingClientRect.width;
   const intersectionRatio = boundingArea > 0 ? (intersectionRect.width * intersectionRect.height) / boundingArea : 0;
 
   return {
-    time, rootBounds, boundingClientRect, intersectionRect, target, intersectionRatio
+    time, rootBounds, boundingClientRect, intersectionRect, target, intersectionRatio, isIntersecting
   };
 }
 

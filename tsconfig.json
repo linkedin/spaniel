@@ -1,15 +1,21 @@
 {
-    "compilerOptions": {
-      "noImplicitAny": true,
-      "declaration": true,
-      "isolatedModules": false,
-      "module": "es2015",
-      "target": "es5",
-      "outDir": "exports/es6",
-      "sourceMap": true,
-      "moduleResolution": "node"
-    },
-    "filesGlob": [
-      "**/*.ts"
-    ]
-  }
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "declaration": true,
+    "isolatedModules": false,
+    "module": "es2015",
+    "target": "es2015",
+    "sourceMap": true,
+    "baseUrl": ".",
+    "noEmit": true,
+    "moduleResolution": "node",
+    "paths": {
+      "spaniel": ["src/index.ts"]
+    }
+  },
+  "filesGlob": [
+    "**/*.ts"
+  ]
+}
+
+
