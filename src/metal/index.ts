@@ -30,6 +30,7 @@ interface Offset {
 }
 
 export {
+  AbsoluteRect,
   Offset,
   FrameInterface,
   QueueElementInterface,
@@ -50,5 +51,6 @@ export {
   on,
   off,
   scheduleRead,
-  scheduleWork
+  scheduleWork,
+  w
 };

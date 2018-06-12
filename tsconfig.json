@@ -4,18 +4,13 @@
     "declaration": true,
     "isolatedModules": false,
     "module": "es2015",
-    "target": "es2015",
+    "target": "es5",
     "sourceMap": true,
-    "baseUrl": ".",
-    "noEmit": true,
+    "outDir": "exports/es6",
     "moduleResolution": "node",
-    "paths": {
-      "spaniel": ["src/index.ts"]
-    }
+    "noUnusedLocals": true
   },
   "filesGlob": [
     "**/*.ts"
   ]
 }
-
-

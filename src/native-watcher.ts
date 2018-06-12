@@ -21,8 +21,6 @@ import {
   IntersectionObserverClass
 } from './interfaces';
 
-import W from './metal/window-proxy';
-
 export interface WatcherConfig {
   ratio?: number;
   time?: number;

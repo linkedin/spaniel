@@ -4,14 +4,14 @@ Copyright 2017 LinkedIn Corp. Licensed under the Apache License, Version 2.0 (th
 Unless required by applicable law or agreed to in writing, software  distributed under the License is distributed on an "AS IS" BASIS,  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-var gzipSize = require('gzip-size');
-var fs = require('fs');
-var prettyBytes = require('pretty-bytes');
+// var gzipSize = require('gzip-size');
+// var fs = require('fs');
+// var prettyBytes = require('pretty-bytes');
 
-var contents = fs.readFileSync('./exports/min/spaniel.js');
-var kb = prettyBytes(gzipSize.sync(contents));
-var msg = 'spaniel.js is ' + kb + ' gzipped.';
+// var contents = fs.readFileSync('./exports/min/spaniel.js');
+// var kb = prettyBytes(gzipSize.sync(contents));
+// var msg = 'spaniel.js is ' + kb + ' gzipped.';
 
-fs.writeFileSync('./size.txt', msg);
+// fs.writeFileSync('./size.txt', msg);
 
-console.log(msg);
+// console.log(msg);

@@ -14,7 +14,6 @@ import {
   FrameInterface,
   QueueInterface,
   MetaInterface,
-  SpanielClientRectInterface
 } from './interfaces';
 import W from './window-proxy';
 

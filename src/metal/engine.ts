@@ -16,7 +16,7 @@ export class Engine implements EngineInterface {
   private reads: Array<Function> = [];
   private work: Array<Function> = [];
   private running: boolean = false;
-  private batchingWrapper: Function;
+  // private batchingWrapper: Function;
   // public bb: Backburner;
   constructor() {
     // if (!this.bb) { this.bb = new Backburner(['read', 'write']); }

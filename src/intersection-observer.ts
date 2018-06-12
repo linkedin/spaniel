@@ -3,7 +3,7 @@ Copyright 2017 LinkedIn Corp. Licensed under the Apache License,
 Version 2.0 (the "License"); you may not use this file except in
 compliance with the License. You may obtain a copy of the License
 at http://www.apache.org/licenses/LICENSE-2.0
- 
+
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,7 +60,6 @@ function rootMarginToDOMMargin(rootMargin: DOMString): DOMMargin {
 }
 
 export class SpanielIntersectionObserver implements IntersectionObserver {
-  private id: string;
   private scheduler: ElementScheduler;
   private callback: Function;
 
@@ -108,7 +107,6 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
   private generateEntryEvent(frame: Frame, clientRect: DOMRectReadOnly, el: Element): EntryEvent {
     let count: number = 0;
     let entry = generateEntry(frame, clientRect, el, this.rootMarginObj);
-    let ratio = entry.intersectionRatio;
 
     for (let i = 0; i < this.thresholds.length; i++) {
       let threshold = this.thresholds[i];
@@ -125,7 +123,6 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
   constructor(callback: Function, options: IntersectionObserverInit = {}) {
     this.records = {};
     this.callback = callback;
-    this.id = generateToken();
     options.threshold = options.threshold || 0;
     this.rootMarginObj = rootMarginToDOMMargin(options.rootMargin || '0px');
     this.root = options.root;
@@ -137,7 +134,7 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
 
     this.scheduler = new ElementScheduler(null, this.root, options.ALLOW_CACHED_SCHEDULER);
   }
-};
+}
 
 function addRatio(entryInit: SpanielIntersectionObserverEntryInit): IntersectionObserverEntry {
   const { time, rootBounds, boundingClientRect, intersectionRect, target, isIntersecting } = entryInit;
@@ -150,7 +147,7 @@ function addRatio(entryInit: SpanielIntersectionObserverEntryInit): Intersection
 }
 
 export function generateEntry(frame: Frame, clientRect: DOMRectReadOnly, el: Element, rootMargin: DOMMargin): IntersectionObserverEntry {
-  let { top, bottom, left, right } = clientRect;
+  let { bottom, right } = clientRect;
   let rootBounds: ClientRect = {
     left: frame.left + rootMargin.left,
     top: frame.top + rootMargin.top,
