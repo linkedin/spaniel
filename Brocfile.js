@@ -10,25 +10,8 @@ const typescript = require('broccoli-typescript-compiler').default;
 const Rollup = require('broccoli-rollup');
 const Merge = require('broccoli-merge-trees');
 const replace = require('broccoli-string-replace');
-// const src = new Funnel(__dirname + '/src', {
-//   destDir: 'src'
-// });
 
 const es6Tree = typescript('src');
-
-// const spaniel = new Rollup(es6Tree, {
-//   annotation: 'es6',
-//   rollup: {
-//     input: 'index.js',
-//     output: [{
-//       file: 'es6/index.js',
-//       format: 'es',
-//       sourcemap: true,
-//       exports: 'named',
-//       name: 'spaniel'
-//     }]
-//   }
-// });
 
 const umdTree = replace(new Rollup(es6Tree, {
   annotation: 'umd',
