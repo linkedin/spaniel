@@ -9,11 +9,10 @@ const uglify = require('broccoli-uglify-sourcemap');
 const typescript = require('broccoli-typescript-compiler').default;
 const Rollup = require('broccoli-rollup');
 const Merge = require('broccoli-merge-trees');
-const replace = require('broccoli-string-replace');
 
 const es6Tree = typescript('src');
 
-const umdTree = replace(new Rollup(es6Tree, {
+const umdTree = new Rollup(es6Tree, {
   annotation: 'umd',
   rollup: {
     input: 'index.js',
@@ -26,12 +25,6 @@ const umdTree = replace(new Rollup(es6Tree, {
       sourcemap: true
     }]
   }
-}), {
-  files: [ 'spaniel.js' ],
-  pattern: {
-    match: /undefined.__extends/g,
-    replacement: 'false'
-  }
 });
 
 const minTree = uglify(new Funnel(umdTree, {
@@ -41,4 +34,4 @@ const minTree = uglify(new Funnel(umdTree, {
   compress: true
 });
 
-module.exports = new Merge([es6Tree, minTree]);
+module.exports = new Merge([es6Tree, umdTree, minTree]);
