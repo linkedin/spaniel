@@ -6,7 +6,6 @@
     "module": "es2015",
     "target": "es5",
     "sourceMap": true,
-    "outDir": "exports/es6",
     "moduleResolution": "node",
     "noUnusedLocals": true
   },
