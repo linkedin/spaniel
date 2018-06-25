@@ -7,20 +7,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-// Using named and default exports together. Consumers of your bundle will have to use bundle['default']
-// to access the default export, which may not be what you want. Use `exports: 'named'` to disable this warning
 import { EngineInterface } from './interfaces';
 import W from './window-proxy';
-// import Backburner from 'backburner';
+import bb from 'backburner.js';
+
 export class Engine implements EngineInterface {
   private reads: Array<Function> = [];
   private work: Array<Function> = [];
   private running: boolean = false;
-  // private batchingWrapper: Function;
-  // public bb: Backburner;
-  constructor() {
-    // if (!this.bb) { this.bb = new Backburner(['read', 'write']); }
-  }
   scheduleRead(callback: Function) {
     this.reads.unshift(callback);
     this.run();
@@ -33,7 +27,7 @@ export class Engine implements EngineInterface {
     if (!this.running) {
       this.running = true;
       W.rAF(() => {
-        // bb.join(() => {
+        bb.join(() => {
           for (let i = 0, rlen = this.reads.length; i < rlen; i++) {
             this.reads.pop()();
           }
@@ -44,21 +38,13 @@ export class Engine implements EngineInterface {
           if (this.work.length > 0 || this.reads.length > 0) {
             this.run();
           }
-        // });
+        });
       });
     }
   }
 }
 
 let globalEngine: EngineInterface = null;
-
-export function setGlobalEngine(engine: EngineInterface): boolean {
-  if (!!globalEngine) {
-    return false;
-  }
-  globalEngine = engine;
-  return true;
-}
 
 export function getGlobalEngine() {
   return globalEngine || (globalEngine = new Engine());

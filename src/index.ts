@@ -30,7 +30,6 @@ import {
 } from './spaniel-observer';
 
 import {
-  setGlobalEngine,
   getGlobalEngine
 } from './metal/engine';
 
@@ -56,7 +55,6 @@ export {
   SpanielIntersectionObserver as IntersectionObserver,
   SpanielObserver,
   SpanielTrackedElement,
-  setGlobalEngine,
   getGlobalEngine,
   w as __w__,
   invalidate

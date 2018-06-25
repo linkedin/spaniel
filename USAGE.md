@@ -152,10 +152,6 @@ scheduleWork(() => {
 
 With any task engine involving the DOM, DOM reads and DOM writes [should be batched seperately](https://developers.google.com/web/fundamentals/performance/rendering/optimize-javascript-execution#reduce_complexity_or_use_web_workers). For this reason, it's important that any [work that forces a browser layout](https://gist.github.com/paulirish/5d52fb081b3570c81e3a) be scheduled via `scheduleRead()`, while any work that modifies the layout should be scheduled via `scheduleWork()`.
 
-### Using an external requestAnmiationFrame engine
-
-If you'd like to use a custom requestAnmiationFrame polling/task engine, use `setGlobalEngine(engine)`, where `engine` is an object that implements the [`EngineInterface`](https://github.com/linkedin/spaniel/blob/master/src/metal/interfaces.ts#L25-L28). For example, you can checkout Spaniel's internal [Engine implementation](https://github.com/linkedin/spaniel/blob/master/src/metal/engine.ts#L10-L39) or [ember-spaniel's](https://github.com/asakusuma/ember-spaniel/blob/master/addon/spaniel-engines/ember-spaniel-engine.js) implementation that hooks into [Ember's runloop](https://guides.emberjs.com/v2.12.0/applications/run-loop/).
-
 ## Copyright
 
 Copyright 2017 LinkedIn Corp.  All rights reserved.
