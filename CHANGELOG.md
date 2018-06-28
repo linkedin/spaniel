@@ -1,5 +1,7 @@
-
 # spaniel Changelog
+### 2.5.1 (June 28, 2018)
+
+* Suppress Rollup AOT Warnings
 
 ### 2.5.0 (May 29, 2018)
 
