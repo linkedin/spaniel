@@ -5,7 +5,7 @@
   "license": "Apache 2.0",
   "main": "exports/spaniel.js",
   "scripts": {
-    "test": "tsc && npm run build && testem ci && node test/headless/run",
+    "test": "npm run build && testem ci && node test/headless/run",
     "test:headless": "mocha --require babel-core/register test/headless/specs/**/*.js",
     "serve": "npm run build && node test/headless/server/app",
     "watch": "broccoli-timepiece exports",
@@ -67,5 +67,8 @@
     "testem": "^2.8.0",
     "tslint": "^5.10.0",
     "typescript": "2.9.2"
+  },
+  "dependencies": {
+    "babel-plugin-transform-es2015-modules-amd": "^6.24.1"
   }
 }

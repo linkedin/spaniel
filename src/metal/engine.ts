@@ -9,7 +9,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 import { EngineInterface } from './interfaces';
 import W from './window-proxy';
-import bb from 'backburner.js';
+import Backburner from 'backburner.js';
+
+const bb = new Backburner(['read', 'write']);
 
 export class Engine implements EngineInterface {
   private reads: Array<Function> = [];
