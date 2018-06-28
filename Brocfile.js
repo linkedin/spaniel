@@ -39,6 +39,7 @@ var umdTree = replace(new Rollup(es6Tree, {
     moduleName: 'spaniel',
     exports: 'named',
     sourceMap: true,
+    onwarn: (opt) => onRollupWarn(opt)
   }
 }), {
   files: [ 'spaniel.js' ],
@@ -57,3 +58,14 @@ var minTree = uglify(new Funnel(umdTree, {
 });
 
 module.exports = new Merge([es6Tree, umdTree, minTree]);
+
+function onRollupWarn({ code, loc, frame, message }) {
+  // ahead-of-time (AOT) compiler warning suppression
+  if (code === 'THIS_IS_UNDEFINED') { return; }
+  if (loc) {
+    console.warn(`${loc.file} (${loc.line}:${loc.column}) ${message}`);
+    if (frame) { console.warn(frame) };
+  } else {
+    console.warn(message);
+  }
+}
