@@ -1,7 +1,7 @@
 {
     "files.exclude": {
         "**/build_tmp": true,
-        "**/exports": true,
+        "**/exports": false,
         "**/tmp": true,
         "**/node_modules": true,
         "**/.git": true,
