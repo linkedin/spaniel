@@ -24,3 +24,10 @@
 4. `mocha test/headless/specs/**/*.js`
 5. `test/headless/test-module.js` + `test/headless/constants.js`
 6. `test/headless/context.js` + `test/headless/spaniel-context.js` + `test/headless/constants.js`
+
+---
+
+# Baseline (DONE 7/6/2018)
+- Spaniel#v4
+- Backburner#8b4c2b4
+- Ember-Spaniel#lynchbomb
