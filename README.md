@@ -41,7 +41,9 @@ You can also run `npm run stats` to measure locally.
 
 Spaniel is a standard NPM/CommonJS module. You can use a build tool like [browserify](http://browserify.org/) or [webpack](https://www.npmjs.com/package/webpack) to include Spaniel in your application.
 
-If you're using [rollup](http://rollupjs.org/), an ES6 version is built at `/exports/es6/spaniel.js` (as noted by `jsnext:main` in `package.json`).
+If you're using [rollup](http://rollupjs.org/), an ES6 version is built at `/exports/index.js` (as noted by `module` in `package.json`).
+
+If you're using [TypeScript](https://www.typescriptlang.org/) exported typings are available at `/exports/index.d.ts` (as noted by `typings` in `package.json`).
 
 Alternatively, running *npm run build* will generate a UMD file at `/exports/spaniel.js`, and a minified UMD file at `/exports/min/spaniel.js`. You can use the minified file in production.
 
@@ -80,4 +82,4 @@ npm run test
 
 ## Copyright
 
-Copyright 2017 LinkedIn Corp.  All rights reserved.
+Copyright 2018 LinkedIn Corp.  All rights reserved.
