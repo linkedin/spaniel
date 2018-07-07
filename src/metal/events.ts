@@ -9,9 +9,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import {
   Frame,
   PredicatedScheduler,
-  FunctionQueue,
   getGlobalScheduler
-} from './index';
+} from './scheduler';
+
+import {
+  FunctionQueue
+} from './queue';
 
 import {
   FrameInterface
