@@ -11,33 +11,32 @@ import { EngineInterface } from './interfaces';
 import W from './window-proxy';
 import Backburner from 'backburner.js';
 
-const bb = new Backburner(['read', 'write']);
-
 export class Engine implements EngineInterface {
   private reads: Array<Function> = [];
-  private work: Array<Function> = [];
+  private writes: Array<Function> = [];
   private running: boolean = false;
+  private bb: Backburner = new Backburner(['read', 'write']);
   scheduleRead(callback: Function) {
     this.reads.unshift(callback);
     this.run();
   }
   scheduleWork(callback: Function) {
-    this.work.unshift(callback);
+    this.writes.unshift(callback);
     this.run();
   }
   private run() {
     if (!this.running) {
       this.running = true;
       W.rAF(() => {
-        bb.join(() => {
+        this.bb.join(() => {
           for (let i = 0, rlen = this.reads.length; i < rlen; i++) {
             this.reads.pop()();
           }
-          for (let i = 0, wlen = this.work.length; i < wlen; i++) {
-            this.work.pop()();
+          for (let i = 0, wlen = this.writes.length; i < wlen; i++) {
+            this.writes.pop()();
           }
           this.running = false;
-          if (this.work.length > 0 || this.reads.length > 0) {
+          if (this.writes.length > 0 || this.reads.length > 0) {
             this.run();
           }
         });
