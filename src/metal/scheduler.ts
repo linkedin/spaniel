@@ -238,6 +238,6 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
 
 let globalScheduler: Scheduler = null;
 
-export function getGlobalScheduler() {
-  return globalScheduler || (globalScheduler = new Scheduler());
+export function getGlobalScheduler(root: Element | Window = window) {
+  return globalScheduler || (globalScheduler = new Scheduler(null, root));
 }

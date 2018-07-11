@@ -30,7 +30,6 @@ const es6 = new Rollup(es6Tree, {
         moduleDirectory: 'node_modules'
       }
     })],  
-    external: ['backburner'],
     onwarn: (o) => onRollupWarn(o)
   }
 });
@@ -53,7 +52,6 @@ const umdTree = new Rollup(es6Tree, {
         moduleDirectory: 'node_modules'
       }
     })],
-    external: ['backburner'],
     onwarn: (o) => onRollupWarn(o)
   }
 });

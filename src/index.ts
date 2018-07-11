@@ -20,7 +20,7 @@ import {
 
 import {
   SpanielTrackedElement,
-  DOMMargin
+  ElementSatisfiesRatio
 } from './interfaces';
 
 export { Watcher, WatcherConfig } from './watcher';
@@ -60,14 +60,19 @@ export {
   invalidate
 };
 
-export function queryElement(el: Element, callback: (clientRect: ClientRect, frame: Frame) => void) {
-  getGlobalScheduler().queryElement(el, callback);
+export function queryElement(el: Element, callback: (clientRect: ClientRect, frame: Frame) => void, root: Element | Window) {
+  getGlobalScheduler(root).queryElement(el, callback);
 }
 
-export function elementSatisfiesRatio(el: Element, ratio: number = 0, callback: (result: Boolean) => void, rootMargin: DOMMargin = { top: 0, bottom: 0, left: 0, right: 0}) {
+export function elementSatisfiesRatio(el: Element, callback: (result: Boolean) => void, options: ElementSatisfiesRatio) {
+  let {
+    ratio,
+    rootMargin,
+    root,
+  } = options;
+
   queryElement(el, (clientRect: ClientRect, frame: Frame) => {
     let entry = generateEntry(frame, clientRect, el, rootMargin);
     callback(entrySatisfiesRatio(entry, ratio));
-  });
+  }, root);
 }
-

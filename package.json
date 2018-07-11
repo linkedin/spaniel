@@ -66,8 +66,5 @@
     "testem": "^2.8.2",
     "tslint": "^5.10.0",
     "typescript": "2.9.2"
-  },
-  "dependencies": {
-    "backburner.js": "^2.3.0"
   }
 }

@@ -87,3 +87,9 @@ export interface IntersectionObserverInit {
   threshold?: number | number[]; // default: 0
   ALLOW_CACHED_SCHEDULER?: boolean;
 }
+
+export interface ElementSatisfiesRatio {
+  ratio: number;
+  rootMargin: DOMMargin;
+  root: Element | Window;
+}

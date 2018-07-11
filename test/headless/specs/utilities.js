@@ -56,9 +56,18 @@ testModule('elementSatisfiesRatio', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.satisfied = null;
       var el = document.querySelector('.tracked-item[data-id="1"]');
-      spaniel.elementSatisfiesRatio(el, 1, function(a) {
+      spaniel.elementSatisfiesRatio(el, function(a) {
         window.STATE.satisfied = true;
-      })
+      }, {
+        ratio: 1,
+        root: window,
+        rootMargin: {
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }
+      });
     })
     .wait(RAF_THRESHOLD * 5)
     .getExecution()
@@ -74,9 +83,18 @@ testModule('elementSatisfiesRatio', class extends TestClass {
     return this.context.evaluate(function() {
       window.STATE.satisfied = null;
       var el = document.querySelector('.tracked-item[data-id="10"]');
-      spaniel.elementSatisfiesRatio(el, 1, function(a) {
+      spaniel.elementSatisfiesRatio(el, function(a) {
         window.STATE.satisfied = false;
-      })
+      }, {
+        ratio: 1,
+        root: window,
+        rootMargin: {
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }
+      });
     })
     .wait(RAF_THRESHOLD * 8)
     .getExecution()
