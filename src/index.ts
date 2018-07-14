@@ -30,7 +30,8 @@ import {
 } from './spaniel-observer';
 
 import {
-  getGlobalEngine
+  getGlobalEngine,
+  setGlobalEngine
 } from './metal/engine';
 
 import {
@@ -56,6 +57,7 @@ export {
   SpanielObserver,
   SpanielTrackedElement,
   getGlobalEngine,
+  setGlobalEngine,
   w as __w__,
   invalidate
 };

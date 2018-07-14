@@ -6,53 +6,46 @@ Unless required by applicable law or agreed to in writing, software distribute
 
 const Funnel = require('broccoli-funnel');
 const uglify = require('broccoli-uglify-sourcemap');
-const typescript = require('broccoli-typescript-compiler').default;
+const typescript = require('broccoli-typescript-compiler').typescript;
 const Rollup = require('broccoli-rollup');
 const Merge = require('broccoli-merge-trees');
-const resolve = require('rollup-plugin-node-resolve');
-const commonjs = require('rollup-plugin-commonjs');
-const buble = require('rollup-plugin-buble');
+const replace = require('broccoli-string-replace');
 
-const es6Tree = typescript('src');
-
-const es6 = new Rollup(es6Tree, {
-  annotation: 'es6',
-  rollup: {
-    input: 'index.js',
-    external: ['spaniel'],
-    output: [{
-      file: 'es6/spaniel.js',
-      format: 'es'
-    }],
-    plugins: [resolve({
-      module: true,
-      customResolveOptions: {
-        moduleDirectory: 'node_modules'
-      }
-    })],  
-    onwarn: (o) => onRollupWarn(o)
+const es6Tree = typescript('src', {
+  tsconfig: {
+    compilerOptions: {
+      "noImplicitAny": true,
+      "declaration": true,
+      "isolatedModules": false,
+      "module": "es2015",
+      "target": "es5",
+      "outDir": "es6",
+      "sourceMap": true,
+      "moduleResolution": "node"
+    },
+    filesGlob: [
+      "**/*.ts"
+    ]
   }
 });
 
-const umdTree = new Rollup(es6Tree, {
-  annotation: 'umd',
+const umdTree = replace(new Rollup(es6Tree, {
   rollup: {
-    input: 'index.js',
-    external: ['spaniel'],
-    output: [{
+    input: 'es6/index.js',
+    output: {
       file: 'spaniel.js',
-      exports: 'named',
       format: 'umd',
       name: 'spaniel',
+      exports: 'named',
       sourcemap: true
-    }],
-    plugins: [buble(), commonjs(), resolve({
-      main: true,
-      customResolveOptions: {
-        moduleDirectory: 'node_modules'
-      }
-    })],
-    onwarn: (o) => onRollupWarn(o)
+    },
+    onwarn: (opt) => onRollupWarn(opt)
+  }
+}), {
+  files: [ 'spaniel.js' ],
+  pattern: {
+    match: /undefined.__extends/g,
+    replacement: 'false'
   }
 });
 
@@ -63,7 +56,7 @@ const minTree = uglify(new Funnel(umdTree, {
   compress: true
 });
 
-module.exports = new Merge([es6, umdTree, minTree]);
+module.exports = new Merge([es6Tree, umdTree, minTree]);
 
 function onRollupWarn({ code, loc, frame, message }) {
   // ahead-of-time (AOT) compiler warning suppression

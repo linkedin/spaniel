@@ -43,6 +43,14 @@ export class Engine implements EngineInterface {
 
 let globalEngine: EngineInterface = null;
 
+export function setGlobalEngine(engine: EngineInterface): boolean {
+  if (!!globalEngine) {
+    return false;
+  }
+  globalEngine = engine;
+  return true;
+}
+
 export function getGlobalEngine() {
   return globalEngine || (globalEngine = new Engine());
 }

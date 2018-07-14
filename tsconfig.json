@@ -4,10 +4,11 @@
     "declaration": true,
     "isolatedModules": false,
     "module": "es2015",
-    "target": "es6",
+    "target": "es5",
     "sourceMap": true,
     "moduleResolution": "node",
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "outDir": "exports/es6"
   },
   "filesGlob": [
     "**/*.ts"
