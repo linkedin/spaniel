@@ -1,4 +1,18 @@
 # spaniel Changelog
+### 4.0.0 (July 17, 2018)
+  - Window bounds now only updates on scroll or resize event. Only if we have passive listeners to detect any user interaction.
+  - Passive listeners are now only needed where the callback can preventDefault()
+  - Window bounds are now cached (not the entire boundingRect object)
+  - Improved heuristics to avoid polling when we believe the system is stable
+  - New API Method - Allow manual declaration of custom root element
+  - Unit tests have been migrated from Phantom to Headless Chrome
+  - Leaky tests have been address and tests now exit upon complete
+  - Address issues with excessive CPU usage and layout thrash
+  - Address issues with legacy MS browsers and `getBoundingClientRect`
+  - New API Method - `isDirty` and `invalidate` for State Changes 
+  - Upgrade of all dependencies
+  - Note: This is the last major release of Spaniel. Going forward Spaniel will have a hard dependency on Ember. Thus [Ember-Spaniel](https://github.com/asakusuma/ember-spaniel) will be the new home for All Spaniel Internals.
+  
 ### 2.5.1 (June 28, 2018)
 
 * Suppress Rollup AOT Warnings
