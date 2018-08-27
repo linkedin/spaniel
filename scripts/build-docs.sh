@@ -3,5 +3,5 @@
 # Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 typedoc --out docs src/index.ts --module es2015 --mode file --theme minimal --readme USAGE.md
-npm run stats
+yarn run stats
 mv size.txt docs/
