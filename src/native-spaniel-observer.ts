@@ -62,7 +62,7 @@ export class SpanielObserver implements SpanielObserverInterface {
     this.observer = new ObserverClass((records: IntersectionObserverEntry[]) => this.internalCallback(records), o);
 
     if (w.hasDOM) {
-      on('unload', this.onWindowClosed.bind(this));
+      on('beforeunload', this.onWindowClosed.bind(this));
       on('hide', this.onTabHidden.bind(this));
       on('show', this.onTabShown.bind(this));
     }

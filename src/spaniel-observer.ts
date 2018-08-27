@@ -78,7 +78,7 @@ export class SpanielObserver implements SpanielObserverInterface {
     this.onTabShown = this._onTabShown.bind(this);
 
     if (w.hasDOM) {
-      on('unload', this.onWindowClosed);
+      on('beforeunload', this.onWindowClosed);
       on('hide', this.onTabHidden);
       on('show', this.onTabShown);
     }
@@ -241,7 +241,7 @@ export class SpanielObserver implements SpanielObserverInterface {
   destroy() {
     this.disconnect();
     if (w.hasDOM) {
-      off('unload', this.onWindowClosed);
+      off('beforeunload', this.onWindowClosed);
       off('hide', this.onTabHidden);
       off('show', this.onTabShown);
     }
