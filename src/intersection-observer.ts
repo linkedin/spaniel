@@ -60,7 +60,6 @@ function rootMarginToDOMMargin(rootMargin: DOMString): DOMMargin {
 }
 
 export class SpanielIntersectionObserver implements IntersectionObserver {
-  private id: string;
   private scheduler: ElementScheduler;
   private callback: Function;
 
@@ -124,7 +123,6 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
   constructor(callback: Function, options: IntersectionObserverInit = {}) {
     this.records = {};
     this.callback = callback;
-    this.id = generateToken();
     options.threshold = options.threshold || 0;
     this.rootMarginObj = rootMarginToDOMMargin(options.rootMargin || '0px');
     this.root = options.root;
@@ -145,7 +143,7 @@ function addRatio(entryInit: SpanielIntersectionObserverEntryInit): Intersection
   const intersectionRatio = boundingArea > 0 ? (intersectionRect.width * intersectionRect.height) / boundingArea : 0;
 
   return {
-    time, rootBounds, boundingClientRect, intersectionRect, target, intersectionRatio
+    time, rootBounds, boundingClientRect, intersectionRect, target, intersectionRatio, isIntersecting: null
   };
 }
 

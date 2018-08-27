@@ -6,7 +6,7 @@ Unless required by applicable law or agreed to in writing, software distribute
 
 var Funnel = require('broccoli-funnel');
 var uglify = require('broccoli-uglify-sourcemap');
-var typescript = require('broccoli-typescript-compiler').typescript;
+var typescript = require("broccoli-typescript-compiler").default;
 var Rollup = require('broccoli-rollup');
 var Merge = require('broccoli-merge-trees');
 var replace = require('broccoli-string-replace');
@@ -33,12 +33,14 @@ var es6Tree = typescript('src', {
 // Possibly won't be needed after https://github.com/Microsoft/TypeScript/pull/9097
 var umdTree = replace(new Rollup(es6Tree, {
   rollup: {
-    entry: 'es6/index.js',
-    dest: 'spaniel.js',
-    format: 'umd',
-    moduleName: 'spaniel',
-    exports: 'named',
-    sourceMap: true,
+    input: 'index.js',
+    output: {
+      name: 'spaniel',
+      file: 'spaniel.js',
+      sourcemap: true,
+      format: 'umd',
+      exports: 'named'
+    }
   }
 }), {
   files: [ 'spaniel.js' ],
