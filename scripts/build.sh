@@ -5,4 +5,4 @@
 rm -rf exports
 ./node_modules/tslint/bin/tslint src/**/*.ts &&
 broccoli build exports &&
-npm run stats
+yarn run stats
