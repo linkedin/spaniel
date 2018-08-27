@@ -138,7 +138,7 @@ on('resize', onResize);
 // Stop watching resize
 off('resize', onResize);
 
-// Triggered after all spaniel observer callbacks have fired during `unload`
+// Triggered after all spaniel observer callbacks have fired during `beforeunload`
 on('destroy', flushBeacons);
 
 // Proxy to visibilitychange API
