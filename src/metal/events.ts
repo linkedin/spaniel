@@ -62,7 +62,7 @@ interface EventStore {
   scroll: RAFEventRecord;
   resize: RAFEventRecord;
   destroy: GenericEventRecord;
-  unload: GenericEventRecord;
+  beforeunload: GenericEventRecord;
   hide: GenericEventRecord;
   show: GenericEventRecord;
   [eventName: string]: EventRecordInterface;
@@ -83,16 +83,16 @@ function getEventStore(): EventStore {
       return height !== frame.height || width !== frame.width;
     }),
     destroy: new GenericEventRecord(),
-    unload: new GenericEventRecord(),
+    beforeunload: new GenericEventRecord(),
     hide: new GenericEventRecord(),
     show: new GenericEventRecord()
   });
 }
 
 if (w.hasDOM) {
-  window.addEventListener('unload', function(e: any) {
+  window.addEventListener('beforeunload', function(e: any) {
     // First fire internal event to fire any observer callbacks
-    trigger('unload');
+    trigger('beforeunload');
 
     // Then fire external event to allow flushing of any beacons
     trigger('destroy');
