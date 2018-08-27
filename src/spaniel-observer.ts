@@ -121,7 +121,8 @@ export class SpanielObserver implements SpanielObserverInterface {
           time,
           rootBounds,
           intersectionRect,
-          target
+          target,
+          isIntersecting: null
         });
       }
     }
@@ -156,7 +157,8 @@ export class SpanielObserver implements SpanielObserverInterface {
       duration: 0,
       entering: null,
       payload: record.payload,
-      label: state.threshold.label
+      label: state.threshold.label,
+      isIntersecting: null
     };
   }
   private handleRecordExiting(record: SpanielRecord, time: number = Date.now()) {
@@ -171,7 +173,8 @@ export class SpanielObserver implements SpanielObserverInterface {
         boundingClientRect: emptyRect,
         intersectionRect: emptyRect,
         duration: time - state.lastVisible,
-        target: record.target
+        target: record.target,
+        isIntersecting: null
       }, state);
       state.lastSatisfied = false;
       state.visible = false;
