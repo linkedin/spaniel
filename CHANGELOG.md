@@ -1,4 +1,12 @@
 # spaniel Changelog
+
+### 2.5.2 (October 9, 2018)
+
+* Backport [PR #59](https://github.com/linkedin/spaniel/pull/59). Guard against race condition.
+* Travis config changes to test against release branches
+* Trigger `closing` events on beforeunload instead of unload as beforeunload can be too late in some situations
+
+
 ### 2.5.1 (June 28, 2018)
 
 * Suppress Rollup AOT Warnings
