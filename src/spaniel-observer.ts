@@ -197,6 +197,9 @@ export class SpanielObserver implements SpanielObserverInterface {
     let { time } = entry;
     let target = <SpanielTrackedElement>entry.target;
     let record = this.recordStore[target.__spanielId];
+
+    if (!record) { return; }
+
     record.lastSeenEntry = entry;
 
     if (!this.paused) {
