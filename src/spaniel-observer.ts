@@ -111,12 +111,14 @@ export class SpanielObserver implements SpanielObserverInterface {
           boundingClientRect,
           rootBounds,
           intersectionRect,
+          isIntersecting,
           target
         } = entry;
         this.handleObserverEntry({
           intersectionRatio,
           boundingClientRect,
           time,
+          isIntersecting,
           rootBounds,
           intersectionRect,
           target
@@ -140,12 +142,14 @@ export class SpanielObserver implements SpanielObserverInterface {
       rootBounds,
       boundingClientRect,
       intersectionRect,
+      isIntersecting,
       target
     } = entry;
     let record = this.recordStore[(<SpanielTrackedElement>target).__spanielId];
 
     return {
       intersectionRatio,
+      isIntersecting,
       time,
       rootBounds,
       boundingClientRect,
@@ -161,6 +165,7 @@ export class SpanielObserver implements SpanielObserverInterface {
     record.thresholdStates.forEach((state: SpanielThresholdState) => {
       this.handleThresholdExiting({
         intersectionRatio: -1,
+        isIntersecting: false,
         time,
         payload: record.payload,
         label: state.threshold.label,

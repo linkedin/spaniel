@@ -21,7 +21,7 @@ export abstract class BaseQueue implements QueueInterface {
     this.items = [];
   }
 
-  abstract removePredicate(identifier: any, element: any): void;
+  abstract removePredicate(identifier: any, element: any): boolean;
 
   remove(identifier: string | Element | Function) {
     let len = this.items.length;
