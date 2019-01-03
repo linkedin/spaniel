@@ -1,5 +1,10 @@
 {
+  "extends": [
+    "tslint-config-prettier"
+  ],
+  "rulesDirectory": ["tslint-plugin-prettier"],
   "rules": {
+    "prettier": true,
     "class-name": true,
     "comment-format": [
       true,
