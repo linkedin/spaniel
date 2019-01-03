@@ -46,7 +46,7 @@ export default function(moduleName, TestModuleClass) {
           return testInstance[name].call(testInstance).then(() => {
             testInstance.teardown();
           });
-        })
+        });
       }
     }
   });

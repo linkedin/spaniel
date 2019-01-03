@@ -14,58 +14,65 @@ var replace = require('broccoli-string-replace');
 var es6Tree = typescript('src', {
   tsconfig: {
     compilerOptions: {
-      "noImplicitAny": true,
-      "declaration": true,
-      "isolatedModules": false,
-      "module": "es2015",
-      "target": "es5",
-      "outDir": "es6",
-      "sourceMap": true,
-      "moduleResolution": "node"
+      noImplicitAny: true,
+      declaration: true,
+      isolatedModules: false,
+      module: 'es2015',
+      target: 'es5',
+      outDir: 'es6',
+      sourceMap: true,
+      moduleResolution: 'node'
     },
-    filesGlob: [
-      "**/*.ts"
-    ]
+    filesGlob: ['**/*.ts']
   }
 });
 
 // use replace to fix ES6 + Typescript helpers issue
 // Possibly won't be needed after https://github.com/Microsoft/TypeScript/pull/9097
-var umdTree = replace(new Rollup(es6Tree, {
-  rollup: {
-    input: 'index.js',
-    output: {
-      name: 'spaniel',
-      format: 'umd',
-      exports: 'named',
-      file: 'spaniel.js',
-      sourcemap: true
+var umdTree = replace(
+  new Rollup(es6Tree, {
+    rollup: {
+      input: 'index.js',
+      output: {
+        name: 'spaniel',
+        format: 'umd',
+        exports: 'named',
+        file: 'spaniel.js',
+        sourcemap: true
+      }
+    }
+  }),
+  {
+    files: ['spaniel.js'],
+    pattern: {
+      match: /undefined.__extends/g,
+      replacement: 'false'
     }
   }
-}), {
-  files: [ 'spaniel.js' ],
-  pattern: {
-    match: /undefined.__extends/g,
-    replacement: 'false'
+);
+
+var minTree = uglify(
+  new Funnel(umdTree, {
+    destDir: 'min'
+  }),
+  {
+    mangle: true,
+    compress: true
   }
-});
-
-
-var minTree = uglify(new Funnel(umdTree, {
-  destDir: 'min'
-}), {
-  mangle: true,
-  compress: true
-});
+);
 
 module.exports = new Merge([es6Tree, umdTree, minTree]);
 
 function onRollupWarn({ code, loc, frame, message }) {
   // ahead-of-time (AOT) compiler warning suppression
-  if (code === 'THIS_IS_UNDEFINED') { return; }
+  if (code === 'THIS_IS_UNDEFINED') {
+    return;
+  }
   if (loc) {
     console.warn(`${loc.file} (${loc.line}:${loc.column}) ${message}`);
-    if (frame) { console.warn(frame) };
+    if (frame) {
+      console.warn(frame);
+    }
   } else {
     console.warn(message);
   }

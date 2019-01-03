@@ -11,54 +11,63 @@ describe('SpanielObserver', function() {
     return runTest({
       label: 'impression',
       ratio: 0.5
-    }).then(function(result) {
-      var entries = result.entries;
-      expect(entries.length).to.equal(1);
-      var entry = entries[0];
-      expect(entry.entering, true);
-      expect(entry.label, 'impression');
-      expect(entry.intersectionRatio, 1);
-      return result;
-    }).then(cleanUp);
+    })
+      .then(function(result) {
+        var entries = result.entries;
+        expect(entries.length).to.equal(1);
+        var entry = entries[0];
+        expect(entry.entering, true);
+        expect(entry.label, 'impression');
+        expect(entry.intersectionRatio, 1);
+        return result;
+      })
+      .then(cleanUp);
   });
 
   it('should fire impression exiting event when tab is hidden', function() {
     return runTest({
       label: 'impression',
       ratio: 0.5
-    }).then(function(result) {
-      result.observer.onTabHidden();
-      return new RSVP.Promise(function(resolve) {
-        setTimeout(function() {
-          expect(result.entries.length).to.equal(2, 'Two events have been fired');
-          expect(result.entries[1].entering).to.equal(false, 'Second event is exiting');
-          resolve(result);
-        }, 50);
+    })
+      .then(function(result) {
+        result.observer.onTabHidden();
+        return new RSVP.Promise(function(resolve) {
+          setTimeout(function() {
+            expect(result.entries.length).to.equal(2, 'Two events have been fired');
+            expect(result.entries[1].entering).to.equal(false, 'Second event is exiting');
+            resolve(result);
+          }, 50);
+        });
       })
-    }).then(cleanUp);
+      .then(cleanUp);
   });
 
   it('should fire impression exiting event twice when tab is hidden, reshown, and then hidden again', function() {
     return runTest({
       label: 'impression',
       ratio: 0.5
-    }).then(function(result) {
-      result.observer.onTabHidden();
-      return wait50ms(result);
-    }).then(function(result) {
-      expect(result.entries.length).to.equal(2, 'Two events have been fired');
-      expect(result.entries[1].entering).to.equal(false, 'Second event is exiting');
-      result.observer.onTabShown();
-      return wait50ms(result);
-    }).then(function(result) {
-      result.observer.onTabHidden();
-      return wait50ms(result);
-    }).then(function(result) {
-      expect(result.entries.length).to.equal(4, 'Three events have been fired');
-      expect(result.entries[2].entering).to.equal(true, 'second to last event is entering');
-      expect(result.entries[3].entering).to.equal(false, 'last event is exiting');
-      return result;
-    }).then(cleanUp);
+    })
+      .then(function(result) {
+        result.observer.onTabHidden();
+        return wait50ms(result);
+      })
+      .then(function(result) {
+        expect(result.entries.length).to.equal(2, 'Two events have been fired');
+        expect(result.entries[1].entering).to.equal(false, 'Second event is exiting');
+        result.observer.onTabShown();
+        return wait50ms(result);
+      })
+      .then(function(result) {
+        result.observer.onTabHidden();
+        return wait50ms(result);
+      })
+      .then(function(result) {
+        expect(result.entries.length).to.equal(4, 'Three events have been fired');
+        expect(result.entries[2].entering).to.equal(true, 'second to last event is entering');
+        expect(result.entries[3].entering).to.equal(false, 'last event is exiting');
+        return result;
+      })
+      .then(cleanUp);
   });
 
   it('should not fire impression exiting event when tab is hidden before threshold time', function() {
@@ -66,15 +75,17 @@ describe('SpanielObserver', function() {
       label: 'impression',
       ratio: 0.5,
       time: 1000
-    }).then(function(result) {
-      result.observer.onTabHidden();
-      return new RSVP.Promise(function(resolve) {
-        setTimeout(function() {
-          expect(result.entries.length).to.equal(0, 'No events have been fired');
-          resolve(result);
-        }, 50);
+    })
+      .then(function(result) {
+        result.observer.onTabHidden();
+        return new RSVP.Promise(function(resolve) {
+          setTimeout(function() {
+            expect(result.entries.length).to.equal(0, 'No events have been fired');
+            resolve(result);
+          }, 50);
+        });
       })
-    }).then(cleanUp);
+      .then(cleanUp);
   });
 
   it('should not break when unobserving the same element twice', function() {
@@ -82,13 +93,15 @@ describe('SpanielObserver', function() {
       label: 'impression',
       ratio: 0.5,
       time: 1000
-    }).then(function(result) {
-      return RSVP.resolve().then(function() {
-        result.observer.unobserve(result.target);
-        result.observer.unobserve(result.target);
-        return result;
-      });
-    }).then(cleanUp);
+    })
+      .then(function(result) {
+        return RSVP.resolve().then(function() {
+          result.observer.unobserve(result.target);
+          result.observer.unobserve(result.target);
+          return result;
+        });
+      })
+      .then(cleanUp);
   });
 
   it('should support observing elements with zero height and width', function() {
@@ -99,19 +112,24 @@ describe('SpanielObserver', function() {
     target.style.marginTop = '10px';
     target.style.marginLeft = '10px';
 
-    return runTest({
-      label: 'exposed',
-      ratio: 0
-    }, {
-      target: target
-    }).then(function(result) {
-      var entries = result.entries;
-      expect(entries.length).to.equal(1);
-      var entry = entries[0];
-      expect(entry.entering, true);
-      expect(entry.intersectionRatio, 0);
-      return result;
-    }).then(cleanUp);
+    return runTest(
+      {
+        label: 'exposed',
+        ratio: 0
+      },
+      {
+        target: target
+      }
+    )
+      .then(function(result) {
+        var entries = result.entries;
+        expect(entries.length).to.equal(1);
+        var entry = entries[0];
+        expect(entry.entering, true);
+        expect(entry.intersectionRatio, 0);
+        return result;
+      })
+      .then(cleanUp);
   });
 
   it('should not execute callback on element of zero height and width when not in viewport', function() {
@@ -122,15 +140,20 @@ describe('SpanielObserver', function() {
     target.style.marginTop = '1000px';
     target.style.marginLeft = '10px';
 
-    return runTest({
-      label: 'exposed',
-      ratio: 0
-    }, {
-      target: target
-    }).then(function(result) {
-      var entries = result.entries;
-      expect(entries.length).to.equal(0);
-      return result;
-    }).then(cleanUp);
+    return runTest(
+      {
+        label: 'exposed',
+        ratio: 0
+      },
+      {
+        target: target
+      }
+    )
+      .then(function(result) {
+        var entries = result.entries;
+        expect(entries.length).to.equal(0);
+        return result;
+      })
+      .then(cleanUp);
   });
 });

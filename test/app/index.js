@@ -45,22 +45,25 @@ for (var i = 0; i < elements.length; i++) {
 
 // Example usage of SpanielObserver
 var target = document.querySelector('.tracked-item[data-id="5"]');
-let observer = new spaniel.SpanielObserver(function(changes) {
-  console.log(changes[0]);
-}, {
-  rootMargin: '0px 0px',
-  threshold: [{
-    label: 'impressed',
-    ratio: 0.5,
-    time: 1000
-  }],
-  ALLOW_CACHED_SCHEDULER: true
-});
+let observer = new spaniel.SpanielObserver(
+  function(changes) {
+    console.log(changes[0]);
+  },
+  {
+    rootMargin: '0px 0px',
+    threshold: [
+      {
+        label: 'impressed',
+        ratio: 0.5,
+        time: 1000
+      }
+    ],
+    ALLOW_CACHED_SCHEDULER: true
+  }
+);
 observer.observe(target);
 
-
 // !!! CUSTOM ROOT ELEMENT !!! //
-
 
 // SpanielObserver with a custom root element
 var root = document.getElementById('root');
@@ -73,20 +76,27 @@ window.rootWatcher = new spaniel.Watcher({
 });
 
 var rootTarget = document.querySelector('.tracked-item-root[data-root-target-id="5"]');
-var rootObserver = new spaniel.SpanielObserver(function(changes) {
-  console.log(changes[0]);
-}, {
-  root: root,
-  rootMargin: '0px 0px',
-  threshold: [{
-    label: 'impressed',
-    ratio: 0.5,
-    time: 1000
-  }],
-  ALLOW_CACHED_SCHEDULER: true
-});
+var rootObserver = new spaniel.SpanielObserver(
+  function(changes) {
+    console.log(changes[0]);
+  },
+  {
+    root: root,
+    rootMargin: '0px 0px',
+    threshold: [
+      {
+        label: 'impressed',
+        ratio: 0.5,
+        time: 1000
+      }
+    ],
+    ALLOW_CACHED_SCHEDULER: true
+  }
+);
 
-root.addEventListener('scroll', function(){ spaniel.invalidate(), false });
+root.addEventListener('scroll', function() {
+  spaniel.invalidate(), false;
+});
 
 // Within the root keep an eye on this specific element
 // ie Watcher > SpanielObserver > SpanielIntersectionObserver
@@ -103,7 +113,7 @@ for (var i = 0; i < elements.length; i++) {
       // spaniel.Watcher.watch every one of these elements within the root
       window.rootWatcher.watch(el, function(e, meta) {
         var end = meta && meta.duration ? ' for ' + meta.duration + ' milliseconds' : '';
-        console.log('custom root: '+id + ' ' + e + end);
+        console.log('custom root: ' + id + ' ' + e + end);
         GLOBAL_TEST_EVENTS.push({
           id: parseInt(id),
           e: e,

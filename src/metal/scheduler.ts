@@ -20,13 +20,14 @@ import {
 } from './interfaces';
 import W from './window-proxy';
 
-import { default as Queue, DOMQueue} from './queue';
+import { default as Queue, DOMQueue } from './queue';
 import { getGlobalEngine } from './engine';
 
 import { getBoundingClientRect } from '../utils';
 
 const TOKEN_SEED = 'xxxx'.replace(/[xy]/g, function(c) {
-  let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+  let r = (Math.random() * 16) | 0,
+    v = c === 'x' ? r : (r & 0x3) | 0x8;
   return v.toString(16);
 });
 let tokenCounter = 0;
@@ -71,7 +72,9 @@ export class Frame implements FrameInterface {
     };
 
     // if root is dirty update the cached values
-    if (W.isDirty) { W.updateMeta(); }
+    if (W.isDirty) {
+      W.updateMeta();
+    }
 
     if (root === window) {
       _rootMeta.height = W.meta.height;
@@ -105,7 +108,7 @@ export abstract class BaseScheduler {
   protected engine: EngineInterface;
   protected queue: QueueInterface;
   protected isTicking: Boolean = false;
-  protected toRemove: Array<string| Element | Function> = [];
+  protected toRemove: Array<string | Element | Function> = [];
   protected id?: string;
 
   constructor(customEngine?: EngineInterface, root: Element | Window = window) {
@@ -150,7 +153,7 @@ export abstract class BaseScheduler {
       callback(clientRect, frame);
     });
   }
-  unwatch(id: string| Element | Function) {
+  unwatch(id: string | Element | Function) {
     this.toRemove.push(id);
   }
   unwatchAll() {
@@ -225,7 +228,11 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
     this.lastVersion = W.version;
   }
 
-  watch(el: Element, callback: (frame: FrameInterface, id: string, clientRect?: ClientRect | null) => void, id?: string): string {
+  watch(
+    el: Element,
+    callback: (frame: FrameInterface, id: string, clientRect?: ClientRect | null) => void,
+    id?: string
+  ): string {
     this.startTicking();
     id = id || generateToken();
     let clientRect = null;

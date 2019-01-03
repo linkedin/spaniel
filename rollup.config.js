@@ -3,5 +3,5 @@ export default {
   format: 'umd',
   dest: 'exports/es6/spaniel.js',
   exports: 'named',
-  sourceMap: true,
+  sourceMap: true
 };

@@ -9,9 +9,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-import {
-  MetaInterface
-} from './interfaces';
+import { MetaInterface } from './interfaces';
 
 const nop = () => 0;
 
@@ -30,7 +28,7 @@ interface WindowProxy {
   isDirty: boolean;
 }
 
-const hasDOM = !!((typeof window !== 'undefined') && window && (typeof document !== 'undefined') && document);
+const hasDOM = !!(typeof window !== 'undefined' && window && typeof document !== 'undefined' && document);
 const hasRAF = hasDOM && !!window.requestAnimationFrame;
 
 let W: WindowProxy = {
@@ -40,7 +38,11 @@ let W: WindowProxy = {
   getScrollLeft: nop,
   getHeight: nop,
   getWidth: nop,
-  rAF: hasRAF ? window.requestAnimationFrame.bind(window) : (callback: Function) => { callback(); },
+  rAF: hasRAF
+    ? window.requestAnimationFrame.bind(window)
+    : (callback: Function) => {
+        callback();
+      },
   meta: {
     width: 0,
     height: 0,
@@ -94,8 +96,6 @@ if (hasDOM) {
   window.addEventListener('scroll', invalidate, false);
 }
 
-export {
-  WindowProxy
-};
+export { WindowProxy };
 
 export default W;

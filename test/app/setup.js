@@ -5,7 +5,7 @@ Unless required by applicable law or agreed to in writing, software  distribut
 */
 
 var app = document.getElementById('app');
-for (var i = 0;  i < 100; i++) {
+for (var i = 0; i < 100; i++) {
   var id = i + 1;
   var content = Math.random(0, 100);
   var el = document.createElement('div');
@@ -17,12 +17,12 @@ for (var i = 0;  i < 100; i++) {
 
 /* Root feature test div */
 var root = document.getElementById('root');
-for (var i = 0;  i < 30; i++) {
-   var id = i + 1;
-   var content = Math.random(0, 100);
-   var el = document.createElement('div');
-   el.setAttribute('class', 'tracked-item-root');
-   el.setAttribute('data-root-target-id', id);
-   el.innerHTML = 'ID: ' + id + ' = ' + content;
-   root.appendChild(el);
+for (var i = 0; i < 30; i++) {
+  var id = i + 1;
+  var content = Math.random(0, 100);
+  var el = document.createElement('div');
+  el.setAttribute('class', 'tracked-item-root');
+  el.setAttribute('data-root-target-id', id);
+  el.innerHTML = 'ID: ' + id + ' = ' + content;
+  root.appendChild(el);
 }

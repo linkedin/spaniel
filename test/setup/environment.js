@@ -15,14 +15,17 @@ var runTest = function(threshold, options) {
   var target = options.target || document.createElement('div');
   target.style.height = '10px';
   document.body.appendChild(target);
-  var observer = new spaniel.SpanielObserver(function(changes) {
-    for (var i = 0; i < changes.length; i++) {
-      entries.push(changes[i]);
+  var observer = new spaniel.SpanielObserver(
+    function(changes) {
+      for (var i = 0; i < changes.length; i++) {
+        entries.push(changes[i]);
+      }
+    },
+    {
+      rootMargin: '0px 0px',
+      threshold: thresholds
     }
-  }, {
-    rootMargin: '0px 0px',
-    threshold: thresholds
-  });
+  );
   observer.observe(target);
   return new RSVP.Promise(function(resolve, reject) {
     setTimeout(function() {
@@ -33,7 +36,7 @@ var runTest = function(threshold, options) {
       });
     }, timeout);
   });
-}
+};
 
 function cleanUp(value) {
   value.observer.destroy();

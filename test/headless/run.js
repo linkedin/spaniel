@@ -9,27 +9,34 @@ const server = spawn('node', ['test/headless/server/app']);
 
 var test = null;
 
-server.stdout.on('data', (data) => {
+server.stdout.on('data', data => {
   // Wait for signal that test app has booted
   if (data.indexOf('Serving Spaniel Test App') > -1 && !test) {
-    test = spawn('./node_modules/mocha/bin/mocha', ['--compilers', 'js:babel-core/register', 'test/headless/specs/**/*.js', '--timeout', '3000', '--exit']);
+    test = spawn('./node_modules/mocha/bin/mocha', [
+      '--compilers',
+      'js:babel-core/register',
+      'test/headless/specs/**/*.js',
+      '--timeout',
+      '3000',
+      '--exit'
+    ]);
     //mocha --compilers js:babel-core/register test/headless/specs/**/*.js
 
-    test.stderr.on('data', (data) => {
+    test.stderr.on('data', data => {
       console.log(`Test Error: ${data}`);
     });
 
-    test.stdout.on('data', (data) => {
+    test.stdout.on('data', data => {
       console.log(`${data}`);
     });
 
-    test.on('close', (code) => {
+    test.on('close', code => {
       server.kill();
       process.exit(code);
     });
   }
 });
 
-server.stderr.on('data', (data) => {
+server.stderr.on('data', data => {
   console.log(`Error: ${data}`);
 });

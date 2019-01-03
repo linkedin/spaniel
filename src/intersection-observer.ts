@@ -9,18 +9,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-import {
-  entrySatisfiesRatio
-} from './utils';
+import { entrySatisfiesRatio } from './utils';
 
-import {
-  Frame,
-  QueueDOMElementInterface,
-  DOMQueue,
-  ElementScheduler,
-  Engine,
-  generateToken
-} from './metal/index';
+import { Frame, QueueDOMElementInterface, DOMQueue, ElementScheduler, Engine, generateToken } from './metal/index';
 
 import {
   SpanielTrackedElement,
@@ -50,7 +41,7 @@ function marginToRect(margin: DOMMargin): ClientRect {
 }
 
 function rootMarginToDOMMargin(rootMargin: DOMString): DOMMargin {
-  let c = rootMargin.split(' ').map((n) => parseInt(n, 10));
+  let c = rootMargin.split(' ').map(n => parseInt(n, 10));
   switch (c.length) {
     case 2:
       return { top: c[0], left: c[1], bottom: c[0], right: c[1] };
@@ -59,7 +50,7 @@ function rootMarginToDOMMargin(rootMargin: DOMString): DOMMargin {
     case 4:
       return { top: c[0], left: c[1], bottom: c[2], right: c[3] };
     default:
-      return { top: 0, left: 0, bottom: 0, right: 0};
+      return { top: 0, left: 0, bottom: 0, right: 0 };
   }
 }
 
@@ -72,24 +63,30 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
   public rootMargin: DOMString;
   protected rootMarginObj: DOMMargin;
   public thresholds: number[];
-  private records: { [index: string]: EntryEvent};
+  private records: { [index: string]: EntryEvent };
 
   observe(target: Element) {
     let trackedTarget = target as SpanielTrackedElement;
 
-    let id = trackedTarget.__spanielId = trackedTarget.__spanielId || generateToken();
+    let id = (trackedTarget.__spanielId = trackedTarget.__spanielId || generateToken());
 
-    this.scheduler.watch(target, (frame: Frame, id: string, clientRect: DOMRectReadOnly) => {
-      this.onTick(frame, id, clientRect, trackedTarget);
-    }, trackedTarget.__spanielId);
+    this.scheduler.watch(
+      target,
+      (frame: Frame, id: string, clientRect: DOMRectReadOnly) => {
+        this.onTick(frame, id, clientRect, trackedTarget);
+      },
+      trackedTarget.__spanielId
+    );
     return id;
   }
-  private onTick(frame: Frame, id: string,  clientRect: DOMRectReadOnly, el: Element) {
+  private onTick(frame: Frame, id: string, clientRect: DOMRectReadOnly, el: Element) {
     let { numSatisfiedThresholds, entry } = this.generateEntryEvent(frame, clientRect, el);
-    let record: EntryEvent = this.records[id] || (this.records[id] = {
-      entry,
-      numSatisfiedThresholds: 0
-    });
+    let record: EntryEvent =
+      this.records[id] ||
+      (this.records[id] = {
+        entry,
+        numSatisfiedThresholds: 0
+      });
 
     if (numSatisfiedThresholds !== record.numSatisfiedThresholds) {
       record.numSatisfiedThresholds = numSatisfiedThresholds;
@@ -141,7 +138,7 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
 
     this.scheduler = new ElementScheduler(null, this.root, options.ALLOW_CACHED_SCHEDULER);
   }
-};
+}
 
 function addRatio(entryInit: SpanielIntersectionObserverEntryInit): IntersectionObserverEntry {
   const { time, rootBounds, boundingClientRect, intersectionRect, target } = entryInit;
@@ -149,7 +146,13 @@ function addRatio(entryInit: SpanielIntersectionObserverEntryInit): Intersection
   const intersectionRatio = boundingArea > 0 ? (intersectionRect.width * intersectionRect.height) / boundingArea : 0;
 
   return {
-    time, rootBounds, boundingClientRect, intersectionRect, target, intersectionRatio, isIntersecting: intersectionRatio > 0
+    time,
+    rootBounds,
+    boundingClientRect,
+    intersectionRect,
+    target,
+    intersectionRatio,
+    isIntersecting: intersectionRatio > 0
   };
 }
 
@@ -179,7 +182,12 @@ export class IntersectionObserverEntry implements IntersectionObserverEntryInit 
 };
 */
 
-export function generateEntry(frame: Frame, clientRect: DOMRectReadOnly, el: Element, rootMargin: DOMMargin): IntersectionObserverEntry {
+export function generateEntry(
+  frame: Frame,
+  clientRect: DOMRectReadOnly,
+  el: Element,
+  rootMargin: DOMMargin
+): IntersectionObserverEntry {
   let { top, bottom, left, right } = clientRect;
   let rootBounds: ClientRect = {
     left: frame.left + rootMargin.left,

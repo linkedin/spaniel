@@ -9,9 +9,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-import {
-  SpanielObserver
-} from './native-spaniel-observer';
+import { SpanielObserver } from './native-spaniel-observer';
 
 import {
   SpanielObserverEntry,
@@ -95,7 +93,7 @@ export class Watcher {
       rootMargin,
       threshold,
       root
-   });
+    });
   }
   watch(el: Element, callback: WatcherCallback) {
     this.observer.observe(el, {

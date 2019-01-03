@@ -5,53 +5,60 @@ Unless required by applicable law or agreed to in writing, software  distribut
 */
 
 import { assert } from 'chai';
-import {
-  default as testModule,
-  WatcherTestClass
-} from './../../test-module';
+import { default as testModule, WatcherTestClass } from './../../test-module';
 
 import constants from './../../../constants.js';
 
-const { time: { RAF_THRESHOLD }, ITEM_TO_OBSERVE } = constants;
+const {
+  time: { RAF_THRESHOLD },
+  ITEM_TO_OBSERVE
+} = constants;
 
-testModule('Visible event', class extends WatcherTestClass {
-  ['@test should not fire if item is exposed but not visible']() {
-    return this.context.scrollTo(50)
-      .wait(RAF_THRESHOLD * 2)
-      .assertOnce(ITEM_TO_OBSERVE, 'exposed')
-      .assertNever(ITEM_TO_OBSERVE, 'visible')
-      .done();
-  }
+testModule(
+  'Visible event',
+  class extends WatcherTestClass {
+    ['@test should not fire if item is exposed but not visible']() {
+      return this.context
+        .scrollTo(50)
+        .wait(RAF_THRESHOLD * 2)
+        .assertOnce(ITEM_TO_OBSERVE, 'exposed')
+        .assertNever(ITEM_TO_OBSERVE, 'visible')
+        .done();
+    }
 
-  ['@test should fire if item is visible']() {
-    return this.context.scrollTo(200)
-      .wait(RAF_THRESHOLD * 5)
-      .assertOnce(ITEM_TO_OBSERVE, 'visible')
-      .done();
-  }
+    ['@test should fire if item is visible']() {
+      return this.context
+        .scrollTo(200)
+        .wait(RAF_THRESHOLD * 5)
+        .assertOnce(ITEM_TO_OBSERVE, 'visible')
+        .done();
+    }
 
-  ['@test should fire only once when item is moved while visible']() {
-    return this.context.scrollTo(200)
-      .wait(RAF_THRESHOLD * 5)
-      .scrollTo(300)
-      .wait(RAF_THRESHOLD * 5)
-      .scrollTo(250)
-      .assertOnce(ITEM_TO_OBSERVE, 'visible')
-      .done();
-  }
+    ['@test should fire only once when item is moved while visible']() {
+      return this.context
+        .scrollTo(200)
+        .wait(RAF_THRESHOLD * 5)
+        .scrollTo(300)
+        .wait(RAF_THRESHOLD * 5)
+        .scrollTo(250)
+        .assertOnce(ITEM_TO_OBSERVE, 'visible')
+        .done();
+    }
 
-  ['@test should fire only twice when item is moved into viewport, out, and then back in']() {
-    return this.context.scrollTo(200)
-      .wait(RAF_THRESHOLD * 5)
-      .scrollTo(300)
-      .wait(RAF_THRESHOLD * 5)
-      .scrollTo(250)
-      .assertOnce(ITEM_TO_OBSERVE, 'visible')
-      .scrollTo(10)
-      .wait(RAF_THRESHOLD * 5)
-      .scrollTo(200)
-      .wait(RAF_THRESHOLD)
-      .assertEvent(ITEM_TO_OBSERVE, 'visible', 2)
-      .done();
+    ['@test should fire only twice when item is moved into viewport, out, and then back in']() {
+      return this.context
+        .scrollTo(200)
+        .wait(RAF_THRESHOLD * 5)
+        .scrollTo(300)
+        .wait(RAF_THRESHOLD * 5)
+        .scrollTo(250)
+        .assertOnce(ITEM_TO_OBSERVE, 'visible')
+        .scrollTo(10)
+        .wait(RAF_THRESHOLD * 5)
+        .scrollTo(200)
+        .wait(RAF_THRESHOLD)
+        .assertEvent(ITEM_TO_OBSERVE, 'visible', 2)
+        .done();
+    }
   }
-});
+);

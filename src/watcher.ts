@@ -9,16 +9,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-import {
-  SpanielObserver
-} from './spaniel-observer';
+import { SpanielObserver } from './spaniel-observer';
 
-import {
-  SpanielObserverEntry,
-  DOMString,
-  DOMMargin,
-  SpanielTrackedElement
-} from './interfaces';
+import { SpanielObserverEntry, DOMString, DOMMargin, SpanielTrackedElement } from './interfaces';
 
 import W from './metal/window-proxy';
 

@@ -4,13 +4,13 @@ Copyright 2017 LinkedIn Corp. Licensed under the Apache License, Version 2.0 (th
 Unless required by applicable law or agreed to in writing, software  distributed under the License is distributed on an "AS IS" BASIS,  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-var express = require('express')
-var serveStatic = require('serve-static')
+var express = require('express');
+var serveStatic = require('serve-static');
 
-var app = express()
+var app = express();
 
-app.use('/', serveStatic(__dirname + '/../../app'))
-app.use('/exports', serveStatic(__dirname + '/../../../exports'))
+app.use('/', serveStatic(__dirname + '/../../app'));
+app.use('/exports', serveStatic(__dirname + '/../../../exports'));
 app.listen(3000, function() {
   console.log('Serving Spaniel Test App on localhost:3000');
 });
