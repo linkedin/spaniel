@@ -9,11 +9,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-import {
-  QueueInterface,
-  QueueElementInterface,
-  QueueDOMElementInterface
-} from './interfaces';
+import { QueueInterface, QueueElementInterface, QueueDOMElementInterface } from './interfaces';
 
 export abstract class BaseQueue implements QueueInterface {
   protected items: Array<any>;
@@ -21,7 +17,7 @@ export abstract class BaseQueue implements QueueInterface {
     this.items = [];
   }
 
-  abstract removePredicate(identifier: any, element: any): void;
+  abstract removePredicate(identifier: any, element: any): boolean;
 
   remove(identifier: string | Element | Function) {
     let len = this.items.length;

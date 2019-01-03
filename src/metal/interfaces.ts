@@ -23,7 +23,7 @@ export interface QueueDOMElementInterface {
 export interface QueueInterface {
   push: (element: QueueElementInterface) => void;
   isEmpty: () => Boolean;
-  remove: (id: string | Element| Function) => void;
+  remove: (id: string | Element | Function) => void;
   clear: () => void;
 }
 

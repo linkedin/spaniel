@@ -8,16 +8,9 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
-import {
-  Frame,
-  PredicatedScheduler,
-  FunctionQueue,
-  getGlobalScheduler
-} from './index';
+import { Frame, PredicatedScheduler, FunctionQueue, getGlobalScheduler } from './index';
 
-import {
-  FrameInterface
-} from './interfaces';
+import { FrameInterface } from './interfaces';
 
 import w from './window-proxy';
 
@@ -71,22 +64,25 @@ interface EventStore {
 let eventStore: EventStore = null;
 
 function getEventStore(): EventStore {
-  return eventStore || (eventStore = {
-    scroll: new RAFEventRecord(function(frame: Frame) {
-      let { scrollTop, scrollLeft } = this.state;
-      this.state = frame;
-      return scrollTop !== frame.scrollTop || scrollLeft !== frame.scrollLeft;
-    }),
-    resize: new RAFEventRecord(function(frame: Frame) {
-      let { width, height } = this.state;
-      this.state = frame;
-      return height !== frame.height || width !== frame.width;
-    }),
-    destroy: new GenericEventRecord(),
-    beforeunload: new GenericEventRecord(),
-    hide: new GenericEventRecord(),
-    show: new GenericEventRecord()
-  });
+  return (
+    eventStore ||
+    (eventStore = {
+      scroll: new RAFEventRecord(function(frame: Frame) {
+        let { scrollTop, scrollLeft } = this.state;
+        this.state = frame;
+        return scrollTop !== frame.scrollTop || scrollLeft !== frame.scrollLeft;
+      }),
+      resize: new RAFEventRecord(function(frame: Frame) {
+        let { width, height } = this.state;
+        this.state = frame;
+        return height !== frame.height || width !== frame.width;
+      }),
+      destroy: new GenericEventRecord(),
+      beforeunload: new GenericEventRecord(),
+      hide: new GenericEventRecord(),
+      show: new GenericEventRecord()
+    })
+  );
 }
 
 if (w.hasDOM) {
