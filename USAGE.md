@@ -100,7 +100,7 @@ watcher.destroy();
 
 There are four different event types passed to the watcher callback:
 
-* `exposed` - When at least one pixel of the DOM element is in the viewport
+* `exposed` - When any part of the DOM element is in the viewport, even if the element has zero height or width.
 * `visible` - When the configured percentage of the DOM element is in the viewport, or when the DOM element takes up the configured percentage of the screen.
 * `impressed` - When the DOM element has been visible for the configured amount of time.
 * `impression-complete` - When an impressed element is no longer impressed. This event includes the total duration of time the element was visible.
