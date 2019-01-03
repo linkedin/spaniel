@@ -9,15 +9,11 @@ import constants from '../constants';
 import Nightmare from 'nightmare';
 import rsvp from 'rsvp';
 
-const { 
-  VIEWPORT,
-  NIGHTMARE
-} = constants;
+const { VIEWPORT, NIGHTMARE } = constants;
 
 export default class SpanielContext {
   constructor() {
-    this._nightmare = Nightmare(NIGHTMARE.OPTIONS),
-    this._nightmare.viewport(VIEWPORT.WIDTH, VIEWPORT.HEIGHT);
+    (this._nightmare = Nightmare(NIGHTMARE.OPTIONS)), this._nightmare.viewport(VIEWPORT.WIDTH, VIEWPORT.HEIGHT);
     this._events = [];
     this._results = [];
     this._assertions = [];
@@ -51,7 +47,7 @@ export default class SpanielContext {
     this._execution = this._execution.wait(NIGHTMARE.TIMEOUT).evaluate(function(id) {
       var target = document.querySelector('.tracked-item[data-id="' + id + '"]');
       window.watcher.unwatch(target);
-    }, id)
+    }, id);
     return this;
   }
 
@@ -61,9 +57,13 @@ export default class SpanielContext {
       message = null;
     }
     expectedCount = typeof expectedCount === 'number' ? expectedCount : 1;
-    return this.assert(function(event) {
-      return event.id === id && event.e === type;
-    }, message, expectedCount);
+    return this.assert(
+      function(event) {
+        return event.id === id && event.e === type;
+      },
+      message,
+      expectedCount
+    );
   }
 
   assertNever(id, type, message) {
@@ -116,15 +116,21 @@ export default class SpanielContext {
       throw 'No assertions were made';
     }
 
-    return this._execution.wait(NIGHTMARE.TIMEOUT).evaluate(function() {
-      return ASSERTIONS;
-    }).end().then(function(assertionEvents) {
-      let events = [];
-      for (let i = 0; i < this._assertions.length; i++) {
-        events = events.concat(assertionEvents[i]);
-        let a = this._assertions[i];
-        this._assert(events, a.predicate, a.message, a.expectedCount);
-      }
-    }.bind(this));
+    return this._execution
+      .wait(NIGHTMARE.TIMEOUT)
+      .evaluate(function() {
+        return ASSERTIONS;
+      })
+      .end()
+      .then(
+        function(assertionEvents) {
+          let events = [];
+          for (let i = 0; i < this._assertions.length; i++) {
+            events = events.concat(assertionEvents[i]);
+            let a = this._assertions[i];
+            this._assert(events, a.predicate, a.message, a.expectedCount);
+          }
+        }.bind(this)
+      );
   }
 }

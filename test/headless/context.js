@@ -9,22 +9,21 @@ import constants from '../constants';
 import Nightmare from 'nightmare';
 import rsvp from 'rsvp';
 
-const { 
-  VIEWPORT,
-  NIGHTMARE,
-  MAC_WINDOW_BAR_HEIGHT
-} = constants;
+const { VIEWPORT, NIGHTMARE, MAC_WINDOW_BAR_HEIGHT } = constants;
 
 export default class Context {
   constructor() {
-    this._nightmare = Nightmare(NIGHTMARE.OPTIONS),
-    this._nightmare.viewport(VIEWPORT.WIDTH, VIEWPORT.HEIGHT + MAC_WINDOW_BAR_HEIGHT);
+    (this._nightmare = Nightmare(NIGHTMARE.OPTIONS)),
+      this._nightmare.viewport(VIEWPORT.WIDTH, VIEWPORT.HEIGHT + MAC_WINDOW_BAR_HEIGHT);
     this._events = [];
     this._results = [];
     this._assertions = [];
-    this._execution = this._root = this._nightmare.goto('http://localhost:3000/').wait(NIGHTMARE.TIMEOUT).evaluate(function() {
-      window.STATE = {};
-    });
+    this._execution = this._root = this._nightmare
+      .goto('http://localhost:3000/')
+      .wait(NIGHTMARE.TIMEOUT)
+      .evaluate(function() {
+        window.STATE = {};
+      });
   }
   close() {
     return this._root.end();

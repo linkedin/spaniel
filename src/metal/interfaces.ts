@@ -24,7 +24,7 @@ export interface QueueDOMElementInterface {
 export interface QueueInterface {
   push: (element: QueueElementInterface) => void;
   isEmpty: () => Boolean;
-  remove: (id: string | Element| Function) => void;
+  remove: (id: string | Element | Function) => void;
   clear: () => void;
 }
 
@@ -43,7 +43,11 @@ export interface SchedulerInterface extends BaseSchedulerInterface {
 }
 
 export interface ElementSchedulerInterface extends BaseSchedulerInterface {
-  watch: (el: Element, callback: (frame: FrameInterface, id: string, clientRect: ClientRect) => void, id?: string) => string;
+  watch: (
+    el: Element,
+    callback: (frame: FrameInterface, id: string, clientRect: ClientRect) => void,
+    id?: string
+  ) => string;
 }
 
 export interface FrameInterface {

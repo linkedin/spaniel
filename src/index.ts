@@ -9,43 +9,19 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-import {
-  SpanielIntersectionObserver,
-  generateEntry
-} from './intersection-observer';
+import { SpanielIntersectionObserver, generateEntry } from './intersection-observer';
 
-import {
-  entrySatisfiesRatio
-} from './utils';
+import { entrySatisfiesRatio } from './utils';
 
-import {
-  SpanielTrackedElement,
-  SpanielObserverEntry,
-  DOMString,
-  DOMMargin
-} from './interfaces';
+import { SpanielTrackedElement, SpanielObserverEntry, DOMString, DOMMargin } from './interfaces';
 
 export { Watcher, WatcherConfig } from './watcher';
 
-import {
-  SpanielObserver
-} from './spaniel-observer';
+import { SpanielObserver } from './spaniel-observer';
 
-import {
-  setGlobalEngine,
-  getGlobalEngine
-} from './metal/engine';
+import { setGlobalEngine, getGlobalEngine } from './metal/engine';
 
-import {
-  Scheduler,
-  getGlobalScheduler,
-  on,
-  off,
-  scheduleWork,
-  scheduleRead,
-  Frame
-} from './metal/index';
-
+import { Scheduler, getGlobalScheduler, on, off, scheduleWork, scheduleRead, Frame } from './metal/index';
 
 import w from './metal/window-proxy';
 
@@ -69,10 +45,14 @@ export function queryElement(el: Element, callback: (clientRect: ClientRect, fra
   getGlobalScheduler().queryElement(el, callback);
 }
 
-export function elementSatisfiesRatio(el: Element, ratio: number = 0, callback: (result: Boolean) => void, rootMargin: DOMMargin = { top: 0, bottom: 0, left: 0, right: 0}) {
+export function elementSatisfiesRatio(
+  el: Element,
+  ratio: number = 0,
+  callback: (result: Boolean) => void,
+  rootMargin: DOMMargin = { top: 0, bottom: 0, left: 0, right: 0 }
+) {
   queryElement(el, (clientRect: ClientRect, frame: Frame) => {
     let entry = generateEntry(frame, clientRect, el, rootMargin);
     callback(entrySatisfiesRatio(entry, ratio));
   });
 }
-

@@ -9,13 +9,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-import {
-  entrySatisfiesRatio
-} from './utils';
+import { entrySatisfiesRatio } from './utils';
 
-import {
-  SpanielIntersectionObserver
-} from './intersection-observer';
+import { SpanielIntersectionObserver } from './intersection-observer';
 
 import {
   IntersectionObserverInit,
@@ -32,12 +28,7 @@ import {
 
 import w from './metal/window-proxy';
 
-import {
-  generateToken,
-  on,
-  off,
-  scheduleWork
-} from './metal/index';
+import { generateToken, on, off, scheduleWork } from './metal/index';
 
 let emptyRect = { x: 0, y: 0, width: 0, height: 0 };
 
@@ -49,7 +40,7 @@ export class SpanielObserver implements SpanielObserverInterface {
   callback: (entries: SpanielObserverEntry[]) => void;
   observer: SpanielIntersectionObserver;
   thresholds: SpanielThreshold[];
-  recordStore: { [key: string]: SpanielRecord; };
+  recordStore: { [key: string]: SpanielRecord };
   queuedEntries: SpanielObserverEntry[];
   private paused: boolean;
   private onWindowClosed: () => void;
@@ -62,8 +53,9 @@ export class SpanielObserver implements SpanielObserverInterface {
     this.callback = callback;
     let { root, rootMargin, threshold, ALLOW_CACHED_SCHEDULER } = options;
     rootMargin = rootMargin || '0px';
-    let convertedRootMargin: DOMString = typeof rootMargin !== 'string' ? DOMMarginToRootMargin(rootMargin) : rootMargin;
-    this.thresholds = threshold.sort((t: SpanielThreshold) => t.ratio );
+    let convertedRootMargin: DOMString =
+      typeof rootMargin !== 'string' ? DOMMarginToRootMargin(rootMargin) : rootMargin;
+    this.thresholds = threshold.sort((t: SpanielThreshold) => t.ratio);
 
     let o: IntersectionObserverInit = {
       root,
@@ -71,7 +63,10 @@ export class SpanielObserver implements SpanielObserverInterface {
       threshold: this.thresholds.map((t: SpanielThreshold) => t.ratio),
       ALLOW_CACHED_SCHEDULER
     };
-    this.observer = new SpanielIntersectionObserver((records: IntersectionObserverEntry[]) => this.internalCallback(records), o);
+    this.observer = new SpanielIntersectionObserver(
+      (records: IntersectionObserverEntry[]) => this.internalCallback(records),
+      o
+    );
 
     this.onTabHidden = this._onTabHidden.bind(this);
     this.onWindowClosed = this._onWindowClosed.bind(this);
@@ -106,14 +101,7 @@ export class SpanielObserver implements SpanielObserverInterface {
     for (let i = 0; i < ids.length; i++) {
       let entry = this.recordStore[ids[i]].lastSeenEntry;
       if (entry) {
-        let {
-          intersectionRatio,
-          boundingClientRect,
-          rootBounds,
-          intersectionRect,
-          isIntersecting,
-          target
-        } = entry;
+        let { intersectionRatio, boundingClientRect, rootBounds, intersectionRect, isIntersecting, target } = entry;
         this.handleObserverEntry({
           intersectionRatio,
           boundingClientRect,
@@ -136,15 +124,7 @@ export class SpanielObserver implements SpanielObserverInterface {
     }
   }
   private generateSpanielEntry(entry: IntersectionObserverEntry, state: SpanielThresholdState): SpanielObserverEntry {
-    let {
-      intersectionRatio,
-      time,
-      rootBounds,
-      boundingClientRect,
-      intersectionRect,
-      isIntersecting,
-      target
-    } = entry;
+    let { intersectionRatio, time, rootBounds, boundingClientRect, intersectionRect, isIntersecting, target } = entry;
     let record = this.recordStore[(<SpanielTrackedElement>target).__spanielId];
 
     return {
@@ -163,19 +143,22 @@ export class SpanielObserver implements SpanielObserverInterface {
   }
   private handleRecordExiting(record: SpanielRecord, time: number = Date.now()) {
     record.thresholdStates.forEach((state: SpanielThresholdState) => {
-      this.handleThresholdExiting({
-        intersectionRatio: -1,
-        isIntersecting: false,
-        time,
-        payload: record.payload,
-        label: state.threshold.label,
-        entering: false,
-        rootBounds: emptyRect,
-        boundingClientRect: emptyRect,
-        intersectionRect: emptyRect,
-        duration: time - state.lastVisible,
-        target: record.target
-      }, state);
+      this.handleThresholdExiting(
+        {
+          intersectionRatio: -1,
+          isIntersecting: false,
+          time,
+          payload: record.payload,
+          label: state.threshold.label,
+          entering: false,
+          rootBounds: emptyRect,
+          boundingClientRect: emptyRect,
+          intersectionRect: emptyRect,
+          duration: time - state.lastVisible,
+          target: record.target
+        },
+        state
+      );
       state.lastSatisfied = false;
       state.visible = false;
       state.lastEntry = null;
@@ -214,11 +197,13 @@ export class SpanielObserver implements SpanielObserverInterface {
             spanielEntry.entering = true;
             if (hasTimeThreshold) {
               state.lastVisible = time;
-              const timerId: number = Number(setTimeout(() => {
-                state.visible = true;
-                spanielEntry.duration = Date.now() - state.lastVisible;
-                this.callback([spanielEntry]);
-              }, state.threshold.time));
+              const timerId: number = Number(
+                setTimeout(() => {
+                  state.visible = true;
+                  spanielEntry.duration = Date.now() - state.lastVisible;
+                  this.callback([spanielEntry]);
+                }, state.threshold.time)
+              );
               state.timeoutId = timerId;
             } else {
               state.visible = true;
@@ -266,7 +251,7 @@ export class SpanielObserver implements SpanielObserverInterface {
   }
   observe(target: Element, payload: any = null) {
     let trackedTarget = target as SpanielTrackedElement;
-    let id = trackedTarget.__spanielId = trackedTarget.__spanielId || generateToken();
+    let id = (trackedTarget.__spanielId = trackedTarget.__spanielId || generateToken());
 
     this.recordStore[id] = {
       target: trackedTarget,
