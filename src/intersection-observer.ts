@@ -9,7 +9,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-import { entrySatisfiesRatio } from './utils';
+import { calculateIsIntersecting } from './utils';
 
 import { Frame, ElementScheduler, generateToken } from './metal/index';
 
@@ -63,7 +63,7 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
   public thresholds: number[];
   private records: { [index: string]: EntryEvent };
 
-  observe(target: Element) {
+  observe(target: HTMLElement) {
     let trackedTarget = target as SpanielTrackedElement;
 
     let id = (trackedTarget.__spanielId = trackedTarget.__spanielId || generateToken());
@@ -77,7 +77,7 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
     );
     return id;
   }
-  private onTick(frame: Frame, id: string, bcr: DOMRectReadOnly, el: Element) {
+  private onTick(frame: Frame, id: string, bcr: DOMRectReadOnly, el: SpanielTrackedElement) {
     let { numSatisfiedThresholds, entry } = this.generateEntryEvent(frame, bcr, el);
     let record: EntryEvent =
       this.records[id] ||
@@ -86,8 +86,12 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
         numSatisfiedThresholds: 0
       });
 
-    if (numSatisfiedThresholds !== record.numSatisfiedThresholds) {
+    if (
+      numSatisfiedThresholds !== record.numSatisfiedThresholds ||
+      entry.isIntersecting !== record.entry.isIntersecting
+    ) {
       record.numSatisfiedThresholds = numSatisfiedThresholds;
+      record.entry = entry;
       this.scheduler.scheduleWork(() => {
         this.callback([entry]);
       });
@@ -104,13 +108,13 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
   takeRecords(): IntersectionObserverEntry[] {
     return [];
   }
-  private generateEntryEvent(frame: Frame, bcr: DOMRectReadOnly, el: Element): EntryEvent {
+  private generateEntryEvent(frame: Frame, bcr: DOMRectReadOnly, el: HTMLElement): EntryEvent {
     let count: number = 0;
     let entry = generateEntry(frame, bcr, el, this.rootMarginObj);
 
     for (let i = 0; i < this.thresholds.length; i++) {
       let threshold = this.thresholds[i];
-      if (entrySatisfiesRatio(entry, threshold)) {
+      if (entry.intersectionRatio >= threshold) {
         count++;
       }
     }
@@ -149,7 +153,7 @@ function addRatio(entryInit: SpanielIntersectionObserverEntryInit): Intersection
     intersectionRect,
     target,
     intersectionRatio,
-    isIntersecting: null
+    isIntersecting: calculateIsIntersecting({ intersectionRect })
   };
 }
 
@@ -179,12 +183,36 @@ export class IntersectionObserverEntry implements IntersectionObserverEntryInit 
 };
 */
 
+function emptyRect(): ClientRect | DOMRect {
+  return {
+    bottom: 0,
+    height: 0,
+    left: 0,
+    right: 0,
+    top: 0,
+    width: 0,
+    x: 0,
+    y: 0
+  };
+}
+
 export function generateEntry(
   frame: Frame,
   bcr: DOMRectReadOnly,
-  el: Element,
+  el: HTMLElement,
   rootMargin: DOMMargin
 ): IntersectionObserverEntry {
+  if (el.style.display === 'none') {
+    return {
+      boundingClientRect: emptyRect(),
+      intersectionRatio: 0,
+      intersectionRect: emptyRect(),
+      isIntersecting: false,
+      rootBounds: emptyRect(),
+      target: el,
+      time: frame.timestamp
+    };
+  }
   let { bottom, right } = bcr;
   let rootBounds: ClientRect = {
     left: frame.x - rootMargin.left,

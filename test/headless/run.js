@@ -16,6 +16,7 @@ server.stdout.on('data', data => {
       '--require',
       '@babel/register',
       'test/headless/specs/**/*.js',
+      'test/headless/specs/*.js',
       '--exit',
       '--timeout',
       '5000'

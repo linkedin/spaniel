@@ -5,273 +5,374 @@ Unless required by applicable law or agreed to in writing, software distribute
 */
 
 import { assert } from 'chai';
-import {
-  default as testModule,
-  TestClass
-} from './../test-module';
+import { default as testModule, TestClass } from './../test-module';
 
 import constants from './../../constants.js';
 
-const { time: { IMPRESSION_THRESHOLD } } = constants;
+const {
+  time: { IMPRESSION_THRESHOLD }
+} = constants;
 
-testModule('IntersectionObserver', class extends TestClass {
-  ['@test observing a visible element should fire callback immediately']() {
-    return this.context.evaluate(() => {
-      window.STATE.impressions = 0;
-      let target = document.querySelector('.tracked-item[data-id="1"]');
-      let observer = new spaniel.IntersectionObserver(function() {
-        createDiv('impression-div');
-        window.STATE.impressions++;
-      });
-      observer.observe(target);
-    })
-    .waitForImpression()
-    .getExecution()
-    .evaluate(function() {
-      return window.STATE.impressions;
-    }).then(function(result) {
-      assert.equal(result, 1, 'Callback fired once');
-    });
-  }
+testModule(
+  'IntersectionObserver',
+  class extends TestClass {
+    ['@test observing a visible element should fire callback immediately']() {
+      return this.context
+        .evaluate(() => {
+          window.STATE.impressions = 0;
+          let target = document.querySelector('.tracked-item[data-id="1"]');
+          let observer = new spaniel.IntersectionObserver(function(entries) {
+            createDiv('impression-div');
+            if (entries[0].isIntersecting) {
+              window.STATE.impressions++;
+            }
+          });
+          observer.observe(target);
+        })
+        .waitForImpression()
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE.impressions;
+        })
+        .then(function(result) {
+          assert.equal(result, 1, 'Callback fired once');
+        });
+    }
 
-  ['@test observing a visible element with a single threshold should fire callback immediately']() {
-    return this.context.evaluate(function() {
-      window.STATE.impressions = 0;
-      let target = document.querySelector('.tracked-item[data-id="1"]');
-      let observer = new spaniel.IntersectionObserver(function() {
-        createDiv('impression-div');
-        window.STATE.impressions++;
-      }, {
-        threshold: 0.9
-      });
-      observer.observe(target);
-    })
-    .waitForImpression()
-    .getExecution()
-    .evaluate(function() {
-      return window.STATE.impressions;
-    }).then(function(result) {
-      assert.equal(result, 1, 'Callback fired once');
-    });
-  }
+    ['@test observing a hidden element should fire an event with a ratio of 0']() {
+      return this.context
+        .evaluate(() => {
+          window.STATE.intersectionEvents = 0;
+          window.STATE.impressions = 0;
+          let target = (window.testTarget = document.querySelector('.tracked-item[data-id="1"]'));
+          target.style.display = 'none';
+          let observer = new spaniel.IntersectionObserver(function(entries) {
+            createDiv('impression-div');
+            window.STATE.intersectionEvents++;
 
-  ['@test observing a non visible element should not fire']() {
-    return this.context.evaluate(function() {
-      window.STATE.impressions = 0;
-      let target = document.querySelector('.tracked-item[data-id="5"]');
-      let observer = new spaniel.IntersectionObserver(function() {
-        window.STATE.impressions++;
-      }, {
-        threshold: 0.75
-      });
-      observer.observe(target);
-    })
-    .scrollTo(74)
-    .wait(50)
-    .getExecution()
-    .evaluate(function() {
-      return window.STATE.impressions;
-    }).then(function(result) {
-      assert.equal(result, 0, 'Callback fired zero times');
-    });
-  }
+            if (entries[0].intersectionRatio > 0) {
+              window.STATE.impressions++;
+            }
+          });
+          observer.observe(target);
+        })
+        .wait(IMPRESSION_THRESHOLD)
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE;
+        })
+        .then(function({ impressions, intersectionEvents }) {
+          assert.equal(impressions, 0, 'No visible events');
+          assert.equal(intersectionEvents, 1, 'Callback fired once');
+        });
+    }
 
-  ['@test observing a non visible element and then scrolling just past threshold should fire once']() {
-    return this.context.evaluate(function() {
-      window.STATE.impressions = 0;
-      let target = document.querySelector('.tracked-item[data-id="5"]');
-      let observer = new spaniel.IntersectionObserver(function() {
-        createDiv('impression-div');
-        window.STATE.impressions++;
-      }, {
-        threshold: 0.75
-      });
-      observer.observe(target);
-    })
-    .wait(IMPRESSION_THRESHOLD)
-    .scrollTo(80)
-    .waitForImpression()
-    .getExecution()
-    .evaluate(function() {
-      return window.STATE.impressions;
-    }).then(function(result) {
-      assert.equal(result, 1, 'Callback fired once');
-    });
-  }
+    ['@test hiding an observed element should fire an event with isIntersecting']() {
+      return this.context
+        .evaluate(() => {
+          window.STATE.intersectionEvents = 0;
+          window.STATE.impressions = 0;
+          let target = (window.testTarget = document.querySelector('.tracked-item[data-id="1"]'));
+          let observer = new spaniel.IntersectionObserver(function(entries) {
+            createDiv('impression-div');
+            window.STATE.intersectionEvents++;
 
-  ['@test observing a non visible element and then scrolling just past threshold and then back out should fire twice']() {
-    return this.context.evaluate(function() {
-      window.STATE.impressions = 0;
-      let target = document.querySelector('.tracked-item[data-id="5"]');
-      let observer = new spaniel.IntersectionObserver(function() {
-        window.STATE.impressions++;
-        createDiv('impression-div-' + window.STATE.impressions);
-      }, {
-        threshold: 0.75
-      });
-      observer.observe(target);
-    })
-    .wait(IMPRESSION_THRESHOLD)
-    .scrollTo(80)
-    .waitForImpression(1)
-    .scrollTo(70)
-    .waitForImpression(2)
-    .getExecution()
-    .evaluate(function() {
-      return window.STATE.impressions;
-    }).then(function(result) {
-      assert.equal(result, 2, 'Callback fired twice');
-    });
-  }
+            if (entries[0].isIntersecting) {
+              window.STATE.impressions++;
+            }
+          });
+          observer.observe(target);
+        })
+        .wait(IMPRESSION_THRESHOLD)
+        .evaluate(function() {
+          window.testTarget.style.display = 'none';
+        })
+        .wait(IMPRESSION_THRESHOLD)
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE;
+        })
+        .then(function({ impressions, intersectionEvents }) {
+          assert.equal(intersectionEvents, 2, 'Callback fired twice');
+          assert.equal(impressions, 1, 'One visible event');
+        });
+    }
 
-  ['@test setting rootMargin and then scrolling just past threshold and then back out should fire twice']() {
-    return this.context.evaluate(function() {
-      window.STATE.impressions = 0;
-      let target = document.querySelector('.tracked-item[data-id="5"]');
-      let observer = new spaniel.IntersectionObserver(function() {
-        window.STATE.impressions++;
-        createDiv('impression-div-' + window.STATE.impressions);
-      }, {
-        threshold: 0.75,
-        rootMargin: '-25px 0px'
-      });
-      observer.observe(target);
-    })
-    .wait(IMPRESSION_THRESHOLD)
-    .scrollTo(105)
-    .waitForImpression(1)
-    .scrollTo(95)
-    .waitForImpression(2)
-    .getExecution()
-    .evaluate(function() {
-      return window.STATE.impressions;
-    }).then(function(result) {
-      assert.equal(result, 2, 'Callback fired twice');
-    });
-  }
+    ['@test observing a visible element with a single threshold should fire callback immediately']() {
+      return this.context
+        .evaluate(function() {
+          window.STATE.impressions = 0;
+          let target = document.querySelector('.tracked-item[data-id="1"]');
+          let observer = new spaniel.IntersectionObserver(
+            function() {
+              createDiv('impression-div');
+              window.STATE.impressions++;
+            },
+            {
+              threshold: 0.9
+            }
+          );
+          observer.observe(target);
+        })
+        .waitForImpression()
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE.impressions;
+        })
+        .then(function(result) {
+          assert.equal(result, 1, 'Callback fired once');
+        });
+    }
 
-  ['@test unobserve should work with single element']() {
-    return this.context.evaluate(function() {
-      window.STATE.impressions = 0;
-      window.target = document.querySelector('.tracked-item[data-id="1"]');
-      window.observer = new spaniel.IntersectionObserver(function() {
-        window.STATE.impressions++;
-        createDiv('impression-div');
-      });
-      window.observer.observe(window.target);
-    })
-    .waitForImpression()
-    .evaluate(function() {
-      window.observer.unobserve(window.target);
-    })
-    .wait(50)
-    .scrollTo(500)
-    .wait(50)
-    .scrollTo(0)
-    .wait(50)
-    .getExecution()
-    .evaluate(function() {
-      return window.STATE.impressions;
-    }).then(function(result) {
-      assert.equal(result, 1, 'Callback fired only once');
-    });
-  }
+    ['@test observing a non visible element should not fire']() {
+      return this.context
+        .evaluate(function() {
+          window.STATE.impressions = 0;
+          let target = document.querySelector('.tracked-item[data-id="5"]');
+          let observer = new spaniel.IntersectionObserver(
+            function() {
+              window.STATE.impressions++;
+            },
+            {
+              threshold: 0.75
+            }
+          );
+          observer.observe(target);
+        })
+        .scrollTo(74)
+        .wait(50)
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE.impressions;
+        })
+        .then(function(result) {
+          assert.equal(result, 0, 'Callback fired zero times');
+        });
+    }
 
-  ['@test disconnect should work with multiple elements']() {
-    return this.context.evaluate(function() {
-      window.STATE.impressions = 0;
-      target1 = document.querySelector('.tracked-item[data-id="1"]');
-      target2 = document.querySelector('.tracked-item[data-id="2"]');
-      target3 = document.querySelector('.tracked-item[data-id="3"]');
-      window.observer = new spaniel.IntersectionObserver(function(event) {
-        window.STATE.impressions+= event.length;
-        createDiv('impression-div-' + window.STATE.impressions);
-      });
-      window.observer.observe(target1);
-      window.observer.observe(target2);
-      window.observer.observe(target3);
-    })
-    .waitForImpression(1)
-    .evaluate(function() {
-      window.observer.disconnect();
-    })
-    .wait(50)
-    .scrollTo(500)
-    .wait(50)
-    .scrollTo(0)
-    .wait(50)
-    .getExecution()
-    .evaluate(function() {
-      return window.STATE.impressions;
-    }).then(function(result) {
-      assert.equal(result, 3, 'Callback fired 3 times');
-    });
-  }
+    ['@test observing a non visible element and then scrolling just past threshold should fire once']() {
+      return this.context
+        .evaluate(function() {
+          window.STATE.impressions = 0;
+          let target = document.querySelector('.tracked-item[data-id="5"]');
+          let observer = new spaniel.IntersectionObserver(
+            function() {
+              createDiv('impression-div');
+              window.STATE.impressions++;
+            },
+            {
+              threshold: 0.75
+            }
+          );
+          observer.observe(target);
+        })
+        .wait(IMPRESSION_THRESHOLD)
+        .scrollTo(80)
+        .waitForImpression()
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE.impressions;
+        })
+        .then(function(result) {
+          assert.equal(result, 1, 'Callback fired once');
+        });
+    }
 
-  ['@test can restart observing after disconnect']() {
-    return this.context.evaluate(function() {
-      window.STATE.impressions = 0;
-      target1 = document.querySelector('.tracked-item[data-id="1"]');
-      target2 = document.querySelector('.tracked-item[data-id="2"]');
-      target3 = document.querySelector('.tracked-item[data-id="3"]');
-      window.observer = new spaniel.IntersectionObserver(function(event) {
-        window.STATE.impressions+= event.length;
-        createDiv('impression-div-' + window.STATE.impressions);
-      });
-      window.observer.observe(target1);
-      window.observer.observe(target2);
-      window.observer.observe(target3);
-    })
-    .waitForImpression(1)
-    .evaluate(function() {
-      window.observer.disconnect();
-    })
-    .wait(100)
-    .evaluate(function() {
-      window.observer.observe(document.querySelector('.tracked-item[data-id="1"]'));
-    })
-    .waitForImpression(4)
-    .scrollTo(500)
-    .wait(50)
-    .scrollTo(0)
-    .waitForImpression(6)
-    .getExecution()
-    .evaluate(function() {
-      return window.STATE.impressions;
-    }).then(function(result) {
-      assert.equal(result, 6, 'Callback fired 6 times');
-    });
-  }
+    ['@test observing a non visible element and then scrolling just past threshold and then back out should fire twice']() {
+      return this.context
+        .evaluate(function() {
+          window.STATE.impressions = 0;
+          let target = document.querySelector('.tracked-item[data-id="5"]');
+          let observer = new spaniel.IntersectionObserver(
+            function() {
+              window.STATE.impressions++;
+              createDiv('impression-div-' + window.STATE.impressions);
+            },
+            {
+              threshold: 0.75
+            }
+          );
+          observer.observe(target);
+        })
+        .wait(IMPRESSION_THRESHOLD)
+        .scrollTo(80)
+        .waitForImpression(1)
+        .scrollTo(70)
+        .waitForImpression(2)
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE.impressions;
+        })
+        .then(function(result) {
+          assert.equal(result, 2, 'Callback fired twice');
+        });
+    }
 
-  /* Root inlcusion test case */
-  ['@test observing a non visible element within a root and then scrolling should fire callbacks']() {
-    return this.context.evaluate(function() {
-      window.STATE.impressions = 0;
-      let root = document.getElementById('root');
-      let target = document.querySelector('.tracked-item-root[data-root-target-id="5"]');
-      let observer = new spaniel.IntersectionObserver(function() {
-        window.STATE.impressions++;
-        createDiv('impression-div-' + window.STATE.impressions);
-      }, {
-        root: root,
-        threshold: 0.6
-      });
-      observer.observe(target);
-    })
-    .wait(IMPRESSION_THRESHOLD)
-    .evaluate(function() {
-      root.scrollTop = 300;
-    })
-    .waitForImpression(1)
-    .evaluate(function() {
-      root.scrollTop = 180;
-    })
-    .waitForImpression(2)
-    .getExecution()
-    .evaluate(function() {
-      return window.STATE.impressions;
-      }).then(function(result) {
-        assert.equal(result, 2, 'Callback fired twice');
-      });
+    ['@test setting rootMargin and then scrolling just past threshold and then back out should fire twice']() {
+      return this.context
+        .evaluate(function() {
+          window.STATE.impressions = 0;
+          let target = document.querySelector('.tracked-item[data-id="5"]');
+          let observer = new spaniel.IntersectionObserver(
+            function() {
+              window.STATE.impressions++;
+              createDiv('impression-div-' + window.STATE.impressions);
+            },
+            {
+              threshold: 0.75,
+              rootMargin: '-25px 0px'
+            }
+          );
+          observer.observe(target);
+        })
+        .wait(IMPRESSION_THRESHOLD)
+        .scrollTo(105)
+        .waitForImpression(1)
+        .scrollTo(95)
+        .waitForImpression(2)
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE.impressions;
+        })
+        .then(function(result) {
+          assert.equal(result, 2, 'Callback fired twice');
+        });
+    }
+
+    ['@test unobserve should work with single element']() {
+      return this.context
+        .evaluate(function() {
+          window.STATE.impressions = 0;
+          window.target = document.querySelector('.tracked-item[data-id="1"]');
+          window.observer = new spaniel.IntersectionObserver(function() {
+            window.STATE.impressions++;
+            createDiv('impression-div');
+          });
+          window.observer.observe(window.target);
+        })
+        .waitForImpression()
+        .evaluate(function() {
+          window.observer.unobserve(window.target);
+        })
+        .wait(50)
+        .scrollTo(500)
+        .wait(50)
+        .scrollTo(0)
+        .wait(50)
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE.impressions;
+        })
+        .then(function(result) {
+          assert.equal(result, 1, 'Callback fired only once');
+        });
+    }
+
+    ['@test disconnect should work with multiple elements']() {
+      return this.context
+        .evaluate(function() {
+          window.STATE.impressions = 0;
+          target1 = document.querySelector('.tracked-item[data-id="1"]');
+          target2 = document.querySelector('.tracked-item[data-id="2"]');
+          target3 = document.querySelector('.tracked-item[data-id="3"]');
+          window.observer = new spaniel.IntersectionObserver(function(event) {
+            window.STATE.impressions += event.length;
+            createDiv('impression-div-' + window.STATE.impressions);
+          });
+          window.observer.observe(target1);
+          window.observer.observe(target2);
+          window.observer.observe(target3);
+        })
+        .waitForImpression(1)
+        .evaluate(function() {
+          window.observer.disconnect();
+        })
+        .wait(50)
+        .scrollTo(500)
+        .wait(50)
+        .scrollTo(0)
+        .wait(50)
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE.impressions;
+        })
+        .then(function(result) {
+          assert.equal(result, 3, 'Callback fired 3 times');
+        });
+    }
+
+    ['@test can restart observing after disconnect']() {
+      return this.context
+        .evaluate(function() {
+          window.STATE.impressions = 0;
+          target1 = document.querySelector('.tracked-item[data-id="1"]');
+          target2 = document.querySelector('.tracked-item[data-id="2"]');
+          target3 = document.querySelector('.tracked-item[data-id="3"]');
+          window.observer = new spaniel.IntersectionObserver(function(event) {
+            window.STATE.impressions += event.length;
+            createDiv('impression-div-' + window.STATE.impressions);
+          });
+          window.observer.observe(target1);
+          window.observer.observe(target2);
+          window.observer.observe(target3);
+        })
+        .waitForImpression(1)
+        .evaluate(function() {
+          window.observer.disconnect();
+        })
+        .wait(100)
+        .evaluate(function() {
+          window.observer.observe(document.querySelector('.tracked-item[data-id="1"]'));
+        })
+        .waitForImpression(4)
+        .scrollTo(500)
+        .wait(50)
+        .scrollTo(0)
+        .waitForImpression(6)
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE.impressions;
+        })
+        .then(function(result) {
+          assert.equal(result, 6, 'Callback fired 6 times');
+        });
+    }
+
+    /* Root inlcusion test case */
+    ['@test observing a non visible element within a root and then scrolling should fire callbacks']() {
+      return this.context
+        .evaluate(function() {
+          window.STATE.impressions = 0;
+          let root = document.getElementById('root');
+          let target = document.querySelector('.tracked-item-root[data-root-target-id="5"]');
+          let observer = new spaniel.IntersectionObserver(
+            function() {
+              window.STATE.impressions++;
+              createDiv('impression-div-' + window.STATE.impressions);
+            },
+            {
+              root: root,
+              threshold: 0.6
+            }
+          );
+          observer.observe(target);
+        })
+        .wait(IMPRESSION_THRESHOLD)
+        .evaluate(function() {
+          root.scrollTop = 300;
+        })
+        .waitForImpression(1)
+        .evaluate(function() {
+          root.scrollTop = 180;
+        })
+        .waitForImpression(2)
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE.impressions;
+        })
+        .then(function(result) {
+          assert.equal(result, 2, 'Callback fired twice');
+        });
+    }
   }
-});
+);
