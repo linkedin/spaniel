@@ -9,7 +9,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-export interface SpanielTrackedElement extends Element {
+export interface SpanielTrackedElement extends HTMLElement {
   __spanielId: string;
 }
 

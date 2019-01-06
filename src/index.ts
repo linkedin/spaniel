@@ -11,8 +11,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 import { SpanielIntersectionObserver, generateEntry } from './intersection-observer';
 
-import { entrySatisfiesRatio } from './utils';
-
 import { SpanielTrackedElement, DOMMargin, IntersectionObserverClass } from './interfaces';
 
 export { Watcher, WatcherConfig } from './watcher';
@@ -46,13 +44,13 @@ export function queryElement(el: Element, callback: (bcr: ClientRect, frame: Fra
 }
 
 export function elementSatisfiesRatio(
-  el: Element,
+  el: HTMLElement,
   ratio: number = 0,
   callback: (result: Boolean) => void,
   rootMargin: DOMMargin = { top: 0, bottom: 0, left: 0, right: 0 }
 ) {
   queryElement(el, (bcr: ClientRect, frame: Frame) => {
     let entry = generateEntry(frame, bcr, el, rootMargin);
-    callback(entrySatisfiesRatio(entry, ratio));
+    callback(entry.isIntersecting && entry.intersectionRatio >= ratio);
   });
 }
