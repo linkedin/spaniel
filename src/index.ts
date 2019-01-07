@@ -9,19 +9,15 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-import { SpanielIntersectionObserver, generateEntry } from './intersection-observer';
-
-import { SpanielTrackedElement, DOMMargin, IntersectionObserverClass } from './interfaces';
+import { SpanielIntersectionObserver } from './intersection-observer';
+import { SpanielTrackedElement, IntersectionObserverClass } from './interfaces';
+import { SpanielObserver } from './spaniel-observer';
+import { setGlobalEngine, getGlobalEngine } from './metal/engine';
+import { on, off, scheduleWork, scheduleRead } from './metal/index';
+import w from './metal/window-proxy';
 
 export { Watcher, WatcherConfig } from './watcher';
-
-import { SpanielObserver } from './spaniel-observer';
-
-import { setGlobalEngine, getGlobalEngine } from './metal/engine';
-
-import { getGlobalScheduler, on, off, scheduleWork, scheduleRead, Frame } from './metal/index';
-
-import w from './metal/window-proxy';
+export { queryElement, elementSatisfiesRatio } from './utils';
 
 const IntersectionObserver: IntersectionObserverClass = !!w.IntersectionObserver
   ? w.IntersectionObserver
@@ -38,19 +34,3 @@ export {
   setGlobalEngine,
   getGlobalEngine
 };
-
-export function queryElement(el: Element, callback: (bcr: ClientRect, frame: Frame) => void) {
-  getGlobalScheduler().queryElement(el, callback);
-}
-
-export function elementSatisfiesRatio(
-  el: HTMLElement,
-  ratio: number = 0,
-  callback: (result: Boolean) => void,
-  rootMargin: DOMMargin = { top: 0, bottom: 0, left: 0, right: 0 }
-) {
-  queryElement(el, (bcr: ClientRect, frame: Frame) => {
-    let entry = generateEntry(frame, bcr, el, rootMargin);
-    callback(entry.isIntersecting && entry.intersectionRatio >= ratio);
-  });
-}
