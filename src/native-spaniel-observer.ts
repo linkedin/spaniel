@@ -9,7 +9,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-import { entrySatisfiesRatio } from './utils';
+import { calculateIsIntersecting } from './utils';
 
 import {
   IntersectionObserverInit,
@@ -187,9 +187,10 @@ export class SpanielObserver implements SpanielObserverInterface {
         let hasTimeThreshold = !!state.threshold.time;
         let spanielEntry: SpanielObserverEntry = this.generateSpanielEntry(entry, state);
 
-        const ratioSatisfied = entrySatisfiesRatio(entry, state.threshold.ratio);
+        const ratioSatisfied = entry.intersectionRatio >= state.threshold.ratio;
+        const isIntersecting = calculateIsIntersecting(entry);
 
-        if (ratioSatisfied && !state.lastSatisfied) {
+        if (ratioSatisfied && !state.lastSatisfied && isIntersecting) {
           spanielEntry.entering = true;
           if (hasTimeThreshold) {
             state.lastVisible = time;
