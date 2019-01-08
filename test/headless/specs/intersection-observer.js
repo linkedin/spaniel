@@ -7,6 +7,12 @@ Unless required by applicable law or agreed to in writing, software distribute
 import { assert } from 'chai';
 import { default as testModule, TestClass } from './../test-module';
 
+import constants from './../../constants.js';
+
+const {
+  time: { IMPRESSION_THRESHOLD }
+} = constants;
+
 testModule(
   'IntersectionObserver',
   class extends TestClass {
@@ -52,6 +58,63 @@ testModule(
         })
         .then(function(result) {
           assert.equal(result, 1, 'Callback fired once');
+        });
+    }
+
+    ['@test observing a hidden element should fire an event with a ratio of 0']() {
+      return this.context
+        .evaluate(() => {
+          window.STATE.intersectionEvents = 0;
+          window.STATE.impressions = 0;
+          let target = (window.testTarget = document.querySelector('.tracked-item[data-id="1"]'));
+          target.style.display = 'none';
+          let observer = new spaniel.IntersectionObserver(function(entries) {
+            window.STATE.intersectionEvents++;
+
+            if (entries[0].intersectionRatio > 0) {
+              window.STATE.impressions++;
+            }
+          });
+          observer.observe(target);
+        })
+        .wait(IMPRESSION_THRESHOLD)
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE;
+        })
+        .then(function({ impressions, intersectionEvents }) {
+          assert.equal(impressions, 0, 'No visible events');
+          assert.equal(intersectionEvents, 1, 'Callback fired once');
+        });
+    }
+
+    ['@test hiding an observed element should fire an event without isIntersecting']() {
+      return this.context
+        .evaluate(() => {
+          window.STATE.intersectionEvents = 0;
+          window.STATE.impressions = 0;
+          let target = (window.testTarget = document.querySelector('.tracked-item[data-id="1"]'));
+          let observer = new spaniel.IntersectionObserver(function(entries) {
+            window.STATE.intersectionEvents++;
+
+            if (entries[0].isIntersecting) {
+              window.STATE.impressions++;
+            }
+          });
+          observer.observe(target);
+        })
+        .wait(IMPRESSION_THRESHOLD)
+        .evaluate(function() {
+          window.testTarget.style.display = 'none';
+        })
+        .wait(IMPRESSION_THRESHOLD)
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE;
+        })
+        .then(function({ impressions, intersectionEvents }) {
+          assert.equal(intersectionEvents, 2, 'Callback fired twice');
+          assert.equal(impressions, 1, 'One visible event');
         });
     }
 
