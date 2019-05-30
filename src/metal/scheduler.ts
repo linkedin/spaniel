@@ -206,6 +206,9 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
 
   constructor(customEngine?: EngineInterface, root?: Element | Window, ALLOW_CACHED_SCHEDULER: boolean = true) {
     super(customEngine, root);
+    if (ALLOW_CACHED_SCHEDULER === void 0) {
+      ALLOW_CACHED_SCHEDULER = true;
+    }
     this.queue = new DOMQueue();
     this.ALLOW_CACHED_SCHEDULER = ALLOW_CACHED_SCHEDULER;
   }
