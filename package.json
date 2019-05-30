@@ -39,9 +39,8 @@
     "name": "Asa Kusuma"
   },
   "homepage": "https://github.com/linkedin/spaniel",
-  "jsnext:main": "exports/es6/index.js",
-  "module": "exports/es6/index.js",
-  "typings": "exports/es6/index.d.ts",
+  "module": "exports/index.js",
+  "typings": "exports/index.d.ts",
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.2",
