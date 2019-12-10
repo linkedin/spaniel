@@ -233,7 +233,7 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
 
   watch(
     el: Element,
-    callback: (frame: FrameInterface, id: string, clientRect?: ClientRect | null) => void,
+    callback: (frame: FrameInterface, id: string, clientRect?: ClientRect) => void,
     id?: string
   ): string {
     this.startTicking();
