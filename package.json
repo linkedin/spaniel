@@ -52,7 +52,7 @@
     "broccoli-merge-trees": "^3.0.1",
     "broccoli-rollup": "^2.1.1",
     "broccoli-string-replace": "^0.1.1",
-    "broccoli-typescript-compiler": "^4.1.0",
+    "broccoli-typescript-compiler": "^4.2.0",
     "broccoli-uglify-sourcemap": "^1.4.2",
     "chai": "^3.5.0",
     "chokidar": "^1.6.0",
@@ -71,7 +71,7 @@
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.17.0",
     "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "~3.2.2"
+    "typescript": "~3.5.3"
   },
   "prettier": {
     "printWidth": 120,
