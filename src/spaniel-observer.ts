@@ -46,12 +46,16 @@ export class SpanielObserver implements SpanielObserverInterface {
   private onWindowClosed: () => void;
   private onTabHidden: () => void;
   private onTabShown: () => void;
-  constructor(callback: (entries: SpanielObserverEntry[]) => void, options: SpanielObserverInit) {
+  constructor(callback: (entries: SpanielObserverEntry[]) => void, options?: SpanielObserverInit) {
     this.paused = false;
     this.queuedEntries = [];
     this.recordStore = {};
     this.callback = callback;
-    let { root, rootMargin, threshold, ALLOW_CACHED_SCHEDULER } = options;
+    let { root, rootMargin, threshold, ALLOW_CACHED_SCHEDULER } =
+      options ||
+      ({
+        threshold: []
+      } as SpanielObserverInit);
     rootMargin = rootMargin || '0px';
     let convertedRootMargin: DOMString =
       typeof rootMargin !== 'string' ? DOMMarginToRootMargin(rootMargin) : rootMargin;
