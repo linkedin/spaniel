@@ -9,7 +9,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-import w from './window-proxy';
 import { default as QueueElement, QueueDOMElement } from './element';
 import { default as Queue, DOMQueue, FunctionQueue } from './queue';
 import { QueueElementInterface, QueueDOMElementInterface, FrameInterface, QueueInterface } from './interfaces';
@@ -23,13 +22,6 @@ import {
 } from './scheduler';
 import { Engine } from './engine';
 import { on, off, scheduleRead, scheduleWork } from './events';
-
-interface AbsoluteRect {
-  top: number;
-  bottom: number;
-  width: number;
-  height: number;
-}
 
 interface Offset {
   top: number;

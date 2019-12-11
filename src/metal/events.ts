@@ -8,15 +8,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
-import {
-  generateToken,
-  Frame,
-  Scheduler,
-  PredicatedScheduler,
-  Queue,
-  FunctionQueue,
-  getGlobalScheduler
-} from './index';
+import { Frame, PredicatedScheduler, FunctionQueue, getGlobalScheduler } from './index';
 
 import { FrameInterface } from './interfaces';
 
@@ -49,7 +41,7 @@ class RAFEventRecord {
   constructor(predicate: (frame: Frame) => Boolean) {
     this.scheduler = new PredicatedScheduler(predicate.bind(this));
   }
-  trigger(value?: any) {}
+  trigger() {}
   listen(callback: (frame: Frame) => void) {
     this.state = Frame.generate();
     this.scheduler.watch(callback);
@@ -69,18 +61,18 @@ interface EventStore {
   [eventName: string]: EventRecordInterface;
 }
 
-let eventStore: EventStore = null;
+let eventStore: EventStore | null = null;
 
 function getEventStore(): EventStore {
   return (
     eventStore ||
     (eventStore = {
-      scroll: new RAFEventRecord(function(frame: Frame) {
+      scroll: new RAFEventRecord(function(this: RAFEventRecord, frame: Frame) {
         let { scrollTop, scrollLeft } = this.state;
         this.state = frame;
         return scrollTop !== frame.scrollTop || scrollLeft !== frame.scrollLeft;
       }),
-      resize: new RAFEventRecord(function(frame: Frame) {
+      resize: new RAFEventRecord(function(this: RAFEventRecord, frame: Frame) {
         let { width, height } = this.state;
         this.state = frame;
         return height !== frame.height || width !== frame.width;
@@ -94,7 +86,7 @@ function getEventStore(): EventStore {
 }
 
 if (w.hasDOM) {
-  window.addEventListener('beforeunload', function(e: any) {
+  window.addEventListener('beforeunload', function() {
     // First fire internal event to fire any observer callbacks
     trigger('beforeunload');
 
