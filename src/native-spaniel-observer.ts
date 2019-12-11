@@ -45,13 +45,17 @@ export class SpanielObserver implements SpanielObserverInterface {
   constructor(
     ObserverClass: IntersectionObserverClass,
     callback: (entries: SpanielObserverEntry[]) => void,
-    options: SpanielObserverInit
+    options?: SpanielObserverInit
   ) {
     this.paused = false;
     this.queuedEntries = [];
     this.recordStore = {};
     this.callback = callback;
-    let { root, rootMargin, threshold } = options;
+    let { root, rootMargin, threshold } =
+      options ||
+      ({
+        threshold: []
+      } as SpanielObserverInit);
     rootMargin = rootMargin || '0px';
     let convertedRootMargin: DOMString =
       typeof rootMargin !== 'string' ? DOMMarginToRootMargin(rootMargin) : rootMargin;
