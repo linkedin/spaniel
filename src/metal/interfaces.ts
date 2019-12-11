@@ -45,7 +45,7 @@ export interface SchedulerInterface extends BaseSchedulerInterface {
 export interface ElementSchedulerInterface extends BaseSchedulerInterface {
   watch: (
     el: Element,
-    callback: (frame: FrameInterface, id: string, clientRect?: ClientRect) => void,
+    callback: (frame: FrameInterface, id: string, clientRect: ClientRect) => void,
     id?: string
   ) => string;
 }

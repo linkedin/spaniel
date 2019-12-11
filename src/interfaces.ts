@@ -22,7 +22,7 @@ export interface SpanielThreshold {
 export interface SpanielObserverInit {
   root?: SpanielTrackedElement;
   rootMargin?: DOMString | DOMMargin; // default: 0px
-  threshold?: SpanielThreshold[]; // default: 0
+  threshold: SpanielThreshold[]; // default: 0
   ALLOW_CACHED_SCHEDULER?: boolean;
 }
 
@@ -30,12 +30,12 @@ export interface SpanielRecord {
   target: SpanielTrackedElement;
   payload: any;
   thresholdStates: SpanielThresholdState[];
-  lastSeenEntry: IntersectionObserverEntry;
+  lastSeenEntry: IntersectionObserverEntry | null;
 }
 
 export interface SpanielThresholdState {
   lastSatisfied: Boolean;
-  lastEntry: IntersectionObserverEntry;
+  lastEntry: IntersectionObserverEntry | null;
   threshold: SpanielThreshold;
   lastVisible: number;
   visible: boolean;

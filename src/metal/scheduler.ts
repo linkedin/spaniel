@@ -15,8 +15,7 @@ import {
   ElementSchedulerInterface,
   FrameInterface,
   QueueInterface,
-  MetaInterface,
-  SpanielClientRectInterface
+  MetaInterface
 } from './interfaces';
 import W from './window-proxy';
 
@@ -111,14 +110,14 @@ export abstract class BaseScheduler {
   protected toRemove: Array<string | Element | Function> = [];
   protected id?: string;
 
-  constructor(customEngine?: EngineInterface, root: Element | Window = window) {
+  constructor(customEngine?: EngineInterface, root?: Element | Window | null) {
     if (customEngine) {
       this.engine = customEngine;
     } else {
       this.engine = getGlobalEngine();
     }
 
-    this.root = root;
+    this.root = root || window;
   }
   protected abstract applyQueue(frame: Frame): void;
 
@@ -143,8 +142,8 @@ export abstract class BaseScheduler {
     this.engine.scheduleRead(callback);
   }
   queryElement(el: Element, callback: (clientRect: ClientRect, frame: Frame) => void) {
-    let clientRect: ClientRect = null;
-    let frame: Frame = null;
+    let clientRect: ClientRect;
+    let frame: Frame;
     this.engine.scheduleRead(() => {
       clientRect = getBoundingClientRect(el);
       frame = Frame.generate(this.root);
@@ -189,7 +188,7 @@ export class Scheduler extends BaseScheduler implements SchedulerInterface {
 export class PredicatedScheduler extends Scheduler implements SchedulerInterface {
   predicate: (frame: Frame) => Boolean;
   constructor(predicate: (frame: Frame) => Boolean) {
-    super(null, window);
+    super(undefined, window);
     this.predicate = predicate;
   }
   applyQueue(frame: Frame) {
@@ -204,7 +203,7 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
   protected lastVersion: number = W.version;
   protected ALLOW_CACHED_SCHEDULER: boolean;
 
-  constructor(customEngine?: EngineInterface, root?: Element | Window, ALLOW_CACHED_SCHEDULER: boolean = true) {
+  constructor(customEngine?: EngineInterface, root?: Element | Window | null, ALLOW_CACHED_SCHEDULER: boolean = true) {
     super(customEngine, root);
     if (ALLOW_CACHED_SCHEDULER === void 0) {
       ALLOW_CACHED_SCHEDULER = true;
@@ -233,7 +232,7 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
 
   watch(
     el: Element,
-    callback: (frame: FrameInterface, id: string, clientRect?: ClientRect) => void,
+    callback: (frame: FrameInterface, id: string, clientRect: ClientRect) => void,
     id?: string
   ): string {
     this.startTicking();
@@ -250,7 +249,7 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
   }
 }
 
-let globalScheduler: Scheduler = null;
+let globalScheduler: Scheduler | null = null;
 
 export function getGlobalScheduler() {
   return globalScheduler || (globalScheduler = new Scheduler());

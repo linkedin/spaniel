@@ -46,7 +46,7 @@ export class SpanielObserver implements SpanielObserverInterface {
   private onWindowClosed: () => void;
   private onTabHidden: () => void;
   private onTabShown: () => void;
-  constructor(callback: (entries: SpanielObserverEntry[]) => void, options: SpanielObserverInit = {}) {
+  constructor(callback: (entries: SpanielObserverEntry[]) => void, options: SpanielObserverInit) {
     this.paused = false;
     this.queuedEntries = [];
     this.recordStore = {};
@@ -136,7 +136,7 @@ export class SpanielObserver implements SpanielObserverInterface {
       intersectionRect,
       target: <SpanielTrackedElement>target,
       duration: 0,
-      entering: null,
+      entering: false,
       payload: record.payload,
       label: state.threshold.label
     };
@@ -165,7 +165,7 @@ export class SpanielObserver implements SpanielObserverInterface {
     });
   }
   private handleThresholdExiting(spanielEntry: SpanielObserverEntry, state: SpanielThresholdState) {
-    let { time, intersectionRatio } = spanielEntry;
+    let { time } = spanielEntry;
     let hasTimeThreshold = !!state.threshold.time;
     if (state.lastSatisfied && (!hasTimeThreshold || (hasTimeThreshold && state.visible))) {
       // Make into function
@@ -263,7 +263,7 @@ export class SpanielObserver implements SpanielObserverInterface {
         lastEntry: null,
         threshold,
         visible: false,
-        lastVisible: null
+        lastVisible: 0
       }))
     };
     this.observer.observe(trackedTarget);

@@ -10,10 +10,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
 import { SpanielObserver } from './spaniel-observer';
-
 import { SpanielObserverEntry, DOMString, DOMMargin, SpanielTrackedElement } from './interfaces';
-
-import W from './metal/window-proxy';
 
 export interface WatcherConfig {
   ratio?: number;

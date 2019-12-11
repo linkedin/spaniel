@@ -30,10 +30,10 @@ export class Engine implements EngineInterface {
       W.rAF(() => {
         this.running = false;
         for (let i = 0, rlen = this.reads.length; i < rlen; i++) {
-          this.reads.pop()();
+          (this.reads.pop() as Function)();
         }
         for (let i = 0, wlen = this.work.length; i < wlen; i++) {
-          this.work.pop()();
+          (this.work.pop() as Function)();
         }
         if (this.work.length > 0 || this.reads.length > 0) {
           this.run();
@@ -43,7 +43,7 @@ export class Engine implements EngineInterface {
   }
 }
 
-let globalEngine: EngineInterface = null;
+let globalEngine: EngineInterface | null = null;
 
 export function setGlobalEngine(engine: EngineInterface): boolean {
   if (!!globalEngine) {
