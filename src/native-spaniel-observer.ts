@@ -3,31 +3,28 @@ Copyright 2017 LinkedIn Corp. Licensed under the Apache License,
 Version 2.0 (the "License"); you may not use this file except in
 compliance with the License. You may obtain a copy of the License
 at http://www.apache.org/licenses/LICENSE-2.0
- 
+
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
-import { calculateIsIntersecting } from './utils';
-
 import {
-  IntersectionObserverInit,
-  DOMString,
   DOMMargin,
-  SpanielObserverInterface,
-  SpanielThreshold,
-  SpanielObserverInit,
-  SpanielRecord,
-  SpanielThresholdState,
+  DOMString,
+  IntersectionObserverClass,
+  IntersectionObserverInit,
   SpanielObserverEntry,
-  SpanielTrackedElement,
-  IntersectionObserverClass
+  SpanielObserverInit,
+  SpanielObserverInterface,
+  SpanielRecord,
+  SpanielThreshold,
+  SpanielThresholdState,
+  SpanielTrackedElement
 } from './interfaces';
-
-import w from './metal/window-proxy';
-
 import { generateToken, on, scheduleWork } from './metal/index';
+import w from './metal/window-proxy';
+import { calculateIsIntersecting } from './utils';
 
 let emptyRect = { x: 0, y: 0, width: 0, height: 0 };
 
@@ -193,29 +190,32 @@ export class SpanielObserver implements SpanielObserverInterface {
 
         const ratioSatisfied = entry.intersectionRatio >= state.threshold.ratio;
         const isIntersecting = calculateIsIntersecting(entry);
+        const isSatisfied = ratioSatisfied && isIntersecting;
 
-        if (ratioSatisfied && !state.lastSatisfied && isIntersecting) {
-          spanielEntry.entering = true;
-          if (hasTimeThreshold) {
-            state.lastVisible = time;
-            const timerId: number = Number(
-              setTimeout(() => {
-                state.visible = true;
-                spanielEntry.duration = Date.now() - state.lastVisible;
-                this.callback([spanielEntry]);
-              }, state.threshold.time)
-            );
-            state.timeoutId = timerId;
+        if (isSatisfied != state.lastSatisfied) {
+          if (isSatisfied) {
+            spanielEntry.entering = true;
+            if (hasTimeThreshold) {
+              state.lastVisible = time;
+              const timerId: number = Number(
+                setTimeout(() => {
+                  state.visible = true;
+                  spanielEntry.duration = Date.now() - state.lastVisible;
+                  this.callback([spanielEntry]);
+                }, state.threshold.time)
+              );
+              state.timeoutId = timerId;
+            } else {
+              state.visible = true;
+              this.queuedEntries.push(spanielEntry);
+            }
           } else {
-            state.visible = true;
-            this.queuedEntries.push(spanielEntry);
+            this.handleThresholdExiting(spanielEntry, state);
           }
-        } else if (!ratioSatisfied) {
-          this.handleThresholdExiting(spanielEntry, state);
-        }
 
-        state.lastEntry = entry;
-        state.lastSatisfied = ratioSatisfied;
+          state.lastEntry = entry;
+          state.lastSatisfied = isSatisfied;
+        }
       });
       this.flushQueuedEntries();
     }
