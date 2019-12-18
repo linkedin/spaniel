@@ -1,17 +1,11 @@
 {
-  "framework":"mocha+chai",
+  "framework": "mocha+chai",
   "src_files": [
     "exports/spaniel.js",
     "node_modules/sinon/pkg/sinon.js",
     "node_modules/rsvp/dist/rsvp.js",
-    "test/setup/environment.js",
     "test/specs/**/*.js"
   ],
-  "launch_in_ci": [
-    "PhantomJS"
-  ],
-  "launch_in_dev": [
-    "PhantomJS",
-    "Chrome"
-  ]
+  "launch_in_ci": ["PhantomJS"],
+  "launch_in_dev": ["PhantomJS", "Chrome"]
 }

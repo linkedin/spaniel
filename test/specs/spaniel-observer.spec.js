@@ -6,6 +6,55 @@ Unless required by applicable law or agreed to in writing, software distribute
 
 var expect = chai.expect;
 
+function runTest(threshold, options) {
+  if (!threshold) {
+    throw new Error('You must provide a threshold to test');
+  }
+  options = options || {};
+  var thresholds = [threshold];
+  var timeout = 50 + (options.timeout || 0);
+  var entries = [];
+  var target = options.target;
+  if (!target) {
+    target = document.createElement('div');
+    target.style.height = '10px';
+  }
+  document.body.appendChild(target);
+  var observer = new spaniel.SpanielObserver(
+    function(changes) {
+      for (var i = 0; i < changes.length; i++) {
+        entries.push(changes[i]);
+      }
+    },
+    {
+      rootMargin: '0px 0px',
+      threshold: thresholds
+    }
+  );
+  observer.observe(target);
+  return new RSVP.Promise(function(resolve, reject) {
+    setTimeout(function() {
+      resolve({
+        observer: observer,
+        entries: entries,
+        target: target
+      });
+    }, timeout);
+  });
+}
+
+function cleanUp(value) {
+  value.observer.destroy();
+}
+
+function wait50ms(result) {
+  return new RSVP.Promise(function(resolve) {
+    setTimeout(function() {
+      resolve(result);
+    }, 50);
+  });
+}
+
 describe('SpanielObserver', function() {
   it('should fire impression event with correct info', function() {
     return runTest({
@@ -108,7 +157,6 @@ describe('SpanielObserver', function() {
     var target = document.createElement('div');
     target.style.height = '0px';
     target.style.width = '0px';
-    target.style.height = '0px';
     target.style.marginTop = '10px';
     target.style.marginLeft = '10px';
 
@@ -136,7 +184,6 @@ describe('SpanielObserver', function() {
     var target = document.createElement('div');
     target.style.height = '0px';
     target.style.width = '0px';
-    target.style.height = '0px';
     target.style.marginTop = '1000px';
     target.style.marginLeft = '10px';
 

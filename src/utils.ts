@@ -1,7 +1,7 @@
 import { SpanielClientRectInterface } from './metal/interfaces';
 
 export function calculateIsIntersecting({ intersectionRect }: { intersectionRect: ClientRect }) {
-  return intersectionRect.width > 0 || intersectionRect.height > 0;
+  return intersectionRect.width >= 0 && intersectionRect.height >= 0;
 }
 
 export function getBoundingClientRect(element: Element): SpanielClientRectInterface {
