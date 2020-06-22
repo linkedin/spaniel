@@ -107,7 +107,7 @@ There are four different event types passed to the watcher callback:
 
 If no config is passed to the `Watcher` constructor, only the `exposed` event is fired.
 
-The `Watcher` constructor can be passed 3 different options:
+The `Watcher` constructor can be passed 4 different options:
 
 * `time` - The time threshold
 * `ratio` - The ratio threshold
