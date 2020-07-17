@@ -135,6 +135,7 @@ export class SpanielObserver implements SpanielObserverInterface {
   }
   private handleRecordExiting(record: SpanielRecord, time: number = Date.now()) {
     record.thresholdStates.forEach((state: SpanielThresholdState) => {
+      const boundingClientRect = record.lastSeenEntry && record.lastSeenEntry.boundingClientRect;
       this.handleThresholdExiting(
         {
           intersectionRatio: -1,
@@ -143,7 +144,7 @@ export class SpanielObserver implements SpanielObserverInterface {
           label: state.threshold.label,
           entering: false,
           rootBounds: emptyRect,
-          boundingClientRect: emptyRect,
+          boundingClientRect: boundingClientRect || emptyRect,
           intersectionRect: emptyRect,
           duration: time - state.lastVisible,
           target: record.target,
