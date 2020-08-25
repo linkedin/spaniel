@@ -22,7 +22,7 @@ Spaniel provides additional abstractions on top of [IntersectionObserver](https:
 
 ## Why use Spaniel?
 
-* Provides the future-proofing of a WCIG API, but with an expanded feature-set built upon said API.
+* Provides the future-proofing of a WICG API, but with an expanded feature-set built upon said API.
 * Tested and iterated upon in production by LinkedIn since late 2014
 * Highly performant, only relies on `requestAnimationFrame`
 * Extensive `requestAnmiationFrame` task/utility API
