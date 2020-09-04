@@ -203,11 +203,8 @@ export class ElementScheduler extends BaseScheduler implements ElementSchedulerI
   protected lastVersion: number = W.version;
   protected ALLOW_CACHED_SCHEDULER: boolean;
 
-  constructor(customEngine?: EngineInterface, root?: Element | Window | null, ALLOW_CACHED_SCHEDULER: boolean = true) {
+  constructor(customEngine?: EngineInterface, root?: Element | Window | null, ALLOW_CACHED_SCHEDULER: boolean = false) {
     super(customEngine, root);
-    if (ALLOW_CACHED_SCHEDULER === void 0) {
-      ALLOW_CACHED_SCHEDULER = true;
-    }
     this.queue = new DOMQueue();
     this.ALLOW_CACHED_SCHEDULER = ALLOW_CACHED_SCHEDULER;
   }
