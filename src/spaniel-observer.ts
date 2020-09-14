@@ -47,7 +47,7 @@ export class SpanielObserver implements SpanielObserverInterface {
     this.queuedEntries = [];
     this.recordStore = {};
     this.callback = callback;
-    let { root, rootMargin, threshold, ALLOW_CACHED_SCHEDULER } =
+    let { root, rootMargin, threshold, ALLOW_CACHED_SCHEDULER, BACKGROUND_TAB_FIX } =
       options ||
       ({
         threshold: []
@@ -76,6 +76,9 @@ export class SpanielObserver implements SpanielObserverInterface {
       on('beforeunload', this.onWindowClosed);
       on('hide', this.onTabHidden);
       on('show', this.onTabShown);
+      if (BACKGROUND_TAB_FIX) {
+        this.paused = w.document.visibilityState !== 'visible';
+      }
     }
   }
   private _onWindowClosed() {

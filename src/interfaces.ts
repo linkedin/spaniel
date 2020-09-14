@@ -24,6 +24,7 @@ export interface SpanielObserverInit {
   rootMargin?: DOMString | DOMMargin; // default: 0px
   threshold: SpanielThreshold[]; // default: 0
   ALLOW_CACHED_SCHEDULER?: boolean;
+  BACKGROUND_TAB_FIX?: boolean;
 }
 
 export interface SpanielRecord {
