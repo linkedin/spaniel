@@ -26,6 +26,7 @@ interface WindowProxy {
   lastVersion: number;
   updateMeta: Function;
   isDirty: boolean;
+  document: Document;
 }
 
 const hasDOM = !!(typeof window !== 'undefined' && window && typeof document !== 'undefined' && document);
@@ -58,7 +59,8 @@ let W: WindowProxy = {
   updateMeta: nop,
   get isDirty(): boolean {
     return W.version !== W.lastVersion;
-  }
+  },
+  document: window.document
 };
 
 export function invalidate() {

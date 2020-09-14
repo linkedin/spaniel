@@ -1,7 +1,7 @@
 /*
-Copyright 2017 LinkedIn Corp. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Copyright 2017 LinkedIn Corp. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+Unless required by applicable law or agreed to in writing, softwaredistributed under the License is distributed on an "AS IS" BASIS,WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
 var expect = chai.expect;
@@ -28,7 +28,8 @@ function runTest(threshold, options) {
     },
     {
       rootMargin: '0px 0px',
-      threshold: thresholds
+      threshold: thresholds,
+      BACKGROUND_TAB_FIX: options.BACKGROUND_TAB_FIX
     }
   );
   observer.observe(target);
@@ -199,6 +200,34 @@ describe('SpanielObserver', function() {
       .then(function(result) {
         var entries = result.entries;
         expect(entries.length).to.equal(0);
+        return result;
+      })
+      .then(cleanUp);
+  });
+
+  it('should start paused if in a background tab', function() {
+    var target = document.createElement('div');
+    spaniel.__w__.document = { visibilityState: 'hidden' };
+
+    return runTest(
+      {
+        label: 'impression',
+        ratio: 0.5
+      },
+      {
+        target: target,
+        document: { visibilityState: 'hidden' },
+        BACKGROUND_TAB_FIX: true
+      }
+    )
+      .then(function(result) {
+        // Observer should be paused right out of the gate
+        expect(result.observer.paused).to.equal(true);
+
+        // Closing the tab when it never entered the foreground should not trigger any impression events
+        result.observer.onWindowClosed();
+        expect(result.observer.paused).to.equal(true);
+        expect(result.entries.length).to.equal(0);
         return result;
       })
       .then(cleanUp);
