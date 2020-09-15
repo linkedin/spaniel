@@ -46,6 +46,8 @@ function runTest(threshold, options) {
 
 function cleanUp(value) {
   value.observer.destroy();
+  value.target.remove();
+  value.entries.length = 0;
 }
 
 function wait50ms(result) {
@@ -95,7 +97,8 @@ describe('SpanielObserver', function() {
   it('should fire impression exiting event twice when tab is hidden, reshown, and then hidden again', function() {
     return runTest({
       label: 'impression',
-      ratio: 0.5
+      ratio: 0.5,
+      time: 1
     })
       .then(function(result) {
         result.observer.onTabHidden();
@@ -115,6 +118,10 @@ describe('SpanielObserver', function() {
         expect(result.entries.length).to.equal(4, 'Three events have been fired');
         expect(result.entries[2].entering).to.equal(true, 'second to last event is entering');
         expect(result.entries[3].entering).to.equal(false, 'last event is exiting');
+
+        // Assert that duration is only the time visible on screen
+        // Not including the time the tab was backgrounded
+        expect(Math.abs(result.entries[3].duration - 50)).to.be.lessThan(10); // 10ms of wiggle room
         return result;
       })
       .then(cleanUp);
@@ -216,7 +223,6 @@ describe('SpanielObserver', function() {
       },
       {
         target: target,
-        document: { visibilityState: 'hidden' },
         BACKGROUND_TAB_FIX: true
       }
     )
@@ -231,5 +237,40 @@ describe('SpanielObserver', function() {
         return result;
       })
       .then(cleanUp);
+  });
+
+  it('duration should be correct when starting from a backgrounded tab, opening the tab, then closing the tab', function() {
+    spaniel.__w__.document = { visibilityState: 'hidden' };
+
+    return (
+      runTest(
+        {
+          label: 'impression',
+          ratio: 0.5,
+          time: 1
+        },
+        {
+          BACKGROUND_TAB_FIX: true
+        }
+      )
+        // Wait before opening the tab
+        .then(wait50ms)
+        .then(function(result) {
+          result.observer.onTabShown();
+          return wait50ms(result);
+        })
+        .then(function(result) {
+          result.observer.onTabHidden();
+          return wait50ms(result);
+        })
+        .then(function(result) {
+          expect(result.entries.length).to.equal(2, 'Two events have been fired');
+          expect(result.entries[1].entering).to.equal(false, 'Second event is exiting');
+
+          expect(Math.abs(result.entries[1].duration - 50)).to.be.lessThan(10); // 10ms of wiggle room
+          return wait50ms(result);
+        })
+        .then(cleanUp)
+    );
   });
 });
