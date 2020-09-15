@@ -18,6 +18,7 @@ export interface WatcherConfig {
   rootMargin?: DOMString | DOMMargin;
   root?: SpanielTrackedElement;
   ALLOW_CACHED_SCHEDULER?: boolean;
+  BACKGROUND_TAB_FIX?: boolean;
 }
 
 export type EventName = 'impressed' | 'exposed' | 'visible' | 'impression-complete';
@@ -55,7 +56,7 @@ function onEntry(entries: SpanielObserverEntry[]) {
 export class Watcher {
   observer: SpanielObserver;
   constructor(config: WatcherConfig = {}) {
-    let { time, ratio, rootMargin, root, ALLOW_CACHED_SCHEDULER } = config;
+    let { time, ratio, rootMargin, root, ALLOW_CACHED_SCHEDULER, BACKGROUND_TAB_FIX } = config;
 
     let threshold: Threshold[] = [
       {
@@ -85,7 +86,8 @@ export class Watcher {
       rootMargin,
       threshold,
       root,
-      ALLOW_CACHED_SCHEDULER
+      ALLOW_CACHED_SCHEDULER,
+      BACKGROUND_TAB_FIX
     });
   }
   watch(el: Element, callback: WatcherCallback) {
