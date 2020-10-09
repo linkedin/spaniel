@@ -198,7 +198,13 @@ export class SpanielObserver implements SpanielObserverInterface {
           let spanielEntry: SpanielObserverEntry = this.generateSpanielEntry(entry, state);
 
           const ratioSatisfied = entry.intersectionRatio >= state.threshold.ratio;
-          const isIntersecting = calculateIsIntersecting(entry);
+
+          // The spaniel polyfill doesn't have isIntersecting, so only calculate if it doesn't exist, i.e. we aren't using
+          // the native intersectionobserver
+          const isIntersecting =
+            typeof spanielEntry.isIntersecting === 'boolean'
+              ? spanielEntry.isIntersecting
+              : calculateIsIntersecting(entry);
           const isSatisfied = ratioSatisfied && isIntersecting;
 
           if (isSatisfied != state.lastSatisfied) {
