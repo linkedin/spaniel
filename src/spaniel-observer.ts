@@ -28,8 +28,6 @@ import { calculateIsIntersecting } from './utils';
 
 let emptyRect = { x: 0, y: 0, width: 0, height: 0 };
 
-const IntersectionObserver = !!w.IntersectionObserver ? w.IntersectionObserver : SpanielIntersectionObserver;
-
 export function DOMMarginToRootMargin(d: DOMMargin): DOMString {
   return `${d.top}px ${d.right}px ${d.bottom}px ${d.left}px`;
 }
@@ -49,7 +47,7 @@ export class SpanielObserver implements SpanielObserverInterface {
     this.queuedEntries = [];
     this.recordStore = {};
     this.callback = callback;
-    let { root, rootMargin, threshold, ALLOW_CACHED_SCHEDULER, BACKGROUND_TAB_FIX } =
+    let { root, rootMargin, threshold, ALLOW_CACHED_SCHEDULER, BACKGROUND_TAB_FIX, USE_NATIVE_IO } =
       options ||
       ({
         threshold: []
@@ -65,6 +63,8 @@ export class SpanielObserver implements SpanielObserverInterface {
       threshold: this.thresholds.map((t: SpanielThreshold) => t.ratio),
       ALLOW_CACHED_SCHEDULER
     };
+    const IntersectionObserver =
+      USE_NATIVE_IO && !!w.IntersectionObserver ? w.IntersectionObserver : SpanielIntersectionObserver;
     this.observer = new IntersectionObserver(
       (records: IntersectionObserverEntry[]) => this.internalCallback(records),
       o
