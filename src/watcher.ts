@@ -3,7 +3,7 @@ Copyright 2016 LinkedIn Corp. Licensed under the Apache License,
 Version 2.0 (the "License"); you may not use this file except in
 compliance with the License. You may obtain a copy of the License
 at http://www.apache.org/licenses/LICENSE-2.0
- 
+
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ export interface WatcherConfig {
   root?: SpanielTrackedElement;
   ALLOW_CACHED_SCHEDULER?: boolean;
   BACKGROUND_TAB_FIX?: boolean;
+  USE_NATIVE_IO?: boolean;
 }
 
 export type EventName = 'impressed' | 'exposed' | 'visible' | 'impression-complete';
@@ -56,7 +57,7 @@ function onEntry(entries: SpanielObserverEntry[]) {
 export class Watcher {
   observer: SpanielObserver;
   constructor(config: WatcherConfig = {}) {
-    let { time, ratio, rootMargin, root, ALLOW_CACHED_SCHEDULER, BACKGROUND_TAB_FIX } = config;
+    let { time, ratio, rootMargin, root, ALLOW_CACHED_SCHEDULER, BACKGROUND_TAB_FIX, USE_NATIVE_IO } = config;
 
     let threshold: Threshold[] = [
       {
@@ -87,7 +88,8 @@ export class Watcher {
       threshold,
       root,
       ALLOW_CACHED_SCHEDULER,
-      BACKGROUND_TAB_FIX
+      BACKGROUND_TAB_FIX,
+      USE_NATIVE_IO
     });
   }
   watch(el: Element, callback: WatcherCallback) {

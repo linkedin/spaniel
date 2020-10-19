@@ -25,6 +25,7 @@ export interface SpanielObserverInit {
   threshold: SpanielThreshold[]; // default: 0
   ALLOW_CACHED_SCHEDULER?: boolean;
   BACKGROUND_TAB_FIX?: boolean;
+  USE_NATIVE_IO?: boolean;
 }
 
 export interface SpanielRecord {
