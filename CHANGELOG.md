@@ -1,5 +1,9 @@
 # spaniel Changelog
 
+### 2.6.1 (October 19, 2018)
+
+* Add feature flag (`USE_NATIVE_IO`) to use native intersection observer when available.
+
 ### 2.5.2 (October 9, 2018)
 
 * Backport [PR #59](https://github.com/linkedin/spaniel/pull/59). Guard against race condition.
