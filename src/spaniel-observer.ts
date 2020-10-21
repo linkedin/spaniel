@@ -39,6 +39,7 @@ export class SpanielObserver implements SpanielObserverInterface {
   recordStore: { [key: string]: SpanielRecord };
   queuedEntries: SpanielObserverEntry[];
   private paused: boolean;
+  private usingNativeIo: boolean;
   private onWindowClosed: () => void;
   private onTabHidden: () => void;
   private onTabShown: () => void;
@@ -63,8 +64,8 @@ export class SpanielObserver implements SpanielObserverInterface {
       threshold: this.thresholds.map((t: SpanielThreshold) => t.ratio),
       ALLOW_CACHED_SCHEDULER
     };
-    const IntersectionObserver =
-      USE_NATIVE_IO && !!w.IntersectionObserver ? w.IntersectionObserver : SpanielIntersectionObserver;
+    this.usingNativeIo = !!USE_NATIVE_IO && !!w.IntersectionObserver;
+    const IntersectionObserver = this.usingNativeIo ? w.IntersectionObserver : SpanielIntersectionObserver;
     this.observer = new IntersectionObserver(
       (records: IntersectionObserverEntry[]) => this.internalCallback(records),
       o
@@ -129,14 +130,14 @@ export class SpanielObserver implements SpanielObserverInterface {
     }
   }
   private generateSpanielEntry(entry: IntersectionObserverEntry, state: SpanielThresholdState): SpanielObserverEntry {
-    const time = Date.now();
-    let { intersectionRatio, rootBounds, boundingClientRect, intersectionRect, isIntersecting, target } = entry;
+    let { intersectionRatio, rootBounds, boundingClientRect, intersectionRect, isIntersecting, time, target } = entry;
     let record = this.recordStore[(<SpanielTrackedElement>target).__spanielId];
-
+    const timeOrigin = w.performance.timeOrigin || w.performance.timing.navigationStart;
+    const unixTime = this.usingNativeIo ? Math.floor(timeOrigin + time) : time;
     return {
       intersectionRatio,
       isIntersecting,
-      time,
+      time: unixTime,
       rootBounds,
       boundingClientRect,
       intersectionRect,
