@@ -57,7 +57,7 @@ export class Frame implements FrameInterface {
       rootMeta.left
     );
   }
-  static revalidateRootMeta(root: any = window): MetaInterface {
+  static revalidateRootMeta(root: any = document): MetaInterface {
     let _clientRect = null;
     let _rootMeta: MetaInterface = {
       width: 0,
@@ -75,7 +75,7 @@ export class Frame implements FrameInterface {
       W.updateMeta();
     }
 
-    if (root === window) {
+    if (root === window || root === document) {
       _rootMeta.height = W.meta.height;
       _rootMeta.width = W.meta.width;
       _rootMeta.scrollLeft = W.meta.scrollLeft;
