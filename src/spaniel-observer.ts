@@ -129,7 +129,8 @@ export class SpanielObserver implements SpanielObserverInterface {
     }
   }
   private generateSpanielEntry(entry: IntersectionObserverEntry, state: SpanielThresholdState): SpanielObserverEntry {
-    let { intersectionRatio, time, rootBounds, boundingClientRect, intersectionRect, isIntersecting, target } = entry;
+    const time = Date.now();
+    let { intersectionRatio, rootBounds, boundingClientRect, intersectionRect, isIntersecting, target } = entry;
     let record = this.recordStore[(<SpanielTrackedElement>target).__spanielId];
 
     return {
@@ -184,7 +185,6 @@ export class SpanielObserver implements SpanielObserverInterface {
     clearTimeout(state.timeoutId);
   }
   private handleObserverEntry(entry: IntersectionObserverEntry) {
-    let { time } = entry;
     let target = <SpanielTrackedElement>entry.target;
     let record = this.recordStore[target.__spanielId];
 
@@ -211,7 +211,7 @@ export class SpanielObserver implements SpanielObserverInterface {
             if (isSatisfied) {
               spanielEntry.entering = true;
               if (hasTimeThreshold) {
-                state.lastVisible = time;
+                state.lastVisible = spanielEntry.time;
                 const timerId: number = Number(
                   setTimeout(() => {
                     state.visible = true;
