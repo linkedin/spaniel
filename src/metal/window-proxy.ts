@@ -30,6 +30,7 @@ interface WindowProxy {
   isDirty: boolean;
   document: Document;
   IntersectionObserver: IntersectionObserverClass;
+  performance: Performance;
 }
 
 const hasDOM = !!(typeof window !== 'undefined' && window && typeof document !== 'undefined' && document);
@@ -64,7 +65,8 @@ let W: WindowProxy = {
     return W.version !== W.lastVersion;
   },
   document: window.document,
-  IntersectionObserver: hasDOM && (window as any).IntersectionObserver
+  IntersectionObserver: hasDOM && (window as any).IntersectionObserver,
+  performance: hasDOM && (window as any).performance
 };
 
 export function invalidate() {
