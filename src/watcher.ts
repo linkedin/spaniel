@@ -36,14 +36,17 @@ export interface WatcherCallbackOptions {
   duration: number;
   visibleTime?: number;
   boundingClientRect: DOMRectInit;
+  intersectionRect: DOMRectInit;
 }
 
 function onEntry(entries: SpanielObserverEntry[]) {
   entries.forEach((entry: SpanielObserverEntry) => {
-    const { label, duration, boundingClientRect } = entry;
+    const { label, duration, boundingClientRect, intersectionRect } = entry;
     const opts: WatcherCallbackOptions = {
       duration,
-      boundingClientRect
+      boundingClientRect,
+      visibleTime: entry.time,
+      intersectionRect
     };
     if (entry.entering) {
       entry.payload.callback(label, opts);
