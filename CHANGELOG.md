@@ -1,6 +1,11 @@
 # spaniel Changelog
 
-### 2.6.1 (October 19, 2018)
+### 2.7.0 (November 17, 2020)
+
+* Expose `intersectionRect` in watcher callback metadata parameter
+* Expose `visibleTime` in watcher callback metadata parameter for all event types, not just `impression-complete`
+
+### 2.6.1 (October 19, 2020)
 
 * Add feature flag (`USE_NATIVE_IO`) to use native intersection observer when available.
 
@@ -9,7 +14,6 @@
 * Backport [PR #59](https://github.com/linkedin/spaniel/pull/59). Guard against race condition.
 * Travis config changes to test against release branches
 * Trigger `closing` events on beforeunload instead of unload as beforeunload can be too late in some situations
-
 
 ### 2.5.1 (June 28, 2018)
 
