@@ -1,11 +1,10 @@
 /*
-Copyright 2017 LinkedIn Corp. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Copyright 2017 LinkedIn Corp. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  
-Unless required by applicable law or agreed to in writing, software  distributed under the License is distributed on an "AS IS" BASIS,  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
 import { assert } from 'chai';
-import sinon from 'sinon';
 import { default as testModule, TestClass } from './../../test-module';
 
 import constants from './../../../constants.js';
@@ -130,6 +129,88 @@ testModule(
         .then(function(result) {
           assert.equal(result[0], 1, 'First watched item callback fires first');
           assert.equal(result[1], 2, 'Second watched item callback fires second');
+        });
+    }
+    ['@test watcher callbacks pass correct params for impressed']() {
+      return this.context
+        .evaluate(() => {
+          window.STATE.startTime = Date.now();
+          window.STATE.params = null;
+          window.watcher = new spaniel.Watcher({
+            time: 200,
+            ratio: 0.5
+          });
+          var el = document.querySelector('.tracked-item[data-id="1"]');
+          window.watcher.watch(el, function(eventName, meta) {
+            if (eventName === 'impressed') {
+              window.STATE.params = meta;
+            }
+          });
+        })
+        .wait(200 + RAF_THRESHOLD * 2)
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE;
+        })
+        .then(function(result) {
+          assert.isOk(result.params, 'there is a metadata passed as a parameter');
+          assert.isOk(result.params.intersectionRect, 'has intersectionRect');
+          assert.isNumber(result.params.intersectionRect.bottom, 'intersectionRect.bottom is real number');
+          assert.isNumber(result.params.intersectionRect.height, 'intersectionRect.height is real number');
+          assert.isNumber(result.params.intersectionRect.left, 'intersectionRect.left is real number');
+          assert.isNumber(result.params.intersectionRect.right, 'intersectionRect.right is real number');
+          assert.isNumber(result.params.intersectionRect.top, 'intersectionRect.top is real number');
+          assert.isNumber(result.params.intersectionRect.width, 'intersectionRect.width is real number');
+          assert.isAtLeast(result.params.visibleTime, result.startTime, 'visibleTime is not too early');
+          assert.isAtMost(
+            result.params.visibleTime,
+            result.startTime + RAF_THRESHOLD * 2,
+            'visibleTime is not too late'
+          );
+          assert.isAtLeast(result.params.duration, 200, 'duration is not too little');
+          assert.isAtMost(result.params.duration, 200 + RAF_THRESHOLD * 2, 'duration is not too much');
+        });
+    }
+    ['@test watcher callbacks pass correct params for impression-complete']() {
+      return this.context
+        .evaluate(() => {
+          window.STATE.startTime = Date.now();
+          window.STATE.params = null;
+          window.watcher = new spaniel.Watcher({
+            time: 300,
+            ratio: 0.5
+          });
+          var el = document.querySelector('.tracked-item[data-id="1"]');
+          window.watcher.watch(el, function(eventName, meta) {
+            if (eventName === 'impression-complete') {
+              window.STATE.params = meta;
+            }
+          });
+        })
+        .wait(600 + RAF_THRESHOLD * 2)
+        .scrollTo(600)
+        .wait(RAF_THRESHOLD * 2)
+        .getExecution()
+        .evaluate(function() {
+          return window.STATE;
+        })
+        .then(function(result) {
+          assert.isOk(result.params, 'there is a metadata passed as a parameter');
+          assert.isOk(result.params.intersectionRect, 'has intersectionRect');
+          assert.isNumber(result.params.intersectionRect.bottom, 'intersectionRect.bottom is real number');
+          assert.isNumber(result.params.intersectionRect.height, 'intersectionRect.height is real number');
+          assert.isNumber(result.params.intersectionRect.left, 'intersectionRect.left is real number');
+          assert.isNumber(result.params.intersectionRect.right, 'intersectionRect.right is real number');
+          assert.isNumber(result.params.intersectionRect.top, 'intersectionRect.top is real number');
+          assert.isNumber(result.params.intersectionRect.width, 'intersectionRect.width is real number');
+          assert.isAtLeast(result.params.visibleTime, result.startTime, 'visibleTime is not too early');
+          assert.isAtMost(
+            result.params.visibleTime,
+            result.startTime + RAF_THRESHOLD * 2,
+            'visibleTime is not too late'
+          );
+          assert.isAtLeast(result.params.duration, 600, 'duration is not too little');
+          assert.isAtMost(result.params.duration, 600 + RAF_THRESHOLD * 4, 'duration is not too much');
         });
     }
     ['@test cached vs live clientRect should always be the same']() {
