@@ -89,9 +89,8 @@ export class SpanielObserver implements SpanielObserverInterface {
   }
   private setAllHidden() {
     let ids = Object.keys(this.recordStore);
-    let time = Date.now();
     for (let i = 0; i < ids.length; i++) {
-      this.handleRecordExiting(this.recordStore[ids[i]], time);
+      this.handleRecordExiting(this.recordStore[ids[i]]);
     }
     this.flushQueuedEntries();
   }
@@ -99,11 +98,17 @@ export class SpanielObserver implements SpanielObserverInterface {
     this.paused = true;
     this.setAllHidden();
   }
+  // Generate a timestamp using the same relative origin time as the backing intersection observer
+  // native IO timestamps are relative to navigation start, whereas the spaniel polyfill uses unix
+  // timestamps, relative to 00:00:00 UTC on 1 January 1970
+  private generateObserverTimestamp() {
+    return this.usingNativeIo ? Math.floor(performance.now()) : Date.now();
+  }
   private _onTabShown() {
     this.paused = false;
 
     let ids = Object.keys(this.recordStore);
-    let time = Date.now();
+    let time = this.generateObserverTimestamp();
     for (let i = 0; i < ids.length; i++) {
       let entry = this.recordStore[ids[i]].lastSeenEntry;
       if (entry) {
@@ -148,7 +153,8 @@ export class SpanielObserver implements SpanielObserverInterface {
       label: state.threshold.label
     };
   }
-  private handleRecordExiting(record: SpanielRecord, time: number = Date.now()) {
+  private handleRecordExiting(record: SpanielRecord) {
+    const time = Date.now();
     record.thresholdStates.forEach((state: SpanielThresholdState) => {
       const boundingClientRect = record.lastSeenEntry && record.lastSeenEntry.boundingClientRect;
       this.handleThresholdExiting(
