@@ -45,13 +45,12 @@ function onEntry(entries: SpanielObserverEntry[]) {
     const opts: WatcherCallbackOptions = {
       duration,
       boundingClientRect,
-      visibleTime: entry.time,
+      visibleTime: entry.visibleTime,
       intersectionRect
     };
     if (entry.entering) {
       entry.payload.callback(label, opts);
     } else if (entry.label === 'impressed') {
-      opts.visibleTime = entry.time - entry.duration;
       entry.payload.callback('impression-complete', opts);
     }
   });

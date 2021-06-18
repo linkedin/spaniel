@@ -7,7 +7,7 @@
   "scripts": {
     "test": "tsc && yarn run build && testem ci && node test/headless/run",
     "serve": "yarn run build && node test/headless/server/app",
-    "test:headless": "mocha --require @babel/register test/headless/specs/**/*.js --exit",
+    "test:headless": "mocha --require @babel/register test/headless/specs/**/*.js test/headless/specs/*.js --exit --timeout 5000",
     "watch": "broccoli-timepiece exports",
     "build": "./scripts/build.sh",
     "stats": "node scripts/size-calc",

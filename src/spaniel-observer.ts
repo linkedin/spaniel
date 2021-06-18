@@ -13,6 +13,7 @@ import {
   DOMMargin,
   DOMString,
   IntersectionObserverInit,
+  MaybeInternalIntersectionObserverEntry,
   SpanielObserverEntry,
   SpanielObserverInit,
   SpanielObserverInterface,
@@ -98,17 +99,12 @@ export class SpanielObserver implements SpanielObserverInterface {
     this.paused = true;
     this.setAllHidden();
   }
-  // Generate a timestamp using the same relative origin time as the backing intersection observer
-  // native IO timestamps are relative to navigation start, whereas the spaniel polyfill uses unix
-  // timestamps, relative to 00:00:00 UTC on 1 January 1970
-  private generateObserverTimestamp() {
-    return this.usingNativeIo ? Math.floor(performance.now()) : Date.now();
-  }
   private _onTabShown() {
     this.paused = false;
 
     let ids = Object.keys(this.recordStore);
-    let time = this.generateObserverTimestamp();
+    const highResTime = performance.now();
+    const unixTime = Date.now();
     for (let i = 0; i < ids.length; i++) {
       let entry = this.recordStore[ids[i]].lastSeenEntry;
       if (entry) {
@@ -116,7 +112,9 @@ export class SpanielObserver implements SpanielObserverInterface {
         this.handleObserverEntry({
           intersectionRatio,
           boundingClientRect,
-          time,
+          time: unixTime,
+          highResTime,
+          unixTime,
           isIntersecting,
           rootBounds,
           intersectionRect,
@@ -134,20 +132,31 @@ export class SpanielObserver implements SpanielObserverInterface {
       this.queuedEntries = [];
     }
   }
-  private generateSpanielEntry(entry: IntersectionObserverEntry, state: SpanielThresholdState): SpanielObserverEntry {
+  private generateSpanielEntry(
+    entry: MaybeInternalIntersectionObserverEntry,
+    state: SpanielThresholdState
+  ): SpanielObserverEntry {
     let { intersectionRatio, rootBounds, boundingClientRect, intersectionRect, isIntersecting, time, target } = entry;
     let record = this.recordStore[(<SpanielTrackedElement>target).__spanielId];
-    const timeOrigin = w.performance.timeOrigin || w.performance.timing.navigationStart;
-    const unixTime = this.usingNativeIo ? Math.floor(timeOrigin + time) : time;
+    const unixTime = this.usingNativeIo
+      ? Math.floor(w.performance.timeOrigin || w.performance.timing.navigationStart + time)
+      : time;
+    const highResTime = this.usingNativeIo ? time : entry.highResTime;
+    if (!highResTime) {
+      throw new Error('Missing intersection entry timestamp');
+    }
     return {
       intersectionRatio,
       isIntersecting,
+      unixTime,
       time: unixTime,
+      highResTime,
       rootBounds,
       boundingClientRect,
       intersectionRect,
       target: <SpanielTrackedElement>target,
       duration: 0,
+      visibleTime: isIntersecting ? time : -1,
       entering: false,
       payload: record.payload,
       label: state.threshold.label
@@ -155,20 +164,24 @@ export class SpanielObserver implements SpanielObserverInterface {
   }
   private handleRecordExiting(record: SpanielRecord) {
     const time = Date.now();
+    const perfTime = performance.now();
     record.thresholdStates.forEach((state: SpanielThresholdState) => {
       const boundingClientRect = record.lastSeenEntry && record.lastSeenEntry.boundingClientRect;
       this.handleThresholdExiting(
         {
           intersectionRatio: -1,
           isIntersecting: false,
+          unixTime: time,
           time,
+          highResTime: perfTime,
           payload: record.payload,
           label: state.threshold.label,
           entering: false,
           rootBounds: emptyRect,
           boundingClientRect: boundingClientRect || emptyRect,
           intersectionRect: emptyRect,
-          duration: time - state.lastVisible,
+          visibleTime: state.lastVisible.unixTime,
+          duration: perfTime - state.lastVisible.highResTime,
           target: record.target
         },
         state
@@ -179,11 +192,12 @@ export class SpanielObserver implements SpanielObserverInterface {
     });
   }
   private handleThresholdExiting(spanielEntry: SpanielObserverEntry, state: SpanielThresholdState) {
-    let { time } = spanielEntry;
+    let { highResTime } = spanielEntry;
     let hasTimeThreshold = !!state.threshold.time;
     if (state.lastSatisfied && (!hasTimeThreshold || (hasTimeThreshold && state.visible))) {
       // Make into function
-      spanielEntry.duration = time - state.lastVisible;
+      spanielEntry.duration = highResTime - state.lastVisible.highResTime;
+      spanielEntry.visibleTime = state.lastVisible.unixTime;
       spanielEntry.entering = false;
       state.visible = false;
       this.queuedEntries.push(spanielEntry);
@@ -191,7 +205,7 @@ export class SpanielObserver implements SpanielObserverInterface {
 
     clearTimeout(state.timeoutId);
   }
-  private handleObserverEntry(entry: IntersectionObserverEntry) {
+  private handleObserverEntry(entry: MaybeInternalIntersectionObserverEntry) {
     let target = <SpanielTrackedElement>entry.target;
     let record = this.recordStore[target.__spanielId];
 
@@ -218,11 +232,15 @@ export class SpanielObserver implements SpanielObserverInterface {
             if (isSatisfied) {
               spanielEntry.entering = true;
               if (hasTimeThreshold) {
-                state.lastVisible = spanielEntry.time;
+                state.lastVisible = {
+                  highResTime: spanielEntry.highResTime,
+                  unixTime: spanielEntry.unixTime
+                };
                 const timerId: number = Number(
                   setTimeout(() => {
                     state.visible = true;
-                    spanielEntry.duration = Date.now() - state.lastVisible;
+                    spanielEntry.duration = performance.now() - state.lastVisible.highResTime;
+                    spanielEntry.visibleTime = state.lastVisible.unixTime;
                     this.callback([spanielEntry]);
                   }, state.threshold.time)
                 );
@@ -285,7 +303,10 @@ export class SpanielObserver implements SpanielObserverInterface {
         lastEntry: null,
         threshold,
         visible: false,
-        lastVisible: 0
+        lastVisible: {
+          unixTime: 0,
+          highResTime: -1
+        }
       }))
     };
     this.observer.observe(trackedTarget);

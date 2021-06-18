@@ -33,7 +33,8 @@ let tokenCounter = 0;
 
 export class Frame implements FrameInterface {
   constructor(
-    public timestamp: number,
+    public dateNow: number,
+    public highResTime: number,
     public scrollTop: number,
     public scrollLeft: number,
     public width: number,
@@ -47,6 +48,7 @@ export class Frame implements FrameInterface {
     const rootMeta = this.revalidateRootMeta(root);
     return new Frame(
       Date.now(),
+      performance.now(),
       rootMeta.scrollTop,
       rootMeta.scrollLeft,
       rootMeta.width,
