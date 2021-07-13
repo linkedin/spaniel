@@ -70,7 +70,7 @@ export class Watcher {
       }
     ];
 
-    if (time) {
+    if (time != null) {
       threshold.push({
         label: 'impressed',
         time,

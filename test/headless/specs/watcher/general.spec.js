@@ -237,5 +237,46 @@ testModule(
           assert.deepEqual(result[0], result[1], 'The element cached clientRect and live clientRect are identical');
         });
     }
+
+    ['@test should fire impression with 0 time threshold']() {
+      return this.context
+        .evaluate(() => {
+          window.watcher = new spaniel.Watcher({
+            time: 0,
+            ratio: 0.5
+          });
+          window.STATE.impressed = [];
+          window.STATE.impressionComplete = [];
+          const el = document.querySelector('.tracked-item[data-id="1"]');
+          window.watcher.watch(el, function(eventName, meta) {
+            if (eventName === 'impressed') {
+              window.STATE.impressed.push(meta);
+            } else if (eventName === 'impression-complete') {
+              window.STATE.impressionComplete.push(meta);
+            }
+          });
+        })
+        .wait(600 + RAF_THRESHOLD * 2)
+        .scrollTo(600)
+        .wait(RAF_THRESHOLD * 2)
+        .getExecution()
+        .evaluate(function() {
+          const { impressed, impressionComplete } = window.STATE;
+          delete window.STATE.impressed;
+          delete window.STATE.impressionComplete;
+          return [impressed, impressionComplete];
+        })
+        .then(function([impressed, impressionComplete]) {
+          assert.equal(impressed.length, 1, 'impression is fired');
+          assert.equal(impressed[0].duration, 0, 'impression fired immediately');
+          assert.equal(impressionComplete.length, 1, 'impression-complete is fired');
+          assert.isAtLeast(impressionComplete[0].duration, 600);
+          assert.isAtMost(
+            impressionComplete[0].duration,
+            600 + RAF_THRESHOLD * 4,
+            'impression-complete has correct duration'
+          );
+        });
+    }
   }
 );

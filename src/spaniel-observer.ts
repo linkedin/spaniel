@@ -217,8 +217,8 @@ export class SpanielObserver implements SpanielObserverInterface {
           if (isSatisfied != state.lastSatisfied) {
             if (isSatisfied) {
               spanielEntry.entering = true;
+              state.lastVisible = spanielEntry.time;
               if (hasTimeThreshold) {
-                state.lastVisible = spanielEntry.time;
                 const timerId: number = Number(
                   setTimeout(() => {
                     state.visible = true;
@@ -229,6 +229,7 @@ export class SpanielObserver implements SpanielObserverInterface {
                 state.timeoutId = timerId;
               } else {
                 state.visible = true;
+                spanielEntry.duration = Date.now() - state.lastVisible;
                 this.queuedEntries.push(spanielEntry);
               }
             } else {
