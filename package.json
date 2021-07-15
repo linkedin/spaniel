@@ -12,7 +12,7 @@
     "build": "./scripts/build.sh",
     "stats": "node scripts/size-calc",
     "prettier": "prettier --write 'src/**/*.ts'",
-    "prepublish": "yarn run build",
+    "prepublishOnly": "yarn run build",
     "docs:build": "./scripts/build-docs.sh",
     "docs:publish": "./scripts/publish-docs.sh"
   },
