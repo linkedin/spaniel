@@ -16,14 +16,15 @@ import { Frame, ElementScheduler, generateToken } from './metal/index';
 import {
   SpanielTrackedElement,
   DOMString,
-  DOMRectPojo,
   IntersectionObserverInit,
   DOMMargin,
-  SpanielIntersectionObserverEntryInit
+  SpanielIntersectionObserverEntryInit,
+  InternalIntersectionObserverEntry,
+  DOMRectPojo
 } from './interfaces';
 
 interface EntryEvent {
-  entry: IntersectionObserverEntry;
+  entry: InternalIntersectionObserverEntry;
   numSatisfiedThresholds: number;
 }
 
@@ -37,7 +38,7 @@ function marginToRect(margin: DOMMargin): DOMRectPojo {
     bottom,
     right,
     width: right - left,
-    height: bottom - top
+    height: bottom - top,
   };
 }
 
@@ -142,16 +143,17 @@ export class SpanielIntersectionObserver implements IntersectionObserver {
   }
 }
 
-function addRatio(entryInit: SpanielIntersectionObserverEntryInit): IntersectionObserverEntry {
-  const { time, rootBounds, boundingClientRect, intersectionRect, target } = entryInit;
+function addRatio(entryInit: SpanielIntersectionObserverEntryInit): InternalIntersectionObserverEntry {
+  const { unixTime, highResTime, rootBounds, boundingClientRect, intersectionRect, target } = entryInit;
   const boundingArea = boundingClientRect.height * boundingClientRect.width;
   const intersectionRatio = boundingArea > 0 ? (intersectionRect.width * intersectionRect.height) / boundingArea : 0;
 
   return {
-    time,
-    rootBounds: pojoToToDOMRectReadOnly(rootBounds),
-    boundingClientRect: pojoToToDOMRectReadOnly(boundingClientRect),
-    intersectionRect: pojoToToDOMRectReadOnly(intersectionRect),
+    time: unixTime,
+    highResTime,
+    rootBounds,
+    boundingClientRect,
+    intersectionRect,
     target,
     intersectionRatio,
     isIntersecting: calculateIsIntersecting({ intersectionRect })
@@ -183,28 +185,31 @@ export function generateEntry(
   clientRect: ClientRect,
   el: HTMLElement,
   rootMargin: DOMMargin
-): IntersectionObserverEntry {
+): InternalIntersectionObserverEntry {
   if (el.style.display === 'none') {
     return {
+      time: frame.dateNow,
+      highResTime: frame.highResTime,
       boundingClientRect: emptyRect(),
       intersectionRatio: 0,
       intersectionRect: emptyRect(),
       isIntersecting: false,
       rootBounds: emptyRect(),
-      target: el,
-      time: frame.timestamp
+      target: el
     };
   }
   let { bottom, right } = clientRect;
+  const left = frame.left + rootMargin.left;
+  const top = frame.top + rootMargin.top;
   let rootBounds: DOMRectPojo = {
-    left: frame.left + rootMargin.left,
-    top: frame.top + rootMargin.top,
-    x: frame.left + rootMargin.left,
-    y: frame.top + rootMargin.top,
+    left,
+    top,
     bottom: rootMargin.bottom,
     right: rootMargin.right,
     width: frame.width - (rootMargin.right + rootMargin.left),
-    height: frame.height - (rootMargin.bottom + rootMargin.top)
+    height: frame.height - (rootMargin.bottom + rootMargin.top),
+    y: top,
+    x: left
   };
 
   let intersectX = Math.max(rootBounds.left, clientRect.left);
@@ -213,11 +218,13 @@ export function generateEntry(
   let width = Math.min(rootBounds.left + rootBounds.width, clientRect.right) - intersectX;
   let height = Math.min(rootBounds.top + rootBounds.height, clientRect.bottom) - intersectY;
 
+  const interLeft = width >= 0 ? intersectX : 0;
+  const interTop = intersectY >= 0 ? intersectY : 0;
   let intersectionRect: DOMRectPojo = {
-    left: width >= 0 ? intersectX : 0,
-    top: intersectY >= 0 ? intersectY : 0,
-    x: width >= 0 ? intersectX : 0,
-    y: intersectY >= 0 ? intersectY : 0,
+    left: interLeft,
+    top: interTop,
+    x: interLeft,
+    y: interTop,
     width,
     height,
     right,
@@ -225,8 +232,9 @@ export function generateEntry(
   };
 
   return addRatio({
-    time: frame.timestamp,
-    rootBounds: pojoToToDOMRectReadOnly(rootBounds),
+    unixTime: frame.dateNow,
+    highResTime: frame.highResTime,
+    rootBounds,
     target: <SpanielTrackedElement>el,
     boundingClientRect: pojoToToDOMRectReadOnly(marginToRect(clientRect)),
     intersectionRect: pojoToToDOMRectReadOnly(intersectionRect)

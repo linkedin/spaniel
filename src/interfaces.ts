@@ -28,36 +28,69 @@ export interface SpanielObserverInit {
   USE_NATIVE_IO?: boolean;
 }
 
+export interface TimeCompat {
+  highResTime: number;
+  unixTime: number;
+}
+
 export interface SpanielRecord {
   target: SpanielTrackedElement;
   payload: any;
   thresholdStates: SpanielThresholdState[];
-  lastSeenEntry: IntersectionObserverEntry | null;
+  lastSeenEntry: InternalIntersectionObserverEntry | null;
 }
 
 export interface SpanielThresholdState {
   lastSatisfied: Boolean;
-  lastEntry: IntersectionObserverEntry | null;
+  lastEntry: InternalIntersectionObserverEntry | null;
   threshold: SpanielThreshold;
-  lastVisible: number;
+  lastVisible: TimeCompat;
   visible: boolean;
   timeoutId?: number;
 }
 
 export interface SpanielIntersectionObserverEntryInit {
-  time: DOMHighResTimeStamp;
+  highResTime: DOMHighResTimeStamp;
+  unixTime: number;
   rootBounds: DOMRectPojo;
   boundingClientRect: DOMRectPojo;
   intersectionRect: DOMRectPojo;
   target: SpanielTrackedElement;
 }
 
-export interface SpanielObserverEntry extends IntersectionObserverEntryInit {
+export interface SpanielRect extends DOMRectPojo {
+  readonly height: number;
+  readonly width: number;
+  readonly x: number;
+  readonly y: number;
+}
+
+export interface SpanielObserverEntry {
+  isIntersecting: boolean;
   duration: number;
+  visibleTime: number;
   intersectionRatio: number;
   entering: boolean;
   label?: string;
   payload?: any;
+  unixTime: number;
+  highResTime: number;
+  time: number;
+  target: Element;
+  boundingClientRect: SpanielRect;
+  intersectionRect: SpanielRect;
+  rootBounds: SpanielRect | null;
+}
+
+export interface InternalIntersectionObserverEntry {
+  time: number;
+  highResTime: DOMHighResTimeStamp;
+  target: Element;
+  boundingClientRect: SpanielRect;
+  intersectionRect: SpanielRect;
+  rootBounds: SpanielRect | null;
+  intersectionRatio: number;
+  isIntersecting: boolean;
 }
 
 export interface IntersectionObserverClass {
