@@ -268,7 +268,12 @@ testModule(
         })
         .then(function([impressed, impressionComplete]) {
           assert.equal(impressed.length, 1, 'impression is fired');
-          assert.equal(impressed[0].duration, 0, 'impression fired immediately');
+          assert.isAtLeast(impressed[0].duration, 0, 'impression fired immediately, duration at least 0');
+          assert.isAtMost(
+            impressed[0].duration,
+            1,
+            'impression fired immediately, but allow duration to be close to 0'
+          );
           assert.equal(impressionComplete.length, 1, 'impression-complete is fired');
           assert.isAtLeast(impressionComplete[0].duration, 600);
           assert.isAtMost(
