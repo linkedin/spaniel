@@ -51,7 +51,8 @@ export interface ElementSchedulerInterface extends BaseSchedulerInterface {
 }
 
 export interface FrameInterface {
-  timestamp: number;
+  dateNow: number;
+  highResTime: DOMHighResTimeStamp;
   scrollTop: number;
   scrollLeft: number;
   width: number;

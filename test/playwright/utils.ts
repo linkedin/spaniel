@@ -75,13 +75,13 @@ export async function pageHide(page: Page): Promise<void> {
     value: 'hidden',
     configurable: true
   })`);
-  // _visibilityHandler addon/services/tracking.js#747
   await page.evaluate(`Object.defineProperty(document, 'hidden', {
     value: true,
     configurable: true
   })`);
   await page.evaluate(`document.dispatchEvent(new Event('visibilitychange'))`);
 }
+
 export async function pageShow(page: Page): Promise<void> {
   await page.evaluate(`Object.defineProperty(document, 'visibilityState', {
     value: 'visible',
