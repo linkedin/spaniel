@@ -37,7 +37,7 @@ Checkout [size.txt](https://github.com/linkedin/spaniel/blob/gh-pages/size.txt) 
 
 You can also run `npm run stats` to measure locally.
 
-## Installation
+### Installation
 
 Spaniel is a standard NPM/CommonJS module. You can use a build tool like [browserify](http://browserify.org/) or [webpack](https://www.npmjs.com/package/webpack) to include Spaniel in your application.
 
