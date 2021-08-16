@@ -9,7 +9,7 @@ branches:
     - v2-release
     - v4
 before_script:
-  - "npx playwright install chromium"
+  - "npx playwright install chromium" # Deal with https://github.com/microsoft/playwright/issues/5767
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
