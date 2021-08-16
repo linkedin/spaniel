@@ -1,7 +1,7 @@
 /*
-Copyright 2017 LinkedIn Corp. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Copyright 2017 LinkedIn Corp. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+Unless required by applicable law or agreed to in writing, softwaredistributed under the License is distributed on an "AS IS" BASIS,WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
 // BEGIN SpanielContext Harness
@@ -21,7 +21,9 @@ var GLOBAL_TEST_EVENTS = {
 
 window.watcher = new spaniel.Watcher({
   time: 100,
-  ratio: 0.8
+  ratio: 0.8,
+  USE_NATIVE_IO: true,
+  ALLOW_CACHED_SCHEDULER: true
 });
 
 var elements = document.getElementsByClassName('tracked-item');
@@ -31,7 +33,8 @@ for (var i = 0; i < elements.length; i++) {
     if (i < 6) {
       var id = el.getAttribute('data-id');
       window.watcher.watch(el, function(e, meta) {
-        var end = meta && meta.duration ? ' for ' + meta.duration + ' milliseconds' : '';
+        const d = new Date(meta.visibleTime);
+        var end = meta && meta.duration ? ' for ' + meta.duration + ' milliseconds at ' + d.toString() : '';
         console.log(id + ' ' + e + end);
         GLOBAL_TEST_EVENTS.push({
           id: parseInt(id),
@@ -58,7 +61,8 @@ let observer = new spaniel.SpanielObserver(
         time: 1000
       }
     ],
-    ALLOW_CACHED_SCHEDULER: true
+    ALLOW_CACHED_SCHEDULER: true,
+    USE_NATIVE_IO: true
   }
 );
 observer.observe(target);

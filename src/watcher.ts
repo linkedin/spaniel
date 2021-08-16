@@ -10,7 +10,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 */
 
 import { SpanielObserver } from './spaniel-observer';
-import { SpanielObserverEntry, DOMString, DOMMargin, SpanielTrackedElement } from './interfaces';
+import {
+  SpanielObserverEntry,
+  DOMString,
+  DOMMargin,
+  SpanielTrackedElement,
+  WatcherCallbackOptions
+} from './interfaces';
 
 export interface WatcherConfig {
   ratio?: number;
@@ -30,13 +36,6 @@ export interface Threshold {
   label: EventName;
   time: number;
   ratio: number;
-}
-
-export interface WatcherCallbackOptions {
-  duration: number;
-  visibleTime?: number;
-  boundingClientRect: DOMRectInit;
-  intersectionRect: DOMRectInit;
 }
 
 function onEntry(entries: SpanielObserverEntry[]) {

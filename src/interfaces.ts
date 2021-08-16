@@ -46,9 +46,9 @@ export interface SpanielThresholdState {
 
 export interface SpanielIntersectionObserverEntryInit {
   time: DOMHighResTimeStamp;
-  rootBounds: ClientRect;
-  boundingClientRect: ClientRect;
-  intersectionRect: ClientRect;
+  rootBounds: DOMRectPojo;
+  boundingClientRect: DOMRectPojo;
+  intersectionRect: DOMRectPojo;
   target: SpanielTrackedElement;
 }
 
@@ -80,11 +80,18 @@ export interface DOMMargin {
   right: number;
 }
 
-export interface DOMRectReadOnly extends DOMRectInit, DOMMargin {}
+export type DOMRectPojo = Omit<DOMRectReadOnly, 'toJSON'>;
 
 export interface IntersectionObserverInit {
   root?: SpanielTrackedElement;
   rootMargin?: DOMString; // default: 0px
   threshold?: number | number[]; // default: 0
   ALLOW_CACHED_SCHEDULER?: boolean;
+}
+
+export interface WatcherCallbackOptions {
+  duration: number;
+  visibleTime?: number;
+  boundingClientRect: DOMRectInit;
+  intersectionRect: DOMRectInit;
 }
