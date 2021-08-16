@@ -33,6 +33,30 @@ interface PageState {
   assertions: SpanielAssertion[][];
 }
 
+/*
+ * Helper for grabbing the initial page load time and then assertions from the initial page load
+ */
+export async function getInitialPageState(page: Page, expectedAssertions: number): Promise<PageState> {
+  const INITIAL_EVENT_GRACE_PERIOD = 500;
+
+  const time = await getPageTime(page);
+
+  // Wait for initial impression events to fire
+  await page.waitForTimeout(INITIAL_EVENT_GRACE_PERIOD);
+  const assertions = await getPageAssertions(page);
+  expect(assertions.length).toBe(1);
+
+  // This assertion just makes sure the INITIAL_EVENT_GRACE_PERIOD works
+  // If the following assertion fails, probably means the page is taking longer
+  // Than expected to boot
+  expect(assertions[0].length).toBe(expectedAssertions);
+
+  return {
+    time,
+    assertions
+  };
+}
+
 export async function getPageState(page: Page): Promise<PageState> {
   const [time, assertions] = await Promise.all([getPageTime(page), getPageAssertions(page)]);
   return {
