@@ -5,7 +5,7 @@
   "license": "Apache 2.0",
   "main": "exports/spaniel.js",
   "scripts": {
-    "test": "tsc && yarn run build && testem ci && node test/headless/run",
+    "test": "tsc && yarn run build && yarn test:playwright && testem ci && node test/headless/run",
     "serve": "yarn run build && node test/headless/server/app",
     "test:headless": "mocha --require @babel/register test/headless/specs/**/*.js --exit",
     "test:playwright": "playwright test --config=test/playwright/playwright.config.ts",
