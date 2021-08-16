@@ -16,7 +16,7 @@ import { Frame, ElementScheduler, generateToken } from './metal/index';
 import {
   SpanielTrackedElement,
   DOMString,
-  DOMRectReadOnly,
+  DOMRectPojo,
   IntersectionObserverInit,
   DOMMargin,
   SpanielIntersectionObserverEntryInit
@@ -27,11 +27,13 @@ interface EntryEvent {
   numSatisfiedThresholds: number;
 }
 
-function marginToRect(margin: DOMMargin): ClientRect {
+function marginToRect(margin: DOMMargin): DOMRectPojo {
   let { left, right, top, bottom } = margin;
   return {
     left,
+    x: left,
     top,
+    y: top,
     bottom,
     right,
     width: right - left,
@@ -147,17 +149,24 @@ function addRatio(entryInit: SpanielIntersectionObserverEntryInit): Intersection
 
   return {
     time,
-    rootBounds,
-    boundingClientRect,
-    intersectionRect,
+    rootBounds: pojoToToDOMRectReadOnly(rootBounds),
+    boundingClientRect: pojoToToDOMRectReadOnly(boundingClientRect),
+    intersectionRect: pojoToToDOMRectReadOnly(intersectionRect),
     target,
     intersectionRatio,
     isIntersecting: calculateIsIntersecting({ intersectionRect })
   };
 }
 
-function emptyRect(): ClientRect | DOMRect {
-  return {
+// Casting to ignore that we are not returning toJSON property of DOMRectReadOnly
+// TODO: Either drop support for browser that do not support natively creating DOMRectReadOnly
+// or figure out way to performantly crate DOMReactReadOnly objects
+function pojoToToDOMRectReadOnly(pojo: DOMRectPojo): DOMRectReadOnly {
+  return pojo as DOMRectReadOnly;
+}
+
+function emptyRect(): DOMRectReadOnly {
+  return pojoToToDOMRectReadOnly({
     bottom: 0,
     height: 0,
     left: 0,
@@ -166,12 +175,12 @@ function emptyRect(): ClientRect | DOMRect {
     width: 0,
     x: 0,
     y: 0
-  };
+  });
 }
 
 export function generateEntry(
   frame: Frame,
-  clientRect: DOMRectReadOnly,
+  clientRect: ClientRect,
   el: HTMLElement,
   rootMargin: DOMMargin
 ): IntersectionObserverEntry {
@@ -187,9 +196,11 @@ export function generateEntry(
     };
   }
   let { bottom, right } = clientRect;
-  let rootBounds: ClientRect = {
+  let rootBounds: DOMRectPojo = {
     left: frame.left + rootMargin.left,
     top: frame.top + rootMargin.top,
+    x: frame.left + rootMargin.left,
+    y: frame.top + rootMargin.top,
     bottom: rootMargin.bottom,
     right: rootMargin.right,
     width: frame.width - (rootMargin.right + rootMargin.left),
@@ -202,9 +213,11 @@ export function generateEntry(
   let width = Math.min(rootBounds.left + rootBounds.width, clientRect.right) - intersectX;
   let height = Math.min(rootBounds.top + rootBounds.height, clientRect.bottom) - intersectY;
 
-  let intersectionRect: ClientRect = {
+  let intersectionRect: DOMRectPojo = {
     left: width >= 0 ? intersectX : 0,
     top: intersectY >= 0 ? intersectY : 0,
+    x: width >= 0 ? intersectX : 0,
+    y: intersectY >= 0 ? intersectY : 0,
     width,
     height,
     right,
@@ -213,9 +226,9 @@ export function generateEntry(
 
   return addRatio({
     time: frame.timestamp,
-    rootBounds,
+    rootBounds: pojoToToDOMRectReadOnly(rootBounds),
     target: <SpanielTrackedElement>el,
-    boundingClientRect: marginToRect(clientRect),
-    intersectionRect
+    boundingClientRect: pojoToToDOMRectReadOnly(marginToRect(clientRect)),
+    intersectionRect: pojoToToDOMRectReadOnly(intersectionRect)
   });
 }
