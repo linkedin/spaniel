@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test';
 import { getInitialPageState, getPageAssertions, pageScroll, timestampsAreClose } from '../utils';
 
-export function visibleTimeModule() {
+function runTests() {
   test('visibleTime for initial events are close to page load time', async ({ page }) => {
-    const { time, assertions } = await getInitialPageState(page, 25);
+    const { time, assertions } = await getInitialPageState(page);
+    expect(assertions[0].length).toBe(25);
     expect(assertions.length).toBe(1);
     for (let i = 0; i < assertions[0].length; i++) {
       const a = assertions[0][i];
@@ -12,7 +13,7 @@ export function visibleTimeModule() {
   });
 
   test('visibleTime for events after scrolling is still from initial load', async ({ page }) => {
-    const initialState = await getInitialPageState(page, 25);
+    const initialState = await getInitialPageState(page);
     expect(initialState.assertions.length).toBe(1);
     const initialAssertionIndex = initialState.assertions[0].length;
     await page.waitForTimeout(500);
@@ -35,5 +36,21 @@ export function visibleTimeModule() {
       timestampsAreClose(timeInViewport, a.meta.duration);
     }
     expect(impressionCompleteAssertions.length).toBeGreaterThanOrEqual(5);
+  });
+}
+
+export function visibleTimeModule() {
+  test.describe('Without native IO >', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto('http://localhost:3000/');
+    });
+    runTests();
+  });
+
+  test.describe('With native IO >', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto('http://localhost:3000/?native=true');
+    });
+    runTests();
   });
 }

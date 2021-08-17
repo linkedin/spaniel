@@ -16,7 +16,7 @@ interface SpanielAssertion {
   meta: WatcherCallbackOptions;
 }
 
-export async function getPageAssertions(page: Page): Promise<SpanielAssertion[][]> {
+export async function getPageAssertions<AssertionType = SpanielAssertion[]>(page: Page): Promise<AssertionType[]> {
   return page.evaluate(async () => {
     return (window as any).ASSERTIONS as any;
   });
@@ -28,37 +28,32 @@ export async function getPageTime(page: Page) {
   });
 }
 
-interface PageState {
+interface PageState<AssertionType = SpanielAssertion[]> {
   time: number;
-  assertions: SpanielAssertion[][];
+  assertions: AssertionType[];
 }
 
 /*
  * Helper for grabbing the initial page load time and then assertions from the initial page load
  */
-export async function getInitialPageState(page: Page, expectedAssertions: number): Promise<PageState> {
+export async function getInitialPageState<AssertionType = SpanielAssertion[]>(
+  page: Page
+): Promise<PageState<AssertionType>> {
   const INITIAL_EVENT_GRACE_PERIOD = 500;
 
   const time = await getPageTime(page);
 
   // Wait for initial impression events to fire
   await page.waitForTimeout(INITIAL_EVENT_GRACE_PERIOD);
-  const assertions = await getPageAssertions(page);
-  expect(assertions.length).toBe(1);
-
-  // This assertion just makes sure the INITIAL_EVENT_GRACE_PERIOD works
-  // If the following assertion fails, probably means the page is taking longer
-  // Than expected to boot
-  expect(assertions[0].length).toBe(expectedAssertions);
-
+  const assertions = await getPageAssertions<AssertionType>(page);
   return {
     time,
     assertions
   };
 }
 
-export async function getPageState(page: Page): Promise<PageState> {
-  const [time, assertions] = await Promise.all([getPageTime(page), getPageAssertions(page)]);
+export async function getPageState<AssertionType = SpanielAssertion[]>(page: Page): Promise<PageState<AssertionType>> {
+  const [time, assertions] = await Promise.all([getPageTime(page), getPageAssertions<AssertionType>(page)]);
   return {
     time,
     assertions

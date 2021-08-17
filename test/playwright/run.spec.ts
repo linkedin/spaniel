@@ -1,5 +1,6 @@
 import { test } from '@playwright/test';
-import { visibleTimeModule } from './modules/visible-time';
+import { visibleTimeModule } from './modules/visible-time-tests';
+import { spanielObserverModule } from './modules/spaniel-observer-tests';
 import * as http from 'http';
 
 import express from 'express';
@@ -23,6 +24,7 @@ function serveTestApp(): Promise<http.Server> {
 
 function runModules() {
   visibleTimeModule();
+  spanielObserverModule();
 }
 
 let handle: http.Server;
@@ -33,16 +35,4 @@ test.afterAll(async () => {
   handle.close();
 });
 
-test.describe('Without native IO >', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:3000/');
-  });
-  runModules();
-});
-
-test.describe('With native IO >', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:3000/?native=true');
-  });
-  runModules();
-});
+runModules();
