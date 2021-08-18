@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { SpanielObserverEntry } from '../../../src/interfaces';
-import { getPageAssertions, getPageTime, pageHide, timestampsAreClose } from '../utils';
+import { getPageAssertions, getPageTime, pageHide, pageShow, timestampsAreClose } from '../utils';
 
 function runTests() {
   test('time for initial events are close to page load time', async ({ page }) => {
@@ -30,6 +30,26 @@ function runTests() {
       expect(a.isIntersecting).toBeFalsy();
       expect(a.entering).toBeFalsy();
       timestampsAreClose(loadTime + delay, a.time);
+    }
+  });
+
+  test('tab shown entries have correct fields', async ({ page }) => {
+    const loadTime = await getPageTime(page);
+    const delay = 1500;
+    const pause = 500;
+    await page.waitForTimeout(delay);
+    await pageHide(page);
+    await page.waitForTimeout(pause);
+    await pageShow(page);
+    await page.waitForTimeout(delay);
+    const assertions = await getPageAssertions<SpanielObserverEntry>(page);
+    expect(assertions.length).toEqual(6);
+    // Tab shown events
+    for (let i = 4; i < assertions.length; i++) {
+      const a = assertions[i];
+      expect(a.isIntersecting).toBeTruthy();
+      expect(a.entering).toBeTruthy();
+      timestampsAreClose(loadTime + delay + pause, a.time);
     }
   });
 }
