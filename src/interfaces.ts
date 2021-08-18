@@ -65,14 +65,14 @@ export interface SpanielRect extends DOMRectPojo {
   readonly y: number;
 }
 
-export interface SpanielObserverEntry {
+export interface SpanielObserverEntry<ObservePayload = undefined> {
   isIntersecting: boolean;
   duration: number;
   visibleTime: number;
   intersectionRatio: number;
   entering: boolean;
-  label?: string;
-  payload?: any;
+  label: string;
+  payload: ObservePayload;
   unixTime: number;
   highResTime: number;
   time: number;

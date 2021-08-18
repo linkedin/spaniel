@@ -1,5 +1,9 @@
 # spaniel Changelog
 
+### 2.8.0 (November 17, 2021)
+
+* Allow specifying the SpanielObserver payload type via a generic, instead of the `any` type
+
 ### 2.7.0 (November 17, 2020)
 
 * Expose `intersectionRect` in watcher callback metadata parameter
