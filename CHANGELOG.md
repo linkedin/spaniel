@@ -1,6 +1,6 @@
 # spaniel Changelog
 
-### 2.8.0 (November 17, 2021)
+### 2.8.0 (August 18, 2021)
 
 * Allow specifying the SpanielObserver payload type via a generic, instead of the `any` type
 
