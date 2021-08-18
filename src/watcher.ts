@@ -15,6 +15,7 @@ import {
   DOMString,
   DOMMargin,
   SpanielTrackedElement,
+  SpanielThreshold,
   WatcherCallbackOptions
 } from './interfaces';
 
@@ -39,8 +40,12 @@ export interface Threshold {
   ratio: number;
 }
 
-function onEntry(entries: SpanielObserverEntry[]) {
-  entries.forEach((entry: SpanielObserverEntry) => {
+interface WatcherObservePayload {
+  callback: (label: string | undefined, opts: WatcherCallbackOptions) => void;
+}
+
+function onEntry(entries: SpanielObserverEntry<undefined, WatcherObservePayload>[]) {
+  entries.forEach((entry: SpanielObserverEntry<undefined, WatcherObservePayload>) => {
     const { label, duration, boundingClientRect, intersectionRect } = entry;
     const opts: WatcherCallbackOptions = {
       duration,
@@ -57,13 +62,14 @@ function onEntry(entries: SpanielObserverEntry[]) {
 }
 
 export class Watcher {
-  observer: SpanielObserver;
+  observer: SpanielObserver<undefined, WatcherObservePayload>;
   constructor(config: WatcherConfig = {}) {
     let { time, ratio, rootMargin, root, ALLOW_CACHED_SCHEDULER, BACKGROUND_TAB_FIX, USE_NATIVE_IO } = config;
 
-    let threshold: Threshold[] = [
+    let threshold: SpanielThreshold<undefined>[] = [
       {
         label: 'exposed',
+        meta: undefined,
         time: 0,
         ratio: 0
       }
@@ -72,6 +78,7 @@ export class Watcher {
     if (time != null) {
       threshold.push({
         label: 'impressed',
+        meta: undefined,
         time,
         ratio: ratio || 0
       });
@@ -80,12 +87,13 @@ export class Watcher {
     if (ratio) {
       threshold.push({
         label: 'visible',
+        meta: undefined,
         time: 0,
         ratio
       });
     }
 
-    this.observer = new SpanielObserver(onEntry, {
+    this.observer = new SpanielObserver<undefined, WatcherObservePayload>(onEntry, {
       rootMargin,
       threshold,
       root,

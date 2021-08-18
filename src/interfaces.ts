@@ -13,16 +13,17 @@ export interface SpanielTrackedElement extends HTMLElement {
   __spanielId: string;
 }
 
-export interface SpanielThreshold {
+export interface SpanielThreshold<Meta = undefined> {
   label: string;
+  meta: Meta;
   ratio: number;
   time?: number;
 }
 
-export interface SpanielObserverInit {
+export interface SpanielObserverInit<ThresholdMeta = undefined> {
   root?: SpanielTrackedElement;
   rootMargin?: DOMString | DOMMargin; // default: 0px
-  threshold: SpanielThreshold[]; // default: 0
+  threshold: SpanielThreshold<ThresholdMeta>[]; // default: 0
   ALLOW_CACHED_SCHEDULER?: boolean;
   BACKGROUND_TAB_FIX?: boolean;
   USE_NATIVE_IO?: boolean;
@@ -33,17 +34,17 @@ export interface TimeCompat {
   unixTime: number;
 }
 
-export interface SpanielRecord {
+export interface SpanielRecord<ThresholdMeta> {
   target: SpanielTrackedElement;
   payload: any;
-  thresholdStates: SpanielThresholdState[];
+  thresholdStates: SpanielThresholdState<ThresholdMeta>[];
   lastSeenEntry: InternalIntersectionObserverEntry | null;
 }
 
-export interface SpanielThresholdState {
+export interface SpanielThresholdState<ThresholdMeta> {
   lastSatisfied: Boolean;
   lastEntry: InternalIntersectionObserverEntry | null;
-  threshold: SpanielThreshold;
+  threshold: SpanielThreshold<ThresholdMeta>;
   lastVisible: TimeCompat;
   visible: boolean;
   timeoutId?: number;
@@ -65,14 +66,15 @@ export interface SpanielRect extends DOMRectPojo {
   readonly y: number;
 }
 
-export interface SpanielObserverEntry {
+export interface SpanielObserverEntry<ThresholdMeta = undefined, ObservePayload = undefined> {
   isIntersecting: boolean;
   duration: number;
   visibleTime: number;
   intersectionRatio: number;
   entering: boolean;
   label?: string;
-  payload?: any;
+  thresholdMeta: ThresholdMeta;
+  payload: ObservePayload;
   unixTime: number;
   highResTime: number;
   time: number;

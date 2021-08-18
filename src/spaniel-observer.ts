@@ -34,18 +34,22 @@ export function DOMMarginToRootMargin(d: DOMMargin): DOMString {
   return `${d.top}px ${d.right}px ${d.bottom}px ${d.left}px`;
 }
 
-export class SpanielObserver implements SpanielObserverInterface {
-  callback: (entries: SpanielObserverEntry[]) => void;
+export class SpanielObserver<ThresholdMeta = undefined, ObservePayload = undefined>
+  implements SpanielObserverInterface {
+  callback: (entries: SpanielObserverEntry<ThresholdMeta, ObservePayload>[]) => void;
   observer: SpanielIntersectionObserver | IntersectionObserver;
-  thresholds: SpanielThreshold[];
-  recordStore: { [key: string]: SpanielRecord };
-  queuedEntries: SpanielObserverEntry[];
+  thresholds: SpanielThreshold<ThresholdMeta>[];
+  recordStore: { [key: string]: SpanielRecord<ThresholdMeta> };
+  queuedEntries: SpanielObserverEntry<ThresholdMeta, ObservePayload>[];
   private paused: boolean;
   private usingNativeIo: boolean;
   private onWindowClosed: () => void;
   private onTabHidden: () => void;
   private onTabShown: () => void;
-  constructor(callback: (entries: SpanielObserverEntry[]) => void, options?: SpanielObserverInit) {
+  constructor(
+    callback: (entries: SpanielObserverEntry<ThresholdMeta, ObservePayload>[]) => void,
+    options?: SpanielObserverInit<ThresholdMeta>
+  ) {
     this.paused = false;
     this.queuedEntries = [];
     this.recordStore = {};
@@ -54,16 +58,16 @@ export class SpanielObserver implements SpanielObserverInterface {
       options ||
       ({
         threshold: []
-      } as SpanielObserverInit);
+      } as SpanielObserverInit<ThresholdMeta>);
     rootMargin = rootMargin || '0px';
     let convertedRootMargin: DOMString =
       typeof rootMargin !== 'string' ? DOMMarginToRootMargin(rootMargin) : rootMargin;
-    this.thresholds = threshold.sort((t: SpanielThreshold) => t.ratio);
+    this.thresholds = threshold.sort(t => t.ratio);
 
     let o: IntersectionObserverInit = {
       root,
       rootMargin: convertedRootMargin,
-      threshold: this.thresholds.map((t: SpanielThreshold) => t.ratio),
+      threshold: this.thresholds.map((t: SpanielThreshold<ThresholdMeta>) => t.ratio),
       ALLOW_CACHED_SCHEDULER
     };
     this.usingNativeIo = !!USE_NATIVE_IO && !!w.IntersectionObserver;
@@ -140,8 +144,8 @@ export class SpanielObserver implements SpanielObserverInterface {
   }
   private generateSpanielEntry(
     entry: InternalIntersectionObserverEntry,
-    state: SpanielThresholdState
-  ): SpanielObserverEntry {
+    state: SpanielThresholdState<ThresholdMeta>
+  ): SpanielObserverEntry<ThresholdMeta, ObservePayload> {
     let { intersectionRatio, rootBounds, boundingClientRect, intersectionRect, isIntersecting, time, target } = entry;
     let record = this.recordStore[(<SpanielTrackedElement>target).__spanielId];
     const unixTime = this.usingNativeIo
@@ -165,13 +169,14 @@ export class SpanielObserver implements SpanielObserverInterface {
       visibleTime: isIntersecting ? unixTime : -1,
       entering: false,
       payload: record.payload,
-      label: state.threshold.label
+      label: state.threshold.label,
+      thresholdMeta: state.threshold.meta
     };
   }
-  private handleRecordExiting(record: SpanielRecord) {
+  private handleRecordExiting(record: SpanielRecord<ThresholdMeta>) {
     const time = Date.now();
     const perfTime = performance.now();
-    record.thresholdStates.forEach((state: SpanielThresholdState) => {
+    record.thresholdStates.forEach((state: SpanielThresholdState<ThresholdMeta>) => {
       const boundingClientRect = record.lastSeenEntry && record.lastSeenEntry.boundingClientRect;
       this.handleThresholdExiting(
         {
@@ -182,6 +187,7 @@ export class SpanielObserver implements SpanielObserverInterface {
           highResTime: perfTime,
           payload: record.payload,
           label: state.threshold.label,
+          thresholdMeta: state.threshold.meta,
           entering: false,
           rootBounds: emptyRect,
           boundingClientRect: boundingClientRect || emptyRect,
@@ -198,7 +204,10 @@ export class SpanielObserver implements SpanielObserverInterface {
       state.lastEntry = null;
     });
   }
-  private handleThresholdExiting(spanielEntry: SpanielObserverEntry, state: SpanielThresholdState) {
+  private handleThresholdExiting(
+    spanielEntry: SpanielObserverEntry<ThresholdMeta, ObservePayload>,
+    state: SpanielThresholdState<ThresholdMeta>
+  ) {
     let { highResTime } = spanielEntry;
     let hasTimeThreshold = !!state.threshold.time;
     if (state.lastSatisfied && (!hasTimeThreshold || (hasTimeThreshold && state.visible))) {
@@ -219,11 +228,14 @@ export class SpanielObserver implements SpanielObserverInterface {
     if (record) {
       record.lastSeenEntry = entry;
       if (!this.paused) {
-        record.thresholdStates.forEach((state: SpanielThresholdState) => {
+        record.thresholdStates.forEach((state: SpanielThresholdState<ThresholdMeta>) => {
           // Find the thresholds that were crossed. Since you can have multiple thresholds
           // for the same ratio, could be multiple thresholds
           let hasTimeThreshold = !!state.threshold.time;
-          let spanielEntry: SpanielObserverEntry = this.generateSpanielEntry(entry, state);
+          let spanielEntry: SpanielObserverEntry<ThresholdMeta, ObservePayload> = this.generateSpanielEntry(
+            entry,
+            state
+          );
 
           const ratioSatisfied = entry.intersectionRatio >= state.threshold.ratio;
 
@@ -309,7 +321,7 @@ export class SpanielObserver implements SpanielObserverInterface {
       target: trackedTarget,
       payload,
       lastSeenEntry: null,
-      thresholdStates: this.thresholds.map((threshold: SpanielThreshold) => ({
+      thresholdStates: this.thresholds.map((threshold: SpanielThreshold<ThresholdMeta>) => ({
         lastSatisfied: false,
         lastEntry: null,
         threshold,
