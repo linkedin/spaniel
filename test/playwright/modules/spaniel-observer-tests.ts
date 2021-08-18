@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { SpanielObserverEntry } from '../../../src/interfaces';
-import { getPageAssertions, getPageTime, pageHide, pageShow, timestampsAreClose } from '../utils';
+import { getPageAssertions, getPageTime, pageHide, pageScroll, pageShow, timestampsAreClose } from '../utils';
 
 function runTests() {
   test('time for initial events are close to page load time', async ({ page }) => {
@@ -12,6 +12,21 @@ function runTests() {
     for (let i = 0; i < assertions.length; i++) {
       const a = assertions[i];
       timestampsAreClose(loadTime, a.time);
+    }
+  });
+
+  test('time for shown events after being hidden a long time by scrolling are correct', async ({ page }) => {
+    await pageScroll(page, 1000);
+    const delay = 2000;
+    await page.waitForTimeout(delay);
+    await pageScroll(page, 0);
+    const time = await getPageTime(page);
+    await page.waitForTimeout(1100);
+    const assertions = await getPageAssertions<SpanielObserverEntry>(page);
+    expect(assertions.length).toEqual(4);
+    for (let i = 2; i < assertions.length; i++) {
+      const a = assertions[i];
+      timestampsAreClose(time, a.time);
     }
   });
 
