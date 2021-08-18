@@ -62,6 +62,9 @@ describe('SpanielObserver', function() {
   it('should fire impression event with correct info', function() {
     return runTest({
       label: 'impression',
+      meta: {
+        foo: 'my-special-meta'
+      },
       ratio: 0.5
     })
       .then(function(result) {
@@ -71,6 +74,7 @@ describe('SpanielObserver', function() {
         expect(entry.entering, true);
         expect(entry.label, 'impression');
         expect(entry.intersectionRatio, 1);
+        expect(entry.thresholdMeta.foo, 'my-special-meta');
         return result;
       })
       .then(cleanUp);
