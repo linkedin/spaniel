@@ -3,7 +3,7 @@ import { SpanielObserverEntry } from '../../../src/interfaces';
 import { getPageAssertions, getPageTime, pageHide, pageScroll, pageShow, timestampsAreClose } from '../utils';
 
 function runTests() {
-  test('time for initial events are close to page load time', async ({ page }) => {
+  test('basic fields for initial events are close to page load time', async ({ page }) => {
     const loadTime = await getPageTime(page);
     const delay = 1500;
     await page.waitForTimeout(delay);
@@ -12,7 +12,12 @@ function runTests() {
     for (let i = 0; i < assertions.length; i++) {
       const a = assertions[i];
       timestampsAreClose(loadTime, a.time);
+      expect(a.entering).toBeTruthy();
+      expect(a.isIntersecting).toBeTruthy();
     }
+    expect(assertions[0].threshold.ratio).toEqual(0);
+    expect(assertions[1].threshold.ratio).toEqual(0.5);
+    expect(assertions[1].threshold.time).toEqual(1000);
   });
 
   test('time for shown events after being hidden a long time by scrolling are correct', async ({ page }) => {
@@ -27,6 +32,8 @@ function runTests() {
     for (let i = 2; i < assertions.length; i++) {
       const a = assertions[i];
       timestampsAreClose(time, a.time);
+      expect(a.entering).toBeTruthy();
+      expect(a.isIntersecting).toBeTruthy();
     }
   });
 

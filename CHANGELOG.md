@@ -1,5 +1,9 @@
 # spaniel Changelog
 
+### 2.9.0 (August 19, 2021)
+
+* Add the `threshold` field to `SpanielObserverEntry` so that entries denote parameters of the threshold that was crossed
+
 ### 2.8.0 (August 18, 2021)
 
 * Allow specifying the SpanielObserver payload type via a generic, instead of the `any` type

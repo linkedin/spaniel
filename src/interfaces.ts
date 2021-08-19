@@ -73,6 +73,7 @@ export interface SpanielObserverEntry<ObservePayload = undefined> {
   entering: boolean;
   label: string;
   payload: ObservePayload;
+  threshold: SpanielThreshold;
   unixTime: number;
   highResTime: number;
   time: number;
