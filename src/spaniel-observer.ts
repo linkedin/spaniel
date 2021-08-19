@@ -165,7 +165,8 @@ export class SpanielObserver<ObservePayload = undefined> implements SpanielObser
       visibleTime: isIntersecting ? unixTime : -1,
       entering: false,
       payload: record.payload,
-      label: state.threshold.label
+      label: state.threshold.label,
+      threshold: state.threshold
     };
   }
   private handleRecordExiting(record: SpanielRecord) {
@@ -182,6 +183,7 @@ export class SpanielObserver<ObservePayload = undefined> implements SpanielObser
           highResTime: perfTime,
           payload: record.payload,
           label: state.threshold.label,
+          threshold: state.threshold,
           entering: false,
           rootBounds: emptyRect,
           boundingClientRect: boundingClientRect || emptyRect,
