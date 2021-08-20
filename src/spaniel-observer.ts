@@ -34,11 +34,11 @@ export function DOMMarginToRootMargin(d: DOMMargin): DOMString {
   return `${d.top}px ${d.right}px ${d.bottom}px ${d.left}px`;
 }
 
-export class SpanielObserver<ObservePayload = undefined> implements SpanielObserverInterface {
+export class SpanielObserver<ObservePayload = undefined> implements SpanielObserverInterface<ObservePayload> {
   callback: (entries: SpanielObserverEntry<ObservePayload>[]) => void;
   observer: SpanielIntersectionObserver | IntersectionObserver;
   thresholds: SpanielThreshold[];
-  recordStore: { [key: string]: SpanielRecord };
+  recordStore: { [key: string]: SpanielRecord<ObservePayload> };
   queuedEntries: SpanielObserverEntry<ObservePayload>[];
   private paused: boolean;
   private usingNativeIo: boolean;
@@ -169,7 +169,7 @@ export class SpanielObserver<ObservePayload = undefined> implements SpanielObser
       threshold: state.threshold
     };
   }
-  private handleRecordExiting(record: SpanielRecord) {
+  private handleRecordExiting(record: SpanielRecord<ObservePayload>) {
     const time = Date.now();
     const perfTime = performance.now();
     record.thresholdStates.forEach((state: SpanielThresholdState) => {
@@ -303,7 +303,7 @@ export class SpanielObserver<ObservePayload = undefined> implements SpanielObser
       });
     }
   }
-  observe(target: Element, payload: any = null) {
+  observe(target: Element, payload: ObservePayload) {
     let trackedTarget = target as SpanielTrackedElement;
     let id = (trackedTarget.__spanielId = trackedTarget.__spanielId || generateToken());
 

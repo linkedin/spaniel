@@ -33,9 +33,9 @@ export interface TimeCompat {
   unixTime: number;
 }
 
-export interface SpanielRecord {
+export interface SpanielRecord<ObservePayload = undefined> {
   target: SpanielTrackedElement;
-  payload: any;
+  payload: ObservePayload;
   thresholdStates: SpanielThresholdState[];
   lastSeenEntry: InternalIntersectionObserverEntry | null;
 }
@@ -98,10 +98,10 @@ export interface IntersectionObserverClass {
   new (callback: IntersectionObserverCallback, options?: IntersectionObserverInit): IntersectionObserver;
 }
 
-export interface SpanielObserverInterface {
+export interface SpanielObserverInterface<ObservePayload = undefined> {
   disconnect: () => void;
   unobserve: (element: SpanielTrackedElement) => void;
-  observe: (target: Element, payload: any) => string;
+  observe: (target: Element, payload: ObservePayload) => string;
 }
 
 export type DOMString = string;
