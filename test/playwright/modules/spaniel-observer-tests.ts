@@ -49,6 +49,8 @@ function runTests() {
     for (let i = 2; i < assertions.length; i++) {
       const a = assertions[i];
       timestampsAreClose(delay, a.duration);
+      // duration is integer
+      expect(a.duration).toEqual(Math.round(a.duration));
       expect(a.isIntersecting).toBeFalsy();
       expect(a.entering).toBeFalsy();
       timestampsAreClose(loadTime + delay, a.time);
