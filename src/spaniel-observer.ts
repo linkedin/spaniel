@@ -256,10 +256,6 @@ export class SpanielObserver<ObservePayload = undefined> implements SpanielObser
                 state.timeoutId = timerId;
               } else {
                 state.visible = true;
-                // TODO: Remove setting duration here, as it's irrelevant and should be very close to 0.
-                // It doesn't make sense to calculate duration when the entry represents entering, not
-                // exiting the viewport.
-                spanielEntry.duration = Date.now() - state.lastVisible.unixTime;
                 this.queuedEntries.push(spanielEntry);
               }
             } else {
