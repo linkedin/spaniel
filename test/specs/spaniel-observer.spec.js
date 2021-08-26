@@ -268,6 +268,8 @@ describe('SpanielObserver', function() {
           expect(result.entries[1].entering).to.equal(false, 'Second event is exiting');
 
           expect(Math.abs(result.entries[1].duration - 50)).to.be.lessThan(10); // 10ms of wiggle room
+          // duration is integer
+          expect(result.entries[1].duration).to.equal(Math.round(result.entries[1].duration));
           return wait50ms(result);
         })
         .then(cleanUp)

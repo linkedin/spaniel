@@ -36,7 +36,7 @@ The example threshold is only considered crossed with the intersection `ratio` h
 
 The observer callback is passed an array of change entries. In addition to the standard entry fields from `IntersectionObserver`, the following properties have been added:
 
-* `duration` - How long the elements intersection ratio was above the threshold before going below the threshold. Only passed for change entries associated with going below the threshold.
+* `duration` - How long the elements intersection ratio was above the threshold before going below the threshold. Only passed for change entries associated with going below the threshold. In integer milliseconds unit.
 * `entering` - Boolean describing if the intersection ratio is changing to be above the threshold ratio.
 * `label` - Which threshold is being crossed
 * `payload` - Optional payload object provided by `observe()`

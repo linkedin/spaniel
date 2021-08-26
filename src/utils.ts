@@ -23,3 +23,13 @@ export function throttle(cb: Function, thottleDelay: number = 5, scope = window)
     cookie = scope.setTimeout(cb, thottleDelay);
   };
 }
+
+/**
+ * Calculate duration from end/start timestamps, round to nearest integer
+ *
+ * @param end - end timestamp for calculating the duration
+ * @param start - start timestamp for calculating the duration
+ */
+export function calculateDuration(end: number, start: number) {
+  return Math.round(end - start);
+}

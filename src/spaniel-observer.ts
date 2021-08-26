@@ -26,7 +26,7 @@ import {
 import { SpanielIntersectionObserver } from './intersection-observer';
 import { generateToken, off, on, scheduleWork } from './metal/index';
 import w from './metal/window-proxy';
-import { calculateIsIntersecting } from './utils';
+import { calculateDuration, calculateIsIntersecting } from './utils';
 
 let emptyRect: DOMRectPojo = { x: 0, y: 0, width: 0, height: 0, bottom: 0, left: 0, top: 0, right: 0 };
 
@@ -190,7 +190,7 @@ export class SpanielObserver<ObservePayload = undefined> implements SpanielObser
           intersectionRect: emptyRect,
           visibleTime: state.lastVisible.unixTime,
           // Next line (duration) is always overwritten if the record becomes a callback event
-          duration: perfTime - state.lastVisible.highResTime,
+          duration: calculateDuration(perfTime, state.lastVisible.highResTime),
           target: record.target
         },
         state
@@ -204,8 +204,7 @@ export class SpanielObserver<ObservePayload = undefined> implements SpanielObser
     let { highResTime } = spanielEntry;
     let hasTimeThreshold = !!state.threshold.time;
     if (state.lastSatisfied && (!hasTimeThreshold || (hasTimeThreshold && state.visible))) {
-      // Make into function
-      spanielEntry.duration = highResTime - state.lastVisible.highResTime;
+      spanielEntry.duration = calculateDuration(highResTime, state.lastVisible.highResTime);
       spanielEntry.visibleTime = state.lastVisible.unixTime;
       spanielEntry.entering = false;
       state.visible = false;
@@ -248,7 +247,7 @@ export class SpanielObserver<ObservePayload = undefined> implements SpanielObser
                 const timerId: number = Number(
                   setTimeout(() => {
                     state.visible = true;
-                    spanielEntry.duration = performance.now() - state.lastVisible.highResTime;
+                    spanielEntry.duration = calculateDuration(performance.now(), state.lastVisible.highResTime);
                     spanielEntry.visibleTime = state.lastVisible.unixTime;
                     this.callback([spanielEntry]);
                   }, state.threshold.time)
