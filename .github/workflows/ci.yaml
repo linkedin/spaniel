@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - 'v2-release' # older version branches
+    tags:
+      - '*'
+  pull_request: {}
+  schedule:
+    - cron: '0 6 * * 0' # weekly, on sundays
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: volta-cli/action@v1
+        with:
+          node-version: '16.x'
+      - name: install dependencies
+        run: yarn
+      - name: test
+        run: yarn test
+    before_script:
+      - "npx playwright install chromium" # Deal with https://github.com/microsoft/playwright/issues/5767
+      - "export DISPLAY=:99.0"
+      - "sh -e /etc/init.d/xvfb start"
+      - sleep 3 # give xvfb some time to start
+    cache:
+      directories:
+        - "travis_phantomjs"
+    before_install:
+      - "phantomjs --version"
+      - "export PATH=$PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64/bin:$PATH"
+      - "phantomjs --version"
+      - "if [ $(phantomjs --version) != '2.1.1' ]; then rm -rf $PWD/travis_phantomjs; mkdir -p $PWD/travis_phantomjs; fi"
+      - "if [ $(phantomjs --version) != '2.1.1' ]; then wget https://assets.membergetmember.co/software/phantomjs-2.1.1-linux-x86_64.tar.bz2 -O $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2; fi"
+      - "if [ $(phantomjs --version) != '2.1.1' ]; then tar -xvf $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C $PWD/travis_phantomjs; fi"
+      - "phantomjs --version"
+      - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
