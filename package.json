@@ -85,6 +85,10 @@
       "pre-commit": "lint-staged"
     }
   },
+  "volta": {
+    "node": "16.18.0",
+    "yarn": "1.22.10"
+  },
   "lint-staged": {
     "*.{ts,js}": [
       "prettier --write",
