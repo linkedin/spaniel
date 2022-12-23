@@ -13,7 +13,7 @@ import { SpanielIntersectionObserver, generateEntry } from './intersection-obser
 
 import { SpanielTrackedElement, DOMMargin, IntersectionObserverClass } from './interfaces';
 
-export { Watcher, WatcherConfig } from './watcher';
+export { Watcher, WatcherConfig, WatcherCallback, WatcherCallbackOptions } from './watcher';
 
 import { SpanielObserver } from './spaniel-observer';
 
