@@ -82,7 +82,7 @@ export class SpanielObserver<ObservePayload = undefined> implements SpanielObser
       on('hide', this.onTabHidden);
       on('show', this.onTabShown);
       if (BACKGROUND_TAB_FIX) {
-        this.paused = w.document.visibilityState !== 'visible';
+        this.paused = w.document?.visibilityState !== 'visible';
       }
     }
   }

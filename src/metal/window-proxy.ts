@@ -28,7 +28,7 @@ interface WindowProxy {
   lastVersion: number;
   updateMeta: Function;
   isDirty: boolean;
-  document: Document;
+  document?: Document;
   IntersectionObserver: IntersectionObserverClass;
   performance: Performance;
 }
@@ -64,7 +64,7 @@ let W: WindowProxy = {
   get isDirty(): boolean {
     return W.version !== W.lastVersion;
   },
-  document: window.document,
+  document: hasDOM ? window.document : undefined,
   IntersectionObserver: hasDOM && (window as any).IntersectionObserver,
   performance: hasDOM && (window as any).performance
 };
