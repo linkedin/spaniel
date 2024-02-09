@@ -29,6 +29,13 @@
     "CHANGELOG.md",
     ".travis.yml"
   ],
+  "exports": {
+    ".": {
+      "default": "./exports/spaniel.js",
+      "types": "./exports/index.d.ts"
+    }
+  },
+  "types": "exports/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/linkedin/spaniel"
@@ -41,7 +48,6 @@
   },
   "homepage": "https://github.com/linkedin/spaniel",
   "module": "exports/index.js",
-  "typings": "exports/index.d.ts",
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.2",
