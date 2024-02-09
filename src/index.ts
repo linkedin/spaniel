@@ -25,6 +25,8 @@ import w from './metal/window-proxy';
 
 import { invalidate } from './metal/window-proxy';
 
+import { WatcherCallback, EventName, WatcherCallbackOptions } from './watcher';
+
 const IntersectionObserver: IntersectionObserverClass = !!w.IntersectionObserver
   ? w.IntersectionObserver
   : SpanielIntersectionObserver;
@@ -40,7 +42,10 @@ export {
   setGlobalEngine,
   getGlobalEngine,
   w as __w__,
-  invalidate
+  invalidate,
+  WatcherCallback,
+  EventName,
+  WatcherCallbackOptions
 };
 
 export function queryElement(el: Element, callback: (clientRect: ClientRect, frame: Frame) => void) {
