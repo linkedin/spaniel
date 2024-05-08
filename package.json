@@ -30,7 +30,7 @@
   ],
   "exports": {
     ".": {
-      "types": "./exports/index.d.ts"
+      "types": "./exports/index.d.ts",
       "default": "./exports/spaniel.js"
     }
   },
