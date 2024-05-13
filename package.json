@@ -1,6 +1,6 @@
 {
   "name": "spaniel",
-  "version": "2.10.1",
+  "version": "2.10.2",
   "description": "LinkedIn's viewport tracking library",
   "license": "Apache-2.0",
   "main": "exports/spaniel.js",
@@ -31,8 +31,8 @@
   ],
   "exports": {
     ".": {
-      "default": "./exports/spaniel.js",
-      "types": "./exports/index.d.ts"
+      "types": "./exports/index.d.ts",
+      "default": "./exports/spaniel.js"
     }
   },
   "types": "exports/index.d.ts",
